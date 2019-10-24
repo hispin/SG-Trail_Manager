@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray1"
+        tools:context=".activities.ActivationActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainMenuContainer1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.166"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/logo_big"
+                android:contentDescription="@+id/appwidget_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.553"
+
+                />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout> <!--container 1-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainMenuContainer2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/gray1"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.833"
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuContainer1"
+            >
+
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share"
+            app:layout_constraintBottom_toBottomOf="@+id/tvImei"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tvImei"
+            app:layout_constraintTop_toTopOf="@+id/tvImei" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvImei"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="152dp"
+            android:fontFamily="@font/arialmt"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textIsSelectable="true"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnShare"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etEnterCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:ems="10"
+            android:fontFamily="@font/arialmt"
+            android:hint="@string/enter_code"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColor="@color/dark1"
+            android:textColorHint="@color/gray5"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnSignIn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.494" />
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activate"
+            app:layout_constraintBottom_toBottomOf="@+id/etEnterCode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/etEnterCode"
+            app:layout_constraintTop_toTopOf="@+id/etEnterCode" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/vector_smart_object"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.148"
+            />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

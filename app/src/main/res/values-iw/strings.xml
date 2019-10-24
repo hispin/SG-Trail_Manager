@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SG-Patrol</string>
+    <string name="empty_field_error">נא למלא את השדה</string>
+    <string name="rename">שנה שם</string>
+    <string name="csv">csv</string>
+    <string name="dialog_new_sensor_title">הגדר חיישנים</string>
+    <string name="invalid_mum_sensors">מס\' חיישנים לא תקין</string>
+    <string name="name_title">שם חיישן</string>
+    <string name="id_title">מספר</string>
+    <string name="map_location_title">מיקום</string>
+    <string name="status_title">מצב</string>
+    <string name="type_title">סוג אירוע</string>
+    <string name="time_title">זמן</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="content_delete_extra_sensor">במערכת מוגדרים יותר חיישנים כרגע, האם למחוק את המיותרים ?
+    </string>
+    <string name="remove_extra_sensors">מחק חיישנים מיותרים</string>
+    <string name="csv_date_title"><![CDATA[Date&Time]]></string>
+    <string name="csv_name_title">שם חיישן</string>
+    <string name="csv_id_title">מספר</string>
+    <string name="csv_alarm_type_title">סוג אירוע</string>
+    <string name="csv_latitude_title">latitude</string>
+    <string name="csv_longitude_title">longitude</string>
+    <string name="sensor_table_title">חיישנים</string>
+    <string name="map_title">מפה</string>
+    <string name="config_title">הגדרות</string>
+    <string name="alarm_log_title">יומן אירועים</string>
+    <string name="not_located">לא הוגדר</string>
+    <string name="located">מוגדר</string>
+    <string name="date_title">תאריך</string>
+    <string name="save">שמור</string>
+    <string name="define_sensor_amount">הגדר כמות חיישנים</string>
+    <string name="choose_alarm_sound">בחר צילצול להתרעה</string>
+    <string name="vibration_when_alarm">הפעל רטט בהתרעה</string>
+    <string name="alarm_flickering_time">זמן חיווי אזעקה</string>
+    <string name="default_str">ברירת מחדל</string>
+
+
+    <string-array name="state_types">
+        <item>רכב</item>
+        <item>הליכה</item>
+        <item>חיישן חיצוני</item>
+        <item>חיישן מנותק</item>
+        <item>חודעת מערכת תקינה</item>
+        <item>סוללה חלשה</item>
+        <item>גילוי משולב</item>
+    </string-array>
+    <string name="load_settings_export_settings">טען הגדרות / ייצוא הגדרות </string>
+    <string name="map_view">תצוגת מפה</string>
+    <string name="language">שפה</string>
+    <string name="satellite">לווין</string>
+    <string name="map">מפה</string>
+    <string name="sensors_save_successfully">החיישנים נשמרו</string>
+    <string name="time_flickering_save_successfully">הוגדר</string>
+    <string name="english">English</string>
+    <string name="no_selected_sound">לא נבחר צליל</string>
+    <string name="channel_name">my_channel_01_name</string>
+    <string name="channel_description">my_channel_01_description</string>
+    <string name="share">שתף</string>
+    <string name="enter_code">הכנס קוד אקטיבציה</string>
+    <string name="wrong_activate_code">קוד לא תקין</string>
+    <string name="sign_in">הירשם</string>
+    <string name="activate">הפעל</string>
+    <string name="error">שגיאה</string>
+    <string name="general_desc">description</string>
+    <string name="email_subject">My Code for SG-Patrol App</string>
+</resources>

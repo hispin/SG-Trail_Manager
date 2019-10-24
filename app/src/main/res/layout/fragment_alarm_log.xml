@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context=".fragments.HistoryWarningFragment">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="49.7dp"
+    >
+
+    <!--&gt;-->
+
+    <include
+            android:id="@+id/inHeader"
+            layout="@layout/header_alarm_log"
+    />
+
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAlarm"
+            android:name="com.app.simplehostdev.viewLayer.fragments.NewReservationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="17.3dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".fragment.HistoryWarningFragment"
+            tools:listitem="@layout/alarm_item"
+            android:scrollbars="vertical"
+    />
+
+    </LinearLayout>
+    <Button
+            android:id="@+id/btnCsv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/csv"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="36dp"
+            android:layout_marginEnd="36dp"
+    />
+
+</FrameLayout>

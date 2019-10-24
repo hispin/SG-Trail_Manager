@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@color/gray2"
+>
+
+
+    <!--sensor amount-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constSensorAmount"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toTopOf="parent"
+    >
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_sensor_amount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+                android:id="@+id/appCompatImageView"/>
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/define_sensor_amount"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etSensorValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent=".181"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.735"
+                android:inputType="number"
+                android:gravity="center"
+                android:hint="0"
+                android:background="@drawable/shape_bottom_border"
+
+        />
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSaveSensors"
+                android:layout_width="65.3dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@+id/etSensorValue"
+                app:layout_constraintBottom_toBottomOf="@+id/etSensorValue"
+                app:layout_constraintStart_toEndOf="@+id/etSensorValue"
+                android:background="@color/turquoise_blue"
+                android:text="@string/save"
+                android:textColor="@color/gray2"
+                android:textSize="13.3sp"
+                android:fontFamily="@font/arialmt"
+         />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--alarm sound-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constAlarmSound"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constSensorAmount"
+            android:clickable="true"
+            android:focusable="true">
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_sound"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_alarm_sound"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.35"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <TextView
+                android:id="@+id/txtAlarmSoundValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_alarm_sound"
+                android:textColor="@color/turquoise_blue"
+                android:textSize="10sp"
+                android:fontFamily="@font/arialmt"
+                android:layout_marginStart="64.7dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.65"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/default_str"
+                style="@style/configContentItem"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.654"
+                android:id="@+id/btnDefault"/>
+
+        <tools:ToggleButton
+                android:id="@+id/togChangeAlarmSound"
+                android:text="ToggleButton"
+                android:layout_width="44dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:button="@drawable/toggle_selector_active"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.954"
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--vibration when alarm-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constVibAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constAlarmSound"
+    >
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_vibration"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vibration_when_alarm"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <tools:ToggleButton
+                android:id="@+id/togChangeAlarmVibrate"
+                android:text="ToggleButton"
+                android:layout_width="44dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:button="@drawable/toggle_selector_active"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.954"
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--alarm flicker-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constAlarmFlicker"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constVibAlarm"
+    >
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_alarm_fliker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_flickering_time"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etAlarmFlickerValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent=".181"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.735"
+                android:inputType="number"
+                android:gravity="center"
+                android:hint="0"
+                android:background="@drawable/shape_bottom_border"
+
+        />
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSaveFlicker"
+                android:layout_width="65.3dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@+id/etAlarmFlickerValue"
+                app:layout_constraintBottom_toBottomOf="@+id/etAlarmFlickerValue"
+                app:layout_constraintStart_toEndOf="@+id/etAlarmFlickerValue"
+                android:background="@color/turquoise_blue"
+                android:text="@string/save"
+                android:textColor="@color/gray2"
+                android:textSize="13.3sp"
+                android:fontFamily="@font/arialmt"
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--load setting-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constLoadSettings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constAlarmFlicker"
+    >
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_load_export"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/load_settings_export_settings"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <tools:ToggleButton
+                android:id="@+id/togChangeLoadSettings"
+                android:text="ToggleButton"
+                android:layout_width="44dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:button="@drawable/toggle_selector_active"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.954"
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--map view-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constMapView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constLoadSettings"
+    >
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/map_view"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ibSatelliteMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.781"
+                android:drawableTop="@drawable/selected_map_satellite_status"
+                android:background="@color/transparent"
+                android:text="@string/satellite"
+                android:textColor="@drawable/selected_text_color_status"
+                android:textAllCaps="false"
+                android:textSize="10sp"
+                android:fontFamily="@font/arialmt"
+        />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ibNormalMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                android:drawableTop="@drawable/selected_map_normal_status"
+                android:background="@color/transparent"
+                android:text="@string/map"
+                android:textAllCaps="false"
+                android:textColor="@drawable/selected_text_color_status"
+                android:textSize="10sp"
+                android:fontFamily="@font/arialmt"
+                android:enabled="false"
+
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--language-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constLangView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constMapView"
+            android:clickable="true"
+            android:focusable="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivSelectLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/config_ic_language"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.041"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language"
+                style="@style/configContentItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.35"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+        <TextView
+                android:id="@+id/languageValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/english"
+                android:textColor="@color/turquoise_blue"
+                android:textSize="10sp"
+                android:fontFamily="@font/arialmt"
+                android:layout_marginStart="64.7dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.65"
+                app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <View android:layout_width="match_parent"
+              android:layout_height="0.7dp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              android:layout_marginStart="10.7dp"
+              android:layout_marginEnd="10.7dp"
+              android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
