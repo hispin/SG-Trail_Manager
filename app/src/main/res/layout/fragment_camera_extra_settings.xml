@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blackCapacity80">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/conSubLayer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.807"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.321"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.955">
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:contentDescription="@string/description"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSysCameraTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.031"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSysCameraTitle"
+                app:srcCompat="@drawable/cam_settings" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSysCameraTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="5.6sp"
+                android:text="@string/system_camera_configuration"
+                android:textColor="@color/medium_green"
+                android:textSize="15.3sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.488"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.026" />
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/gray6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.073" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSysName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/system_camera_name"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.037"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.121" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etSysName"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:inputType="text"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSysName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintHorizontal_bias="0.928"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSysName"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.512" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTelNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/tel_num_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.209" />
+
+        <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/etTelNum"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:hint="0501234567"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="14.7sp"
+                app:allowed_chars="1234567890"
+                app:keep_hint="true"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTelNum"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvTelNum"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.37"
+                app:mask="###-#######" />
+
+        <TextView
+                android:id="@+id/tvCameraType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/camera_type_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.299" />
+
+        <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCameraType"
+                app:layout_constraintEnd_toEndOf="@+id/etSysName"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvCameraType"
+
+                >
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spCameraType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:background="@android:color/transparent"
+                    android:entries="@array/camera_type"
+                    android:gravity="center"
+                    android:spinnerMode="dropdown"
+                    tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/description"
+                    app:srcCompat="@drawable/drop_down_menu" />
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMailAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/mail_address_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.391" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etMailAddress"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:inputType="textEmailAddress"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMailAddress"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvMailAddress"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.37" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/password_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.487" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etPassword"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:inputType="textPassword"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPassword"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvPassword"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.37" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMailServer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/incoming_email_server_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.575" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etMailServer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:inputType="text"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMailServer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintHorizontal_bias="0.928"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvMailServer"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.512" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMailServerPort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/incoming_email_server_port_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.667" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etMailServerPort"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:inputType="text"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMailServerPort"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintHorizontal_bias="0.928"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvMailServerPort"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.512" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvIsSSL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/use_ssl_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.76" />
+
+        <RadioGroup
+                android:id="@+id/rgIsSSL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvIsSSL"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvIsSSL">
+
+            <RadioButton
+                    android:id="@+id/rbYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:drawableStart="@drawable/selector_ssl"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center"
+                    android:text="@string/yes"
+
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp" />
+
+            <RadioButton
+                    android:id="@+id/rbNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:drawableStart="@drawable/selector_ssl"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center"
+                    android:text="@string/no"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp" />
+
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvLastVisit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/date_last_visit_title"
+                android:textColor="@color/black"
+                android:textSize="14.7sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvSysName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.871" />
+
+        <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/etLastVisit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/edit_text_border"
+                android:hint="ddmmyyyy"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textSize="14.7sp"
+                app:allowed_chars="1234567890"
+                app:keep_hint="true"
+                app:layout_constraintBottom_toBottomOf="@+id/tvLastVisit"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.052"
+                app:layout_constraintStart_toStartOf="@+id/etSysName"
+                app:layout_constraintTop_toTopOf="@+id/tvLastVisit"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.37"
+                app:mask="##/##/####" />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSave"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/green1"
+
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/save"
+                android:textColor="@color/white"
+                android:textSize="14.7sp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.057"
+
+                app:layout_constraintHorizontal_bias="0.955"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.971"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.21"
+
+                />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/orange"
+
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="14.7sp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.057"
+
+                app:layout_constraintHorizontal_bias="0.655"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.971"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.21"
+
+                />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ibTakePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_view"
+            android:src="@drawable/ic_take_a_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.115"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.940" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ibShowPicture"
+            android:layout_width="64.3dp"
+            android:layout_height="64.3dp"
+            android:layout_marginStart="8dp"
+            android:background="#00000000"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/ibTakePic"
+            app:layout_constraintStart_toEndOf="@+id/ibTakePic"
+            app:layout_constraintTop_toTopOf="@+id/ibTakePic" />
+
+
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--            android:id="@+id/fbTakePic"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_gravity="bottom|end"-->
+    <!--            app:backgroundTint="@color/green1"-->
+    <!--            android:src="@drawable/ic_take_a_picture"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintVertical_bias="0.920"-->
+    <!--            app:layout_constraintHorizontal_bias="0.115"-->
+    <!--            app:fabSize="normal"-->
+    <!--            />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

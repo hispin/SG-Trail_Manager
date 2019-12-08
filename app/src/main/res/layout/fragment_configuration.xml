@@ -336,7 +336,7 @@
               android:layout_marginEnd="10.7dp"
               android:background="@color/gray4"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--map view-->
+    <!--ic_map_main view-->
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constMapView"
             android:layout_width="match_parent"
@@ -465,6 +465,52 @@
               android:layout_marginStart="10.7dp"
               android:layout_marginEnd="10.7dp"
               android:background="@color/gray4"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constAlarmDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent=".125"
+            app:layout_constraintTop_toBottomOf="@+id/constLangView">
+
+        <RadioGroup
+                android:id="@+id/rgAlarmDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvAlarmDisplay"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                    android:id="@+id/rbGridView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/grid_view" />
+
+            <RadioButton
+                    android:id="@+id/rbListView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/list_view" />
+
+        </RadioGroup>
+
+        <TextView
+                android:id="@+id/tvAlarmDisplay"
+                style="@style/configContentItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/alarm_display"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,18 +8,29 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+
+    //test attached
+    jcenter()
+    maven {
+        url "https://maven.java.net/content/groups/public/"
+    }
 }
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.sensoguard.detectsensor"
+        applicationId "com.sensoguard.hunter"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 33
-        versionName "1.33"
+        versionCode 7
+        versionName "1.07"
         vectorDrawables.useSupportLibrary = true
-        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "android.support.openExtraCameraSettings.runner.AndroidJUnitRunner"
+    }
+
+    //test attached
+    packagingOptions {
+        pickFirst 'META-INF/LICENSE.txt' // picks the JavaMail license file
     }
 
     signingConfigs {
@@ -65,6 +76,8 @@ configurations {
 }
 
 
+
+
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -72,15 +85,15 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-v4:28.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//    androidTestImplementation 'com.android.support.openExtraCameraSettings:runner:1.0.2'
+//    androidTestImplementation 'com.android.support.openExtraCameraSettings.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.things:androidthings:1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.github.kai-morich:usb-serial-for-android:1.7.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha09'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
     implementation 'com.opencsv:opencsv:3.9'
     //implementation 'com.android.support:multidex:1.0.3'
     implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
@@ -92,4 +105,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     //Support language
     implementation 'com.github.delight-im:Android-Languages:v1.0.1'
+    implementation files('libs/javax.mail.jar')
+
+    //test attached
+    //implementation 'com.sun.mail:android-mail:1.5.6'
+    implementation 'com.sun.mail:android-activation:1.5.6'
+
+    implementation 'ru.egslava:MaskedEditText:1.0.5'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

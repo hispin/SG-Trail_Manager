@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.sensoguard.detectsensor">
+        package="com.sensoguard.hunter">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
             android:name=".LSPatrolApp"
@@ -26,9 +27,19 @@
             android:label="@string/app_name"
             android:roundIcon="@drawable/ic_launcher"
             android:supportsRtl="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            >
-        <activity android:name=".activities.InitAppActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".activities.TestScanEmail">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <action android:name="android.intent.action.VIEW" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+                android:name=".activities.InitAppActivity"
                 android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,11 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-                android:name=".activities.ActivationActivity"
-                >
-
-        </activity>
+        <activity android:name=".activities.ActivationActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity
                 android:name=".activities.MyScreensActivity"
@@ -67,6 +74,18 @@
         <service
                 android:name=".services.ServiceHandleAlarms"
                 android:exported="true" />
+        <service
+                android:name=".services.ServiceRepeat"
+                android:enabled="true"
+                android:exported="true" />
+
+        <receiver android:name=".classes.BootCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
                 android:name="io.fabric.ApiKey"
@@ -74,7 +93,7 @@
 
         <provider
                 android:name="androidx.core.content.FileProvider"
-                android:authorities="com.example.homefolder.example.provider"
+                android:authorities="${applicationId}.contentprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
 

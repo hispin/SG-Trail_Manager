@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tool="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5.5dp"
+        android:layout_marginBottom="5.5dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivAlarmPic"
+            android:layout_width="168.7dp"
+            android:layout_height="125.7dp"
+            android:background="@color/gray8"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.885"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/default_alarm_photo" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.7dp"
+            android:layout_marginEnd="7.7dp"
+            app:layout_constraintEnd_toEndOf="@+id/ivAlarmPic"
+            app:layout_constraintTop_toTopOf="@+id/ivAlarmPic"
+            app:srcCompat="@drawable/ic_share" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivWifiLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="7.3dp"
+            app:layout_constraintStart_toStartOf="@+id/ivAlarmPic"
+            app:layout_constraintTop_toTopOf="@+id/ivAlarmPic"
+            app:srcCompat="@drawable/wifi_level_full_grid" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBatteryLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivWifiLevel"
+            app:layout_constraintStart_toEndOf="@+id/ivWifiLevel"
+            app:layout_constraintTop_toTopOf="@+id/ivWifiLevel"
+            app:srcCompat="@drawable/battery_level_3_grid" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="16.3dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="@+id/ivAlarmPic"
+            app:layout_constraintStart_toStartOf="@+id/ivAlarmPic"
+            app:layout_constraintTop_toBottomOf="@+id/ivAlarmPic"
+
+
+            >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="3dp"
+                android:background="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.65"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.902">
+
+            <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="9.3sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.4"
+                    tool:text="dddd" />
+
+            <View
+                    android:id="@+id/v1"
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toStartOf="@+id/tvName" />
+
+            <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center"
+                    android:text="@string/time_title1"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="9.3sp"
+                    app:layout_constraintEnd_toStartOf="@+id/v1"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.246"
+                    tool:text="dddd" />
+
+            <View
+                    android:id="@+id/v2"
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toStartOf="@+id/tvTime"
+
+                    />
+
+            <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center"
+                    android:text="@string/time_title1"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="9.3sp"
+                    app:layout_constraintEnd_toStartOf="@+id/v2"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.354"
+                    tool:text="dddd" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

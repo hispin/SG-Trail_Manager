@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SG-Patrol</string>
+    <string name="app_name">SG-Hunter</string>
     <string name="empty_field_error">נא למלא את השדה</string>
     <string name="rename">שנה שם</string>
     <string name="csv">csv</string>
@@ -30,6 +30,7 @@
     <string name="not_located">לא הוגדר</string>
     <string name="located">מוגדר</string>
     <string name="date_title">תאריך</string>
+    <string name="date_title1">תאריך:</string>
     <string name="save">שמור</string>
     <string name="define_sensor_amount">הגדר כמות חיישנים</string>
     <string name="choose_alarm_sound">בחר צילצול להתרעה</string>
@@ -66,4 +67,30 @@
     <string name="error">שגיאה</string>
     <string name="general_desc">description</string>
     <string name="email_subject">My Code for SG-Patrol App</string>
+    <string name="camera_system_title">מערכות ומצלמות</string>
+    <string name="system_camera_configuration">הגדרות מערכת / מצלמה</string>
+    <string name="system_camera_name">שם מערכת:</string>
+    <string name="tel_num_title">מס’ טלפון:</string>
+    <string name="camera_type_title">דגם מצלמה:</string>
+    <string name="mail_address_title">כתובת אימייל:</string>
+    <string name="password_title">סיסמה:</string>
+    <string name="incoming_email_server_title">שרת אימייל נכנס:</string>
+    <string name="incoming_email_server_port_title">פורט אימייל נכנס:</string>
+    <string name="use_ssl_title">שימוש ב SSL:</string>
+    <string name="date_last_visit_title">תאריך ביקור אחרון:</string>
+    <string name="description">description</string>
+    <string name="cancel">ביטול</string>
+    <string name="time_title1">שעה:</string>
+    <string name="name_title1">שם:</string>
+    <string name="grid_view">תצוגת רשת</string>
+    <string name="list_view">תצוגת רשימה</string>
+    <string name="alarm_display">תצוגת אירועים</string>
+
+    <string-array name="camera_type">
+        <item>MG-983G</item>
+        <item>MG-984G</item>
+        <item>BG-668</item>
+        <item>ATC</item>
+        <item>HIKVISION</item>
+    </string-array>
 </resources>

@@ -5,7 +5,7 @@
             <solid android:color="@color/turquoise_blue_transparent" />
         </shape>
     </item>
-    <item android:drawable="@color/turquoise_blue"/>
+    <item android:drawable="@color/green" />
 </selector>
 <!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
     <!--<item android:drawable="@color/turquoise_blue" android:state_pressed="true" />-->

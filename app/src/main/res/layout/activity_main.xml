@@ -7,15 +7,14 @@
         tools:context=".activities.MainActivity">
 
 
-
-
+    <!--logo-->
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mainMenuContainer1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/white"
             app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.166"
+            app:layout_constraintHeight_percent="0.127"
             app:layout_constraintTop_toTopOf="parent"
 
             >
@@ -36,246 +35,245 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout> <!--container 1-->
 
+    <!--sub logo-->
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mainMenuContainer2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/gray1"
+            android:background="@color/gray2"
             app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.833"
+            app:layout_constraintHeight_percent="0.127"
             app:layout_constraintTop_toBottomOf="@+id/mainMenuContainer1"
+
             >
 
-       <!--sensor table-->
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@+id/appwidget_label"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.553"
+                app:srcCompat="@drawable/sub_logo"
+
+                />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout> <!--container 2-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clickConsSensorTable"
-                android:layout_width="match_parent"
+            android:id="@+id/mainMenuContainer3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_main"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.75"
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuContainer2">
+
+        <!--sensor table-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clickConsCamerasTable"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/selector_main_menu"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.092"
+                android:layoutDirection="ltr"
+                android:visibility="visible"
                 app:layout_constraintHeight_default="percent"
-                app:layout_constraintHeight_percent="0.203"
+                app:layout_constraintHeight_percent="0.322"
+                app:layout_constraintHorizontal_bias="0.107"
+                app:layout_constraintVertical_bias="0.074"
                 android:clickable="true"
                 android:focusable="true"
-                android:layoutDirection="ltr">
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.433">
 
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSensorTable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_sensors_small_white"
+                    app:layout_constraintVertical_bias="0.248"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintVertical_bias="0.187"
-            />
+                    app:srcCompat="@drawable/ic_cameras_main" />
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sensor_table_title"
-                    android:textColor="@color/gray2"
-                    android:textSize="20sp"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center_horizontal"
+                    android:text="@string/camera_system_title"
+                    android:textColor="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivSensorTable"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintVertical_bias="0.239"
-                    android:fontFamily="@font/arialmt"
-            />
+                    android:textSize="18.3sp"
+                    app:layout_constraintVertical_bias="0.355" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--alarm log-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clickAlarmLog"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/selector_main_menu"
+
+                android:layoutDirection="ltr"
+                android:visibility="visible"
+
+                app:layout_constraintBottom_toBottomOf="@+id/clickConsCamerasTable"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.901"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toTopOf="@+id/clickConsCamerasTable"
+
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.433">
 
             <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAlarmLog"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/arrow"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0.935"
-            />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.248"
+                    app:srcCompat="@drawable/ic_alarms_log" />
 
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center_horizontal"
+                    android:text="@string/alarm_log_title"
+                    android:textColor="@color/white"
+                    android:textSize="18.3sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivAlarmLog"
+                    app:layout_constraintVertical_bias="0.355" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--map-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clickConsMap"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/selector_main_menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clickConsSensorTable"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.203"
-            android:layout_marginTop="2.7dp"
-            android:layoutDirection="ltr"
-    >
-
-        <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivMap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_map"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.301"
-
-        />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/map_title"
-                android:textColor="@color/gray2"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivMap"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.461"
-                android:fontFamily="@font/arialmt"
-        />
-
-        <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/arrow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.935"
-        />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <!--configuration-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clickConsConfiguration"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/selector_main_menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clickConsMap"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.203"
-            android:layout_marginTop="2.7dp"
-            android:layoutDirection="ltr"
-    >
-        <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivConfiguration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_config"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clickConsConfiguration"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/selector_main_menu"
+                android:layoutDirection="ltr"
+                android:visibility="visible"
+
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.257"
-        />
+                app:layout_constraintEnd_toEndOf="@+id/clickConsCamerasTable"
+
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.322"
+
+                app:layout_constraintStart_toStartOf="@+id/clickConsCamerasTable"
+
+                app:layout_constraintTop_toBottomOf="@+id/clickConsCamerasTable"
+                app:layout_constraintVertical_bias="0.04">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivConfiguration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.299"
+                    app:srcCompat="@drawable/ic_configurations_main" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center_horizontal"
+                    android:text="@string/config_title"
+                    android:textColor="@color/white"
+                    android:textSize="18.3sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivConfiguration"
+                    app:layout_constraintVertical_bias="0.535" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--ic_map_main-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clickConsMap"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/selector_main_menu"
+                android:layoutDirection="ltr"
+                android:visibility="visible"
+
+                app:layout_constraintBottom_toBottomOf="@+id/clickConsConfiguration"
+                app:layout_constraintEnd_toEndOf="@+id/clickAlarmLog"
+
+                app:layout_constraintStart_toStartOf="@+id/clickAlarmLog"
+                app:layout_constraintTop_toTopOf="@+id/clickConsConfiguration">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivMap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.308"
+                    app:srcCompat="@drawable/ic_map_main"
+
+                    />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:gravity="center_horizontal"
+                    android:text="@string/map_title"
+                    android:textColor="@color/white"
+                    android:textSize="18.3sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivMap"
+                    app:layout_constraintVertical_bias="0.511" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+                android:id="@+id/tvShowVer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/config_title"
-                android:textColor="@color/gray2"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivConfiguration"
+                android:layout_marginBottom="32dp"
+                android:text="ddd"
+                android:textColor="#000000"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.481"
-                android:fontFamily="@font/arialmt"
-        />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/arrow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.935"
-        />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--configuration-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clickAlarmLog"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/selector_main_menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clickConsConfiguration"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.203"
-            android:layout_marginTop="2.7dp"
-            android:layoutDirection="ltr"
-    >
-        <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivAlarmLog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_alarm_log"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.257"
-        />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/alarm_log_title"
-                android:textColor="@color/gray2"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivAlarmLog"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias="0.372"
-                android:fontFamily="@font/arialmt"
-        />
-
-        <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/arrow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.935"
-        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!--container 2-->
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/vector_smart_object"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.148"
-    />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

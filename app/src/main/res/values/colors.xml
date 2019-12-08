@@ -24,4 +24,13 @@
     <color name="gray">#808080</color>
     <color name="my_app_color">#0A2240</color>
     <color name="my_app_color_transparent">#DC0A2240</color>
+    <color name="green">#39a647</color>
+    <color name="blackCapacity80">#b2000000</color>
+    <color name="medium_green">#39a647</color>
+    <color name="gray6">#555555</color>
+    <color name="gray7">#acacac</color>
+    <color name="green1">#39a647</color>
+    <color name="orange">#FF9912</color>
+    <color name="red2">#fa090c</color>
+    <color name="gray8">#637073</color>
 </resources>

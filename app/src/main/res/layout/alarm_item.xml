@@ -2,72 +2,150 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="70dp" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="154dp"
+        android:background="@color/white"
         xmlns:tool="http://schemas.android.com/tools">
 
+
+    <TextView
+            android:id="@+id/tvDateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/arialmt"
+            android:text="@string/date_title1"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintVertical_bias="0.047" />
 
     <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tool:text="dddd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.053"
-    />
+            android:layout_marginStart="3dp"
+            android:fontFamily="@font/arialmt"
+            android:textColor="@color/red2"
+            android:textSize="13.3sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvDateTitle"
+            app:layout_constraintStart_toEndOf="@+id/tvDateTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvDateTitle"
+            tool:text="@string/date_title1" />
 
+    <TextView
+            android:id="@+id/tvTimeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/arialmt"
+            android:text="@string/time_title1"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="@+id/tvDateTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvDateTitle" />
     <TextView
             android:id="@+id/tvTime"
+            android:layout_marginStart="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tool:text="dddd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.293"
-    />
+            android:fontFamily="@font/arialmt"
+            android:text="@string/time_title1"
+            android:textAllCaps="true"
+            android:textColor="@color/red2"
+            android:textSize="13.3sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTimeTitle"
+            app:layout_constraintStart_toEndOf="@+id/tvTimeTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvTimeTitle" />
 
     <TextView
-            android:id="@+id/tvId"
+            android:id="@+id/tvNameTitle"
+            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tool:text="dddd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.427"
-    />
+            android:fontFamily="@font/arialmt"
+            android:text="@string/name_title1"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="@+id/tvDateTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvTimeTitle"
 
+            />
     <TextView
             android:id="@+id/tvName"
+            android:layout_marginStart="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tool:text="dddd"
-            app:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="@font/arialmt"
+            android:text="@string/name_title1"
+            android:textAllCaps="true"
+            android:textColor="@color/red2"
+            android:textSize="13.3sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvNameTitle"
+            app:layout_constraintStart_toEndOf="@+id/tvNameTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvNameTitle" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivWifiLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/tvDateTitle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.952"
+            app:srcCompat="@drawable/wifi_level_full" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBatteryLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8.7dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivWifiLevel"
+            app:layout_constraintStart_toEndOf="@+id/ivWifiLevel"
+            app:layout_constraintTop_toTopOf="@+id/ivWifiLevel"
+            app:srcCompat="@drawable/battery_level_green" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivAlarmPic"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/gray8"
+            android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.542"
-    />
-
-    <TextView
-            android:id="@+id/tvType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tool:text="dddd"
-            android:gravity="center"
-            app:layout_constraintStart_toEndOf="@+id/tvName"
+            app:layout_constraintHeight_default="percent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="60dp"
-    />
+            app:layout_constraintHeight_percent="0.918"
+            app:layout_constraintHorizontal_bias="0.969"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.517"
+            app:srcCompat="@drawable/default_alarm_photo" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8.7dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_share" />
 
-
+    <!--    <ProgressBar-->
+    <!--            android:id="@+id/pbLoadPhoto"-->
+    <!--            style="?android:attr/progressBarStyle"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="@+id/ivAlarmPic"-->
+    <!--            app:layout_constraintTop_toTopOf="@+id/ivAlarmPic" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
