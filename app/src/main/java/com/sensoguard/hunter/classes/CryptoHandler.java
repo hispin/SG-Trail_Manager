@@ -18,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoHandler {
 
-    String SecretKey = "DetectorKey123456789012345678901";
+    String SecretKey = "Camera12Key123456789012345678901";//"DetectorKey123456789012345678901";
     String IV = "DetectorIv123456";
 
     private static CryptoHandler instance = null;

@@ -26,7 +26,7 @@
 
     <!--style of tab layout-->
     <style name="Base.Widget.Design.TabLayout" parent="android:Widget" >
-        <item name="tabBackground">@color/turquoise</item>
+        <item name="tabBackground">@color/medium_green</item>
         <item name="tabTextAppearance">@style/TabLayoutTextAppearance</item>
     </style>
 
@@ -57,7 +57,16 @@
         <item name="android:layout_marginStart">64.7dp</item>
     </style>
 
+    <style name="DateTimeDialog" parent="Theme.AppCompat.Dialog">
+        <!--        <item name="android:colorBackground">@color/white</item>-->
+        <!--        <item name="android:textColorPrimary">#000000</item>-->
+        <!--        <item name="android:headerBackground">#000000</item>-->
+        <!--        <item name="android:textColorSecondary">#000000</item>-->
+        <!--        <item name="android:button">@color/white</item>-->
+        <!--        <item name="android:background">@color/white</item>-->
+        <!--        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>-->
 
+    </style>
 
 
 </resources>

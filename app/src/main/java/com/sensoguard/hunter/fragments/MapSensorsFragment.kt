@@ -74,7 +74,7 @@ private const val ARG_PARAM2 = "param2"
 class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
 
     override fun saveCamera(detector: Camera) {}
-
+    //override fun openLargePictureDialog(imgPath: String) { }
 
     private var dialog: Dialog?=null
     var sensorsDialogAdapter: CameraDialogAdapter? = null
@@ -671,7 +671,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
                 val height = (resources.displayMetrics.heightPixels*0.75).toInt()
                 dialog?.window?.setLayout(width, height)
 
-                val rvDetector = dialog?.findViewById<RecyclerView>(R.id.rvDetector)
+       val rvDetector = dialog?.findViewById<RecyclerView>(R.id.rvSystemCameras)
                 val btnSaveLocateSensor= dialog?.findViewById<Button>(R.id.btnSaveLocateSensor)
                 btnSaveLocateSensor?.setOnClickListener{
                     CameraDialogAdapter.selectedSensor

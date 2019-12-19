@@ -48,7 +48,8 @@ class CameraDialogAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
-        val view= LayoutInflater.from(parent.context).inflate(R.layout.sensor_dialog_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_sensor_dialog, parent, false)
 
 
 

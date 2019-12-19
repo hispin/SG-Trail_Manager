@@ -25,7 +25,7 @@
     <string name="csv_alarm_type_title">Alarm Type</string>
     <string name="csv_latitude_title">latitude</string>
     <string name="csv_longitude_title">longitude</string>
-    <string name="sensor_table_title">Sensors Table</string>
+    <string name="camera_title">Cameras</string>
     <string name="map_title">Map</string>
     <string name="config_title">Configuration</string>
     <string name="alarm_log_title">Alarm log</string>
@@ -87,6 +87,14 @@
     <string name="grid_view">grid view</string>
     <string name="list_view">list view</string>
     <string name="alarm_display">alarm display</string>
+    <string name="systems_filter">system</string>
+    <string name="date_time">date and time</string>
+    <string name="filter_by">filter by:</string>
+    <string name="apply">apply</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
+    <string name="ok">OK</string>
+    <string name="date_older">End date may not be earlier than start date</string>
 
     <string-array name="camera_type">
         <item>MG-983G</item>

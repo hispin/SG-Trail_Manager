@@ -65,7 +65,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     var tvShowLogs:TextView?=null
     var bs: StringBuilder?=null
     private var floatAddSensor: FloatingActionButton?=null
-    private var sensors: ArrayList<Camera>? = null
+    private var cameras: ArrayList<Camera>? = null
     private var rvSensor: RecyclerView?=null
     private var sensorsAdapter: CamerasAdapter? = null
     private val listenerPref: SharedPreferences.OnSharedPreferenceChangeListener? = null
@@ -93,7 +93,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
 
     private fun initSensorsAdapter() {
 
-        sensors= ArrayList()
+        cameras = ArrayList()
 
         //sensors?.add(Camera(resources.getString(R.string.id_title),resources.getString(R.string.name_title)))
 
@@ -102,7 +102,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         rvSensor?.addItemDecoration(itemDecorator)
 
         sensorsAdapter=activity?.let { adapter ->
-            sensors?.let { arr ->
+            cameras?.let { arr ->
                 CamerasAdapter(arr, adapter, this) { _camera ->
                     selectedCamera = _camera
                     selectedCamera?.let { openExtraCameraSettings(it) }
@@ -136,7 +136,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
 
                     //remove extra sensors
                     if(numSensorsRequest!=null) {
-                        val items=sensors?.listIterator()
+                        val items = cameras?.listIterator()
                         while (items != null && items.hasNext()) {
                             val item = items.next()
 
@@ -151,7 +151,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
                         }
                     }
 
-                    sensors?.let { sen -> storeSensorsToLocally(sen, activity!!) }
+                    cameras?.let { sen -> storeSensorsToLocally(sen, activity!!) }
                     dialog.dismiss()
                 }
 
@@ -308,6 +308,8 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         detectorsArr?.let { activity?.let { context -> storeSensorsToLocally(it, context) } }
     }
 
+    //override fun openLargePictureDialog(imgPath: String) { }
+
     //ic_edit name (maybe come from adapter)
     override fun saveNameSensor(detector: Camera) {
         saveNameDetector(detector)
@@ -320,7 +322,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sensors, container, false)
         tvShowLogs = view.findViewById(R.id.tvShowLogs)
-        rvSensor = view.findViewById(R.id.rvDetector)
+        rvSensor = view.findViewById(R.id.rvSystemCameras)
 //        floatAddSensor = view.findViewById(R.id.floatAddSensor)
 //        floatAddSensor?.setOnClickListener {
 //
@@ -345,20 +347,22 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     }
 
     private fun refreshSensorsFromPref(){
-        sensors= ArrayList()
+        cameras = ArrayList()
         //sensors?.add(Camera(resources.getString(R.string.id_title),resources.getString(R.string.name_title)))
         val detectorListStr=getStringInPreference(activity,DETECTORS_LIST_KEY_PREF, ERROR_RESP)
 
         if(detectorListStr.equals(ERROR_RESP)){
-            //ArrayList()
+            cameras?.add(Camera("1"))
+            cameras?.let { storeSensorsToLocally(it, activity!!) }
         }else {
 
             detectorListStr?.let {
                 val temp=convertJsonToSensorList(it)
-                temp?.let { tmp -> sensors?.addAll(tmp) } }
+                temp?.let { tmp -> cameras?.addAll(tmp) }
+            }
         }
 
-        sensorsAdapter?.setDetects(sensors)
+        sensorsAdapter?.setDetects(cameras)
         sensorsAdapter?.notifyDataSetChanged()
     }
 
@@ -398,7 +402,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     //open fragment dialog to add extra settings
     private fun openExtraCameraSettings(camera: Camera) {
 
-        val fr = CameraExtraSettingsFragment()
+        val fr = CameraExtraSettingsDialogFragment()
 
         //deliver selected camera to continue add data
         val cameraStr = convertToGson(camera)

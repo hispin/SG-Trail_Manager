@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.MonthDisplayHelper
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,8 @@ import com.sensoguard.hunter.classes.MyExceptionHandler
 import com.sensoguard.hunter.global.*
 import com.sensoguard.hunter.services.ServiceRepeat
 import io.fabric.sdk.android.Fabric
+
+//import net.danlew.android.joda.JodaTimeAndroid
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,11 +48,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //var year=Calendar.getInstance().get(Calendar.YEAR)
+        //JodaTimeAndroid.init(this)
+
+        var d: MonthDisplayHelper
 
         configureGeneralCatch()
         Fabric.with(this, Crashlytics())
 
         super.onCreate(savedInstanceState)
+
+
 
         configurationLanguage()
 

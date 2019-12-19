@@ -38,13 +38,13 @@
 
         <!--<ScrollView android:layout_width="wrap_content" android:layout_height="wrap_content">-->
         <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvDetector"
+                android:id="@+id/rvSystemCameras"
         android:name="com.app.simplehostdev.viewLayer.fragments.NewReservationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:context=".fragment.MainUartFragment"
-        tools:listitem="@layout/sensor_item"
+                tools:listitem="@layout/item_sensor"
         android:scrollbars="vertical"
         android:clipToPadding="false"
         />

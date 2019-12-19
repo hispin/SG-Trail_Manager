@@ -37,7 +37,7 @@ class CamerasAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
-        val view= LayoutInflater.from(parent.context).inflate(R.layout.sensor_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_sensor, parent, false)
 
 
         return ViewHolder(view, itemClick)

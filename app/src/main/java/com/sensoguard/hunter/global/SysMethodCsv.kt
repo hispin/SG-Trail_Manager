@@ -52,7 +52,7 @@ private fun alarmToCsvString(alarm: Alarm?, context: Context): String {
 
     //val mySeparator=";"
     val sb=StringBuilder()
-    sb.append(alarm?.currentDate)
+    sb.append(alarm?.getCurrentDate())
     sb.append(mySeparator)
     sb.append(alarm?.name)
     sb.append(mySeparator)

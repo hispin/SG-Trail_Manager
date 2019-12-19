@@ -6,7 +6,7 @@
     <string name="csv">csv</string>
     <string name="dialog_new_sensor_title">הגדר חיישנים</string>
     <string name="invalid_mum_sensors">מס\' חיישנים לא תקין</string>
-    <string name="name_title">שם חיישן</string>
+    <string name="name_title">שם המערכת</string>
     <string name="id_title">מספר</string>
     <string name="map_location_title">מיקום</string>
     <string name="status_title">מצב</string>
@@ -23,10 +23,10 @@
     <string name="csv_alarm_type_title">סוג אירוע</string>
     <string name="csv_latitude_title">latitude</string>
     <string name="csv_longitude_title">longitude</string>
-    <string name="sensor_table_title">חיישנים</string>
+    <string name="camera_title">מערכות ומצלמות</string>
     <string name="map_title">מפה</string>
-    <string name="config_title">הגדרות</string>
-    <string name="alarm_log_title">יומן אירועים</string>
+    <string name="config_title">הגדרות כללי</string>
+    <string name="alarm_log_title">אירועים</string>
     <string name="not_located">לא הוגדר</string>
     <string name="located">מוגדר</string>
     <string name="date_title">תאריך</string>
@@ -85,6 +85,14 @@
     <string name="grid_view">תצוגת רשת</string>
     <string name="list_view">תצוגת רשימה</string>
     <string name="alarm_display">תצוגת אירועים</string>
+    <string name="systems_filter">מערכות</string>
+    <string name="date_time">תאריך ושעה</string>
+    <string name="filter_by">סינון לפי:</string>
+    <string name="apply">הפעל</string>
+    <string name="from">מ-</string>
+    <string name="to">ל-</string>
+    <string name="ok">אישור</string>
+    <string name="date_older">לא ניתן שתאריך הסיום יהיה מוקדם מתאריך ההתחלה</string>
 
     <string-array name="camera_type">
         <item>MG-983G</item>

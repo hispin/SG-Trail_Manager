@@ -12,7 +12,7 @@ class Alarm {
     var id: String? = null
     var name: String? = null
     var type: String? = null
-    var currentDate: String? = null
+    private var currentDate: String? = null
     var isArmed: Boolean? = null
     var timeInMillis: Long? = null
 
@@ -78,6 +78,10 @@ class Alarm {
         if (wContext.get() != null) {
             alarms?.let { storeAlarmsToLocally(it, wContext.get()!!) }
         }
+    }
+
+    fun getCurrentDate(): String {
+        return currentDate.toString()
     }
 
     //add active alarm to history

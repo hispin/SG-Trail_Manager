@@ -21,7 +21,7 @@ import com.sensoguard.hunter.classes.ImageStorageManager
 import com.sensoguard.hunter.global.*
 
 
-class CameraExtraSettingsFragment : DialogFragment() {
+class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     //set as global in order to show it as big picture
     private var bitmap: Bitmap? = null
@@ -46,7 +46,7 @@ class CameraExtraSettingsFragment : DialogFragment() {
     ): View? {
 
         val view = inflater.inflate(
-            com.sensoguard.hunter.R.layout.fragment_camera_extra_settings,
+            R.layout.fragment_camera_extra_settings,
             container,
             false
         )
@@ -176,7 +176,7 @@ class CameraExtraSettingsFragment : DialogFragment() {
             val settingsDialog = Dialog(context!!)
             if (settingsDialog.window != null) {
                 settingsDialog.window!!.requestFeature(FEATURE_NO_TITLE)
-                val view = layoutInflater.inflate(R.layout.show_big_picture, null)
+                val view = layoutInflater.inflate(R.layout.fragment_large_picture_video, null)
                 settingsDialog.setContentView(view)
                 val ibClose = view.findViewById<AppCompatImageButton>(R.id.ibClose)
                 ibClose.setOnClickListener {

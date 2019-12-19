@@ -16,7 +16,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
-import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,15 +27,14 @@ import com.google.android.material.tabs.TabLayout
 import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.GeneralItemMenu
 import com.sensoguard.hunter.classes.LanguageManager
+import com.sensoguard.hunter.fragments.AlarmLogFragment
 import com.sensoguard.hunter.fragments.ConfigurationFragment
-import com.sensoguard.hunter.fragments.HistoryWarningFragment
 import com.sensoguard.hunter.fragments.MapSensorsFragment
 import com.sensoguard.hunter.fragments.SensorsFragment
 import com.sensoguard.hunter.global.*
 import com.sensoguard.hunter.interfaces.OnFragmentListener
-import com.sensoguard.hunter.services.ServiceConnectSensor
 import com.sensoguard.hunter.services.ServiceHandleAlarms
-import kotlinx.android.synthetic.main.my_screens_activity.*
+import kotlinx.android.synthetic.main.activity_my_screens.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -51,7 +49,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     private lateinit var collectionPagerAdapter: CollectionPagerAdapter
     private lateinit var viewPager: ViewPager
     private var currentItemTopMenu = 0
-    private var togChangeStatus: ToggleButton? = null
+    //private var togChangeStatus: ToggleButton? = null
 
 
     val TAG = "MyScreensActivity"
@@ -64,7 +62,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         //configurationLanguage()
 
-        setContentView(R.layout.my_screens_activity)
+        setContentView(R.layout.activity_my_screens)
 
         //store locally default values of configuration
         setConfigurationDefault()
@@ -155,7 +153,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     }
 
     private fun editActionBar(state: Boolean) {
-        togChangeStatus?.isChecked = state
+        //togChangeStatus?.isChecked = state
     }
 
     //TODO : the toggle will updated by the status changing
@@ -164,22 +162,22 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)//supportActionBar
         setSupportActionBar(toolbar)
 
-        togChangeStatus = findViewById<ToggleButton>(
-            R.id.togChangeStatus
-        )
-        togChangeStatus?.isChecked = false
-
-        togChangeStatus?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(Intent(this, ServiceConnectSensor::class.java))
-                } else {
-                    startService(Intent(this, ServiceConnectSensor::class.java))
-                }
-            } else {
-                sendBroadcast(Intent(STOP_READ_DATA_KEY))
-            }
-        }
+//        togChangeStatus = findViewById<ToggleButton>(
+//            R.id.togChangeStatus
+//        )
+//        togChangeStatus?.isChecked = false
+//
+//        togChangeStatus?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            if (isChecked) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    startForegroundService(Intent(this, ServiceConnectSensor::class.java))
+//                } else {
+//                    startService(Intent(this, ServiceConnectSensor::class.java))
+//                }
+//            } else {
+//                sendBroadcast(Intent(STOP_READ_DATA_KEY))
+//            }
+//        }
     }
 
 
@@ -323,7 +321,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
                     }
                 }
                 3 -> {
-                    fragment = HistoryWarningFragment()
+                    fragment = AlarmLogFragment()
                     fragment.arguments = Bundle().apply {
                         // Our object is just an integer :-P
                         putInt("ARG_OBJECT", position + 1)
@@ -339,7 +337,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
             //set the title text of top menu
             return when (position) {
-                0 -> resources.getString(R.string.sensor_table_title)
+                0 -> resources.getString(R.string.camera_title)
                 1 -> resources.getString(R.string.map_title)
                 2 -> resources.getString(R.string.config_title)
                 3 -> resources.getString(R.string.alarm_log_title)

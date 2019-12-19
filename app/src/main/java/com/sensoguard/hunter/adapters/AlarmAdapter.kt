@@ -1,17 +1,22 @@
 package com.sensoguard.hunter.adapters
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.Alarm
 import com.sensoguard.hunter.global.getStrDateTimeByMilliSeconds
-import com.sensoguard.hunter.interfaces.OnAdapterListener
-import com.squareup.picasso.Picasso
 import java.io.File
 import java.util.*
 
@@ -21,8 +26,7 @@ class AlarmAdapter(
     val context: Context,
     val res: Int,
     val isGrid: Boolean,
-    val onAdapterListener: OnAdapterListener,
-    var itemClick: (Alarm) -> Unit
+    var itemClick: (Alarm, Int) -> Unit
 ) : RecyclerView.Adapter<AlarmAdapter.ViewHolder>() {
 
 
@@ -50,7 +54,10 @@ class AlarmAdapter(
         //TODO how to define with this
     }
 
-    inner class ViewHolder(private val _itemView: View, private val itemClick: (Alarm) -> Unit) :
+    inner class ViewHolder(
+        private val _itemView: View,
+        private val itemClick: (Alarm, Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(_itemView) {
         private var tvName:TextView?=null
         private var tvDate:TextView? = null
@@ -58,14 +65,16 @@ class AlarmAdapter(
         //TODO press twice
         private var tvType: TextView? = null
         private var ivAlarmPic: AppCompatImageView? = null
-        //private var pbLoadPhoto:ProgressBar?=null
+        private var ivShare: AppCompatImageView? = null
+        private var ivIconVideo: AppCompatImageView? = null
+        private var pbLoadPhoto: ProgressBar? = null
 
 
-        init {
-            itemView.setOnClickListener {
-                itemClick.invoke(alarms[adapterPosition])
-            }
-        }
+//        init {
+//            itemView.setOnClickListener {
+//                itemClick.invoke(alarms[adapterPosition])
+//            }
+//        }
 
 
         fun bindReservation(alarm: Alarm) {
@@ -75,7 +84,24 @@ class AlarmAdapter(
             tvType = _itemView.findViewById(R.id.tvType)
             tvTime = _itemView.findViewById(R.id.tvTime)
             ivAlarmPic = _itemView.findViewById(R.id.ivAlarmPic)
-            //pbLoadPhoto = _itemView.findViewById(R.id.pbLoadPhoto)
+            ivAlarmPic?.setOnClickListener {
+                itemClick.invoke(alarm, 1)
+                //alarm.imgsPath?.let { it1 -> onAdapterListener.openLargePictureDialog(it1) }
+            }
+            ivShare = _itemView.findViewById(R.id.ivShare)
+            ivShare?.setOnClickListener {
+                itemClick.invoke(alarm, 2)
+            }
+            ivIconVideo = _itemView.findViewById(R.id.ivIconVideo)
+
+
+
+            pbLoadPhoto = _itemView.findViewById(R.id.pbLoadPhoto)
+            if (alarm.isLoadPhoto) {
+                pbLoadPhoto?.visibility = View.VISIBLE
+            } else {
+                pbLoadPhoto?.visibility = View.GONE
+            }
 
 
 //            if(alarm.isArmed!=null
@@ -126,15 +152,43 @@ class AlarmAdapter(
                 //ivAlarmPic?.setImageBitmap(myBitmap)
 
                 //imgFile.absolutePath?.let { Picasso.get().load(File(it)).resize(400, 240).centerCrop().into(ivAlarmPic) }
-                Picasso.get().load(File(imgFile.absolutePath)).into(ivAlarmPic)
+                //Picasso.get().load(File(imgFile.absolutePath)).into(ivAlarmPic)
+                ivAlarmPic?.let {
+                    Glide.with(context).load(File(imgFile.absolutePath))
+                        .listener(object : RequestListener<Drawable> {
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: com.bumptech.glide.load.DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                //if the the image is video then show the video icon
+                                if (imgFile.absolutePath.endsWith("mp4")) {
+                                    ivIconVideo?.visibility = View.VISIBLE
+                                } else {
+                                    ivIconVideo?.visibility = View.GONE
+                                }
+
+                                return false
+                            }
+
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Toast.makeText(context, "error loading image", Toast.LENGTH_LONG)
+                                    .show()
+                                return false
+                            }
+
+                        }).into(it)
+
+                }
             }
-
-//            if(alarm.isLoadPhoto){
-//                pbLoadPhoto?.visibility= View.VISIBLE
-//            }else{
-//                pbLoadPhoto?.visibility= View.GONE
-//            }
-
         }
     }
 }

@@ -1,9 +1,19 @@
 package com.sensoguard.hunter.classes;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
+import com.sensoguard.hunter.R;
+import com.sensoguard.hunter.activities.InitAppActivity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,6 +45,8 @@ import javax.mail.search.ReceivedDateTerm;
 
 import static com.sensoguard.hunter.global.ConstsKt.ADD_ATTACHED_PHOTOS_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.ALARM_OTHER;
+import static com.sensoguard.hunter.global.ConstsKt.CHANNEL_ID;
+import static com.sensoguard.hunter.global.ConstsKt.CHANNEL_NAME;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_ID_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_NAME_KEY;
@@ -184,8 +197,15 @@ public class EmailsManage {
                                 }
                             }
                             sendLiveAlarm(camera, context);
+                            // Send notification and log the transition details.
+                            //createNotificationChannel(context);
+                            sendNotif("new alarm detected", context);
+
+
                             //get attached picture if exist
                             List<String> attachments = getAttachedFiles(unReadLastDayMsg);
+
+                            Log.d("checkVideo", attachments.get(0));
 
                             //in version 1 support only one attached picture
                             //do not wait to save photo ,to make the process of showing alarm more faster
@@ -229,13 +249,11 @@ public class EmailsManage {
 
                 String[] dateArr = date.split("/");
                 if (dateArr.length > 1) {
-                    String day = dateArr[0];
-                    String month = dateArr[1];
+                    String day = dateArr[1];
+                    String month = dateArr[0];
 
                     Calendar myCalendar = Calendar.getInstance();
                     int year = myCalendar.get(Calendar.YEAR);
-                    Log.d("testLogAlarm", "year=" + year);
-
                     int monthVal = Integer.valueOf(month);
                     int dayVal = Integer.valueOf(day);
                     int hourVal = Integer.valueOf(hour);
@@ -335,100 +353,56 @@ public class EmailsManage {
     }
 
 
-    //read unread emails of last day
-//    public void readeLastDayUnreadEmails(Context context){
-//        Properties props = new Properties();
-//        //IMAPS protocol
-//        props.setProperty("mail.store.protocol", "imap");
-//        //Set host address
-//        props.setProperty("mail.imap.host", "imap.gmail.com");
-//        //Set specified port
-//        props.setProperty("mail.imap.port", "993");
-//        //Using SSL
-//        props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-//        props.setProperty("mail.imap.socketFactory.fallback", "false");
-//
-//        //Setting IMAP session
-//        Session imapSession = Session.getInstance(props);
-//
-//        Store store = null;
-//        try {
-//            store = imapSession.getStore("imaps");
-//        } catch (NoSuchProviderException e) {
-//            e.printStackTrace();
+    private void sendNotif(String content, Context context) {
+
+        if (context == null)
+            return;
+        WeakReference<Context> wContext = new WeakReference<Context>(context);
+
+        createNotificationChannel(wContext.get());
+//        if(mNotificationId<28){
+//            mNotificationId++
+//        }else{
+//            mNotificationId=23
 //        }
-//        //Connect to server by sending username and password.
-//        //Example emailServer = imap.gmail.com, username = abc, password = abc
-//        try {
-//            if (store != null) {
-//                store.connect("imap.gmail.com", 993, "hag.swead", "ringo1234");
-//                Log.d("testConnectMail","connect complete");
-//            }
-//        }catch (MessagingException e) {
-//            e.printStackTrace();
-//            Log.d("testConnectMail","exception connect "+e.getMessage());
-//            return;
-//        }
-//
-//        //Get all mails in Inbox Forlder
-//        Folder inbox = null;
-//        try {
-//            if (store != null) {
-//                inbox = store.getFolder("Inbox");
-//            }
-//        } catch (MessagingException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            if (inbox != null) {
-//                inbox.open(Folder.READ_ONLY);
-//            }
-//        } catch (MessagingException e) {
-//            e.printStackTrace();
-//        }
-//        //Return result to array of message
-//        try {
-//            if (inbox != null) {
-//
-//
-//                Calendar cal = Calendar.getInstance();
-//                cal.roll(Calendar.DATE, false);
-//                Message[] lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-//
-//                Flags seen = new Flags(Flags.Flag.SEEN);
-//                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-//                Message[] unReadLastDayMsgs=inbox.search(unseenFlagTerm,lastDayMsgs);
-//
-//                for (Message unReadLastDayMsg : unReadLastDayMsgs) {
-//                    //search[i].
-//
-//                    if (unReadLastDayMsg.getSubject().contains("MG984G")) {
-//                        Log.d("testSubject", unReadLastDayMsg.getSubject());
-//
-//                        List<File> attachments = getAttachedFiles(unReadLastDayMsg);
-//                        Log.d("", "");
-//                    }
-//                }
-//
-////                int result = inbox.getMessageCount();
-////                //String f=result.getSubject();
-//                Log.d("","");
-//
-////                Message result = inbox.getMessage(1);
-////                String f=result.getSubject();
-////                Log.d("","");
-//            }
-//
-//        } catch (MessagingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            if (store != null) {
-//                store.close();
-//            }
-//        }catch (MessagingException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+        long oneTimeID = SystemClock.uptimeMillis();
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("New alarm detected")
+                .setContentText(content);
+        NotificationManager mNotificationManager = (NotificationManager) wContext.get().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //Enable press on notification to open app
+        Intent notificationIntent = new Intent(context, InitAppActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        mBuilder.setContentIntent(contentIntent);
+
+        if (mNotificationManager != null) {
+            mNotificationManager.notify((int) oneTimeID, mBuilder.build());
+        }
+    }
+
+    //    Notification channels enable us app developers to group our notifications into groups—channels—with
+//    the user having the ability to modify notification settings for the entire channel at once. For example,
+//    for each channel, users can completely block all notifications, override the importance level, or allow a
+//    notification badge to be shown. This new feature helps in greatly improving the user experience of an app
+    private void createNotificationChannel(Context context) {
+        if (context == null)
+            return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String name = CHANNEL_NAME;
+            String descriptionText = "new alarm detected";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(descriptionText);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
 }

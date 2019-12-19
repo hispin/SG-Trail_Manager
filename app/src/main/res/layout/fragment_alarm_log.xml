@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.HistoryWarningFragment">
+        tools:context=".fragments.AlarmLogFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,12 +12,61 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.086"
+            app:layout_constraintTop_toTopOf="parent"
 
             >
 
+        <Button
+                android:id="@+id/btnFilterDateTime"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="1.5dp"
+                android:background="@color/gray11"
+                android:text="@string/date_time"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnFilterSystem"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.706"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.264" />
+
+        <Button
+                android:id="@+id/btnFilterSystem"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="1.5dp"
+                android:background="@color/gray11"
+                android:text="@string/systems_filter"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.706"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnFilterDateTime"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.264" />
+
+        <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9.3dp"
+                android:layout_marginTop="9.3dp"
+                android:fontFamily="@font/arialmt"
+                android:text="@string/filter_by"
+                android:textColor="@color/gray9"
+                android:textSize="14.7sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -55,8 +104,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:context=".fragment.HistoryWarningFragment"
-                tools:listitem="@layout/alarm_item" />
+                android:layoutDirection="ltr"
+                tools:listitem="@layout/item_alarm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+            android:id="@+id/flSortBySystemCamera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

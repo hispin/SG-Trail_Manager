@@ -90,6 +90,7 @@
             app:layout_constraintStart_toEndOf="@+id/tvNameTitle"
             app:layout_constraintTop_toTopOf="@+id/tvNameTitle" />
 
+
     <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivWifiLevel"
             android:layout_width="wrap_content"
@@ -110,12 +111,10 @@
             app:layout_constraintTop_toTopOf="@+id/ivWifiLevel"
             app:srcCompat="@drawable/battery_level_green" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivAlarmPic"
+    <FrameLayout
+            android:id="@+id/flAlarmPic"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/gray8"
-            android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintTop_toTopOf="parent"
@@ -124,8 +123,34 @@
             app:layout_constraintHorizontal_bias="0.969"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.517"
+            app:layout_constraintWidth_percent="0.517">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivAlarmPic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray8"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerInside"
             app:srcCompat="@drawable/default_alarm_photo" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivIconVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_video" />
+
+        <ProgressBar
+                android:id="@+id/pbLoadPhoto"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/white" />
+    </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivShare"
@@ -136,16 +161,10 @@
             android:layout_marginEnd="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_share" />
-
-    <!--    <ProgressBar-->
-    <!--            android:id="@+id/pbLoadPhoto"-->
-    <!--            style="?android:attr/progressBarStyle"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="@+id/ivAlarmPic"-->
-    <!--            app:layout_constraintTop_toTopOf="@+id/ivAlarmPic" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

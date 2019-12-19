@@ -43,6 +43,14 @@ const val  SHARED_PREF_FILE_NAME = "SensoGuardPref"
 const val  DETECTORS_LIST_KEY_PREF = "SensorsList"
 const val  ALARM_LIST_KEY_PREF = "AlarmsList"
 const val CAMERA_KEY = "cameraKey"
+const val SORT_TYPE_KEY = "sortType"
+const val SORT_BY_SYSTEM_KEY = 1
+const val SORT_BY_DATETIME_KEY = 2
+const val ACTION_TYPE_KEY = "actionType"
+const val ACTION_PICTURE_KEY = 1
+const val ACTION_VIDEO_KEY = 2
+
+const val IMAGE_PATH_KEY = "imagePathKey"
 
 const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0
 const val PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
@@ -60,6 +68,11 @@ const val ALARM_OTHER = "other"
 
 const val TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE = 1
 const val TAKE_PICTURE_REQUEST_CODE = 2
+const val SORT_BY_SYSTEM_REQUEST_CODE = 3
+const val SORT_PICK_DATE_TIME_REQUEST_CODE = 4
+
+const val CHANNEL_NAME = "newAlarmDetected"
+const val CHANNEL_ID = "1.0"
 
 
 

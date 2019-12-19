@@ -21,6 +21,7 @@ class Camera {
     var isUseSSL: Boolean = false
     var lastVisitDate: String? = null
     var lastVisitPicturePath: String? = null
+    var isSorted: Boolean = false
 
 
     //private var type:Int?=null

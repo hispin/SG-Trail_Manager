@@ -362,7 +362,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
         if (LanguageManager.languagesItems != null && LanguageManager.languagesItems.size > 0) {
             generalItemMenuAdapter = GeneralItemMenuAdapter(
                 activity,
-                com.sensoguard.hunter.R.layout.row_general_item_menu,
+                com.sensoguard.hunter.R.layout.item_general_menu,
                 createLanguagesItemsDeliver(LanguageManager.languagesItems),
                 this
             )
