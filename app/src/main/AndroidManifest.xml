@@ -88,6 +88,7 @@
                 android:name=".services.ServiceRepeat"
                 android:enabled="true"
                 android:exported="true" />
+        <service android:name=".services.ServiceEmailValidation" />
 
         <receiver android:name=".classes.BootCompleteReceiver">
             <intent-filter>

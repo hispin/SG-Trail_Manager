@@ -95,6 +95,8 @@
     <string name="to">to</string>
     <string name="ok">OK</string>
     <string name="date_older">End date may not be earlier than start date</string>
+    <string name="validation_error">validation error</string>
+    <string name="validation_successfully">The verification was successful</string>
 
     <string-array name="camera_type">
         <item>MG-983G</item>

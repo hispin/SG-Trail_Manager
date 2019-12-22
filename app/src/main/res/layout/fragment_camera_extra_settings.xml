@@ -6,6 +6,7 @@
         android:layout_height="match_parent"
         android:background="@color/blackCapacity80">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/conSubLayer"
             android:layout_width="0dp"
@@ -21,6 +22,18 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.955">
 
+        <ProgressBar
+                android:id="@+id/pbValidationEmail"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:indeterminateTint="@color/medium_green"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"

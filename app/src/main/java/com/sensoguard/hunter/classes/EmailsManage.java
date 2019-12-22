@@ -51,6 +51,8 @@ import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_ID_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_NAME_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_TYPE_KEY;
+import static com.sensoguard.hunter.global.ConstsKt.ERROR_RESULT_VALIDATION_EMAIL_ACTION;
+import static com.sensoguard.hunter.global.ConstsKt.ERROR_VALIDATION_EMAIL_MSG_KEY;
 
 public class EmailsManage {
     private static final EmailsManage ourInstance = new EmailsManage();
@@ -382,6 +384,80 @@ public class EmailsManage {
             mNotificationManager.notify((int) oneTimeID, mBuilder.build());
         }
     }
+
+
+    //validation email by trying to connection
+    public boolean emailValidation(Camera camera, Context context) {
+        Properties props = new Properties();
+        String protocol = null;
+
+        //IMAPS protocol
+        if (camera.getEmailServer() != null) {
+            protocol = camera.getEmailServer().substring(0, camera.getEmailServer().indexOf("."));
+            props.setProperty("mail.store.protocol", protocol);
+        } else {
+            return false;
+        }
+
+        //Set host address
+        props.setProperty("mail.imap.host", camera.getEmailServer());
+
+        //Set specified port
+        if (camera.getEmailPort() != null) {
+            props.setProperty("mail.imap.port", camera.getEmailPort());
+        }
+
+        //Using SSL
+        if (camera.isUseSSL()) {
+            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
+
+        props.setProperty("mail.imap.socketFactory.fallback", "false");
+
+
+        //Setting IMAP session
+        Session imapSession = Session.getInstance(props);
+
+        Store store = null;
+        try {
+            store = imapSession.getStore(protocol);
+        } catch (NoSuchProviderException e) {
+            sendErrorMsg(e.getMessage(), context);
+            e.printStackTrace();
+        }
+
+
+        //Connect to server by sending username and password.
+        try {
+            if (store != null) {
+                int port = -1;
+                try {
+                    port = Integer.valueOf(Objects.requireNonNull(camera.getEmailPort()));
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                    sendErrorMsg(ex.getMessage(), context);
+                    return false;
+                }
+
+                store.connect(camera.getEmailServer(), port, camera.getEmailAddress(), camera.getPassword());
+
+                return store.isConnected();
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            sendErrorMsg(e.getMessage(), context);
+            return false;
+        }
+        return false;
+    }
+
+    //send error to extra settings screen
+    private void sendErrorMsg(String message, Context context) {
+        Intent inn = new Intent(ERROR_RESULT_VALIDATION_EMAIL_ACTION);
+        inn.putExtra(ERROR_VALIDATION_EMAIL_MSG_KEY, message);
+        context.sendBroadcast(inn);
+    }
+
 
     //    Notification channels enable us app developers to group our notifications into groups—channels—with
 //    the user having the ability to modify notification settings for the entire channel at once. For example,

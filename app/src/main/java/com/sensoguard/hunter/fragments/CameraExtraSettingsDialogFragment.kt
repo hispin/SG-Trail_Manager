@@ -2,7 +2,10 @@ package com.sensoguard.hunter.fragments
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,14 +14,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import br.com.sapereaude.maskedEditText.MaskedEditText
 import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.ImageStorageManager
 import com.sensoguard.hunter.global.*
+import com.sensoguard.hunter.services.ServiceEmailValidation
 
 
 class CameraExtraSettingsDialogFragment : DialogFragment() {
@@ -39,6 +46,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private var etPassword: AppCompatEditText? = null
     private var etLastVisit: MaskedEditText? = null
     private var spCameraType: AppCompatSpinner? = null
+    private var pbValidationEmail: ProgressBar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,9 +78,9 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         btnSave = view?.findViewById(R.id.btnSave)
         btnSave?.setOnClickListener {
             populateMyCamera()
-            //myCamera?.lastVisitDate=etLastVisit?.text.toString())
-            sendResult()
-            //(view.parent as ViewGroup).removeView(view)
+            pbValidationEmail?.visibility = View.VISIBLE
+            startServiceEmailValidation()
+            //sendResult()
         }
 
         btnCancel = view?.findViewById(R.id.btnCancel)
@@ -101,6 +109,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         etPassword = view?.findViewById(R.id.etPassword)
         etLastVisit = view?.findViewById(R.id.etLastVisit)
         spCameraType = view?.findViewById(R.id.spCameraType)
+        pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
 
         etEmailAddress?.setOnFocusChangeListener { view, hasFocus ->
 
@@ -155,7 +164,6 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         myCamera?.lastVisitDate = etLastVisit?.text.toString()
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
-        saveLastVisitPicture()
     }
 
     private fun saveLastVisitPicture() {
@@ -208,7 +216,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             return
         }
         val intent = Intent()
-        var cameraStr = myCamera?.let { convertToGson(it) }
+        val cameraStr = myCamera?.let { convertToGson(it) }
         cameraStr?.let {
             val bdl = Bundle()
             bdl.putString(CAMERA_KEY, cameraStr)
@@ -223,6 +231,64 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             if (resultCode == Activity.RESULT_OK) run {
                 bitmap = intent!!.extras!!.get("data") as Bitmap
                 ibShowPicture?.setImageBitmap(bitmap)
+            }
+        }
+
+    }
+
+    //start email validation
+    private fun startServiceEmailValidation() {
+
+        val serviceIntent = Intent(this.context, ServiceEmailValidation::class.java)
+
+        //val intent = Intent()
+        val cameraStr = myCamera?.let { convertToGson(it) }
+        cameraStr?.let {
+            val bdl = Bundle()
+            bdl.putString(CAMERA_KEY, cameraStr)
+            serviceIntent.putExtras(bdl)
+        }
+
+
+        this.context?.let { ContextCompat.startForegroundService(it, serviceIntent) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.unregisterReceiver(reciever)
+    }
+
+    private fun setFilter() {
+        val filter = IntentFilter(RESULT_VALIDATION_EMAIL_ACTION)
+        filter.addAction(ERROR_RESULT_VALIDATION_EMAIL_ACTION)
+        activity?.registerReceiver(reciever, filter)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setFilter()
+    }
+
+    private val reciever = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == RESULT_VALIDATION_EMAIL_ACTION) {
+                pbValidationEmail?.visibility = View.GONE
+                val resultValidationEmail = intent.getBooleanExtra(VALIDATION_EMAIL_RESULT, false)
+                if (resultValidationEmail) {
+                    saveLastVisitPicture()
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.validation_successfully),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    sendResult()
+                }
+//                else{
+//                    Toast.makeText(activity,resources.getString(R.string.validation_error),Toast.LENGTH_LONG).show()
+//                }
+            } else if (intent?.action == ERROR_RESULT_VALIDATION_EMAIL_ACTION) {
+                val errorMsg = intent.getStringExtra(ERROR_VALIDATION_EMAIL_MSG_KEY)
+                errorMsg?.let { Toast.makeText(activity, it, Toast.LENGTH_LONG).show() }
             }
         }
 

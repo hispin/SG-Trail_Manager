@@ -5,9 +5,14 @@ const val  STOP_READ_DATA_KEY="stop.data.command"
 const val  HANDLE_READ_DATA_EXCEPTION="handle.read.data.exception"
 const val  GET_CURRENT_LOCATION_KEY ="handle.get.current.location"
 const val CURRENT_ITEM_TOP_MENU_KEY = "currentItemTopKey"
+
 const val  READ_DATA_KEY="handle.read.data"
 const val  CREATE_ALARM_KEY="handle.create.alarm"
 const val ADD_ATTACHED_PHOTOS_KEY = "add.attached.photos"
+const val RESULT_VALIDATION_EMAIL_ACTION = "result.validation.email"
+const val ERROR_RESULT_VALIDATION_EMAIL_ACTION = "error_result.validation.email"
+
+
 const val  RESET_MARKERS_KEY="resetMarkersKey"
 const val  IS_VIBRATE_WHEN_ALARM_KEY  ="isVibrateWhenAlarm"
 const val  MAP_SHOW_VIEW_TYPE_KEY  ="mapShowViewType"
@@ -18,6 +23,10 @@ const val  IS_NOTIFICATION_SOUND_KEY  ="isNotificationSoundKey"
 const val  ACTIVATION_CODE_KEY  ="activationCodeKey"
 const val  IMEI_KEY = "imeiKey"
 const val ALARM_DISPLAY_KEY = "alarmDisplay"
+const val ERROR_VALIDATION_EMAIL_MSG_KEY = "errorValidationEmailMessageKey"
+
+
+const val VALIDATION_EMAIL_RESULT = "validationEmailResult"
 
 const val CURRENT_LANG_KEY_PREF = "currentLangKey"
 const val CURRENT_LATITUDE_PREF = "currentLatitudePref"
