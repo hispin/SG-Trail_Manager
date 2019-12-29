@@ -39,6 +39,7 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.ReceivedDateTerm;
@@ -65,7 +66,7 @@ public class EmailsManage {
     }
 
     //read camera's unread emails of last day
-    public void readeLastDayUnreadEmails(Camera camera, Context context) {
+    public void readeLastDayUnreadEmails(Camera camera, Context context) throws IOException {
 
         Properties props = new Properties();
         String protocol = null;
@@ -148,7 +149,13 @@ public class EmailsManage {
 
                 Calendar cal = Calendar.getInstance();
                 cal.roll(Calendar.DATE, false);
-                Message[] lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+                Message[] lastDayMsgs = null;
+                try {
+                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    return;
+                }
 
                 Flags seen = new Flags(Flags.Flag.SEEN);
                 FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
@@ -162,42 +169,44 @@ public class EmailsManage {
 
                     if (camera.getCameraModel() != null) {
                         //if the mode is without "-"
-                        String shortModel = camera.getCameraModel().replace("-", "");
+                        String shortModel1 = camera.getCameraModel().replace("-", "");
+                        String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
 
-                        if (mySubject.contains(camera.getCameraModel()) || mySubject.contains(shortModel)) {
+                        if (mySubject.contains(camera.getCameraModel())
+                                || mySubject.contains(shortModel1)
+                                || mySubject.contains(shortModel2)
+                                || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
+                        ) {
 
-                            int index = mySubject.indexOf(camera.getCameraModel());
-                            if (index == -1) {
-                                index = mySubject.indexOf(shortModel);
+                            //in HIKVISION you do'nt need to specify the subject
+                            if (!camera.getCameraModel().equals("HIKVISION")) {
+                                int index = mySubject.indexOf(camera.getCameraModel());
+                                if (index == -1) {
+                                    index = mySubject.indexOf(shortModel1);
+                                }
+                                if (index == -1) {
+                                    index = mySubject.indexOf(shortModel2);
+                                }
+                                //if(index!=-1)
+                                mySubject = mySubject.substring(index);
                             }
 
-                            mySubject = mySubject.substring(index);
+
 
                             //change the message to read email
                             inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
 
                             //Log.d("testSubject", mySubject);
 
-                            String[] arr = mySubject.split("-");
-
-
                             Alarm myAlarm = new Alarm();
                             myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
                             myAlarm.setCameFromEmail(true);
                             myAlarm.setLoadPhoto(true);
 
-                            if (arr.length > 1) {
-                                String datetimeStr = arr[2];
-                                String[] datetimeArr = datetimeStr.split(" ");
+                            String myContent = getTextFromMessage(unReadLastDayMsg);
+                            EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
 
-                                if (datetimeArr.length > 1) {
-                                    Calendar myCalendar = getCalendarByString(datetimeArr);
-                                    if (myCalendar != null) {
 
-                                        myAlarm.addAlarmToHistory(camera, ALARM_OTHER, context, myCalendar);
-                                    }
-                                }
-                            }
                             sendLiveAlarm(camera, context);
                             // Send notification and log the transition details.
                             //createNotificationChannel(context);
@@ -480,5 +489,45 @@ public class EmailsManage {
                 notificationManager.createNotificationChannel(channel);
             }
         }
+    }
+
+//    String readHtmlContent(MimeMessage message) throws Exception {
+//        return new MimeMessageParser(message).parse().getHtmlContent();
+//    }
+//
+//    String readPlainContent(MimeMessage message) throws Exception {
+//        return new MimeMessageParser(message).parse().getPlainContent();
+//    }
+
+    private String getTextFromMessage(Message message) throws MessagingException, IOException {
+        String result = "";
+        if (message.isMimeType("text/plain")) {
+            result = message.getContent().toString();
+        } else if (message.isMimeType("text/html")) { // **
+            result = message.getContent().toString(); // **
+        } else if (message.isMimeType("multipart/*")) {
+            MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+            result = getTextFromMimeMultipart(mimeMultipart);
+        }
+        return result;
+    }
+
+    private String getTextFromMimeMultipart(
+            MimeMultipart mimeMultipart) throws MessagingException, IOException {
+        String result = "";
+        int count = mimeMultipart.getCount();
+        for (int i = 0; i < count; i++) {
+            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+            if (bodyPart.isMimeType("text/plain")) {
+                result = result + "\n" + bodyPart.getContent();
+                break; // without break same text appears twice in my tests
+            } else if (bodyPart.isMimeType("text/html")) {
+                String html = (String) bodyPart.getContent();
+                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
+            } else if (bodyPart.getContent() instanceof MimeMultipart) {
+                result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
+            }
+        }
+        return result;
     }
 }

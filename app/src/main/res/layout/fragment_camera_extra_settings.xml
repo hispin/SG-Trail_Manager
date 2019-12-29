@@ -182,7 +182,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="5dp"
                     android:background="@android:color/transparent"
-                    android:entries="@array/camera_type"
+                    android:entries="@array/camera_model"
                     android:gravity="center"
                     android:spinnerMode="dropdown"
                     tools:listitem="@layout/support_simple_spinner_dropdown_item" />

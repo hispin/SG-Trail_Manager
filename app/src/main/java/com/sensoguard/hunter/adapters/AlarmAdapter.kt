@@ -68,6 +68,9 @@ class AlarmAdapter(
         private var ivShare: AppCompatImageView? = null
         private var ivIconVideo: AppCompatImageView? = null
         private var pbLoadPhoto: ProgressBar? = null
+        private var ivBatteryLevel: AppCompatImageView? = null
+        private var ivWifiLevel: AppCompatImageView? = null
+
 
 
 //        init {
@@ -77,7 +80,7 @@ class AlarmAdapter(
 //        }
 
 
-        fun bindReservation(alarm: Alarm) {
+        fun bindReservation(myAlarm: Alarm) {
             //tvId = _itemView.findViewById(R.id.tvId)
             tvName = _itemView.findViewById(R.id.tvName)
             tvDate = _itemView.findViewById(R.id.tvDate)
@@ -85,23 +88,92 @@ class AlarmAdapter(
             tvTime = _itemView.findViewById(R.id.tvTime)
             ivAlarmPic = _itemView.findViewById(R.id.ivAlarmPic)
             ivAlarmPic?.setOnClickListener {
-                itemClick.invoke(alarm, 1)
+                itemClick.invoke(myAlarm, 1)
                 //alarm.imgsPath?.let { it1 -> onAdapterListener.openLargePictureDialog(it1) }
             }
             ivShare = _itemView.findViewById(R.id.ivShare)
             ivShare?.setOnClickListener {
-                itemClick.invoke(alarm, 2)
+                itemClick.invoke(myAlarm, 2)
             }
             ivIconVideo = _itemView.findViewById(R.id.ivIconVideo)
 
 
 
             pbLoadPhoto = _itemView.findViewById(R.id.pbLoadPhoto)
-            if (alarm.isLoadPhoto) {
+            if (myAlarm.isLoadPhoto) {
                 pbLoadPhoto?.visibility = View.VISIBLE
             } else {
                 pbLoadPhoto?.visibility = View.GONE
             }
+
+            ivBatteryLevel = _itemView.findViewById(R.id.ivBatteryLevel)
+            ivWifiLevel = _itemView.findViewById(R.id.ivWifiLevel)
+
+            val batteryLevel = myAlarm.batteryVal
+            if (batteryLevel != null) {
+
+                if (batteryLevel >= 0 && batteryLevel < 25) {
+                    if (isGrid) {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_1_grid)
+                    } else {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_1_list)
+                    }
+                } else if (batteryLevel >= 25 && batteryLevel < 50) {
+                    if (isGrid) {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_2_grid)
+                    } else {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_2_list)
+                    }
+                } else if (batteryLevel >= 50 && batteryLevel < 75) {
+
+                    if (isGrid) {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_3_grid)
+                    } else {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_3_list)
+                    }
+
+                } else if (batteryLevel in 75.0..100.0) {
+                    if (isGrid) {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_4_grid)
+                    } else {
+                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_4_list)
+                    }
+                }
+            }
+
+            val wifiLevel = myAlarm.wifiVal
+            if (wifiLevel != null) {
+
+                if (wifiLevel >= 0 && wifiLevel < 25) {
+                    if (isGrid) {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_1_grid)
+                    } else {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_1_list)
+                    }
+                } else if (wifiLevel >= 25 && wifiLevel < 50) {
+                    if (isGrid) {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_2_grid)
+                    } else {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_2_list)
+                    }
+                } else if (wifiLevel >= 50 && wifiLevel < 75) {
+
+                    if (isGrid) {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_3_grid)
+                    } else {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_3_list)
+                    }
+
+                } else if (wifiLevel in 75.0..100.0) {
+                    if (isGrid) {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_4_grid)
+                    } else {
+                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_4_list)
+                    }
+                }
+            }
+
+
 
 
 //            if(alarm.isArmed!=null
@@ -124,7 +196,7 @@ class AlarmAdapter(
 
 
             if (!isGrid) {
-                tvDate?.text = alarm.timeInMillis?.let {
+                tvDate?.text = myAlarm.timeInMillis?.let {
                     getStrDateTimeByMilliSeconds(
                         it,
                         "dd/MM/yyyy",
@@ -132,7 +204,7 @@ class AlarmAdapter(
                     )
                 }
             }else{
-                tvDate?.text = alarm.timeInMillis?.let {
+                tvDate?.text = myAlarm.timeInMillis?.let {
                     getStrDateTimeByMilliSeconds(
                         it,
                         "dd/MM/yy",
@@ -140,12 +212,13 @@ class AlarmAdapter(
                     )
                 }
             }
-            tvTime?.text= alarm.timeInMillis?.let { getStrDateTimeByMilliSeconds(it,"kk:mm",context) }
+            tvTime?.text =
+                myAlarm.timeInMillis?.let { getStrDateTimeByMilliSeconds(it, "kk:mm", context) }
             //tvId?.text=alarm.id
-            tvType?.text=alarm.type
-            tvName?.text = alarm.name
+            tvType?.text = myAlarm.type
+            tvName?.text = myAlarm.name
 
-            val imgFile = alarm.imgsPath?.let { File(it) }
+            val imgFile = myAlarm.imgsPath?.let { File(it) }
 
             if (imgFile != null && imgFile.exists()) {
                 //val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)

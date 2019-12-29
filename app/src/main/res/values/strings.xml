@@ -98,12 +98,23 @@
     <string name="validation_error">validation error</string>
     <string name="validation_successfully">The verification was successful</string>
 
-    <string-array name="camera_type">
-        <item>MG-983G</item>
-        <item>MG-984G</item>
+    <string-array name="camera_model">
+        <item>MG-983G-30M</item>
+        <item>MG-984G-36M</item>
+        <item>MG-984G-30M</item>
+        <item>MG-983G-36M</item>
         <item>BG-668</item>
         <item>ATC</item>
         <item>HIKVISION</item>
     </string-array>
+
+    <!--    <string-array name="camera_type">-->
+    <!--        <item>MG-983G</item>-->
+    <!--        <item>MG-984G</item>-->
+    <!--        <item>BG-668</item>-->
+    <!--        <item>ATC</item>-->
+    <!--        <item>HIKVISION</item>-->
+    <!--    </string-array>-->
+
 
 </resources>

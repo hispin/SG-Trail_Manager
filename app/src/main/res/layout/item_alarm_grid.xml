@@ -65,8 +65,7 @@
             android:layout_marginTop="7.3dp"
             app:layout_constraintStart_toStartOf="@+id/ivAlarmPic"
             app:layout_constraintTop_toTopOf="@+id/ivAlarmPic"
-            android:padding="3dp"
-            app:srcCompat="@drawable/wifi_level_full_grid" />
+            android:padding="3dp" />
 
     <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBatteryLevel"
@@ -76,8 +75,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/ivWifiLevel"
             app:layout_constraintStart_toEndOf="@+id/ivWifiLevel"
             app:layout_constraintTop_toTopOf="@+id/ivWifiLevel"
-            android:padding="3dp"
-            app:srcCompat="@drawable/battery_level_3_grid" />
+            android:padding="3dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"

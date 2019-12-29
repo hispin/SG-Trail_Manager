@@ -24,6 +24,8 @@ class Alarm {
     var isCameFromEmail = false
     var isLoadPhoto = false
     var msgNumber: Int? = null
+    var batteryVal: Float? = null
+    var wifiVal: Float? = null
 
     constructor()
 
@@ -45,40 +47,46 @@ class Alarm {
         this.timeInMillis = timeInMillis
     }
 
-    //add active alarm to history
-    private fun addAlarmToHistory(currentSensorLocally: Camera, type: String, context: Context) {
-        //use WeakReference if the activity is no longer alive
-        val wContext: WeakReference<Context> =
-            WeakReference(context)
-        val tmp = Calendar.getInstance()
-        val resources = wContext.get()?.resources
-        val locale =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources?.configuration?.locales?.getFirstMatch(
-                resources.assets?.locales
-            )
-            else resources?.configuration?.locale
-        val dateFormat = SimpleDateFormat("kk:mm dd/MM/yy", locale)
-        val dateString = dateFormat.format(tmp.time)
-
-        //val alarm= Alarm(
-        this.id = currentSensorLocally.getId()
-        this.name = currentSensorLocally.getName()
-        this.type = type
-        this.currentDate = dateString
-        this.isArmed = currentSensorLocally.isArmed()
-        this.timeInMillis = tmp.timeInMillis
-        //)
-        this.latitude = currentSensorLocally.getLatitude()
-        this.longitude = currentSensorLocally.getLongtitude()
-
-        this.isLocallyDefined = true
-
-        val alarms = wContext.get()?.let { populateAlarmsFromLocally(it) }
-        alarms?.add(this)
-        if (wContext.get() != null) {
-            alarms?.let { storeAlarmsToLocally(it, wContext.get()!!) }
-        }
-    }
+//    //add active alarm to history
+//    fun addAlarmToHistory(
+//        currentSensorLocally: Camera,
+//        type: String,
+//        context: Context,
+//        myCalendar: Calendar
+//    ) {
+//        //use WeakReference if the activity is no longer alive
+//        val wContext: WeakReference<Context> =
+//            WeakReference(context)
+//        val tmp = Calendar.getInstance()
+//        val resources = wContext.get()?.resources
+//        val locale =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources?.configuration?.locales?.getFirstMatch(
+//                resources.assets?.locales
+//            )
+//            else resources?.configuration?.locale
+//        val dateFormat = SimpleDateFormat("kk:mm dd/MM/yy", locale)
+//        val dateString = dateFormat.format(tmp.time)
+//
+//        //val alarm= Alarm(
+//        this.id = currentSensorLocally.getId()
+//        this.name = currentSensorLocally.getName()
+//        this.type = type
+//        this.currentDate = dateString
+//        this.isArmed = currentSensorLocally.isArmed()
+//        this.timeInMillis = tmp.timeInMillis
+//        //)
+//        this.latitude = currentSensorLocally.getLatitude()
+//        this.longitude = currentSensorLocally.getLongtitude()
+//
+//        this.isLocallyDefined = true
+//
+//
+//        val alarms = wContext.get()?.let { populateAlarmsFromLocally(it) }
+//        alarms?.add(this)
+//        if (wContext.get() != null) {
+//            alarms?.let { storeAlarmsToLocally(it, wContext.get()!!) }
+//        }
+//    }
 
     fun getCurrentDate(): String {
         return currentDate.toString()
@@ -89,7 +97,9 @@ class Alarm {
         currentSensorLocally: Camera,
         type: String,
         context: Context,
-        tmp: Calendar
+        tmp: Calendar,
+        batteryVal: Float,
+        wifiVal: Float
     ) {
         //use WeakReference if the activity is no longer alive
         val wContext: WeakReference<Context> =
@@ -114,6 +124,8 @@ class Alarm {
         //)
         this.latitude = currentSensorLocally.getLatitude()
         this.longitude = currentSensorLocally.getLongtitude()
+        this.batteryVal = batteryVal
+        this.wifiVal = wifiVal
 
         this.isLocallyDefined = true
         //this.imgsPath=imagePath
