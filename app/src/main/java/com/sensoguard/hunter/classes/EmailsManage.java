@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -17,6 +19,7 @@ import com.sensoguard.hunter.activities.InitAppActivity;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -214,9 +217,9 @@ public class EmailsManage {
 
 
                             //get attached picture if exist
-                            List<String> attachments = getAttachedFiles(unReadLastDayMsg);
+                            List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
 
-                            Log.d("checkVideo", attachments.get(0));
+                            //Log.d("checkVideo", attachments.get(0));
 
                             //in version 1 support only one attached picture
                             //do not wait to save photo ,to make the process of showing alarm more faster
@@ -292,8 +295,61 @@ public class EmailsManage {
     }
 
 
+//    //save the attached file
+//    private List<String> getAttachedFilesAndSaveInternal(Message message,Context context) throws MessagingException {
+//        List<String> attachments = new ArrayList<>();
+//        Multipart multipart = null;
+//        try {
+//            multipart = (Multipart) message.getContent();
+//        } catch (IOException | MessagingException e) {
+//            Log.d("testSubject", e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//        if (multipart != null) {
+//            for (int i = 0; i < multipart.getCount(); i++) {
+//                BodyPart bodyPart = multipart.getBodyPart(i);
+//                if (!Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) &&
+//                        StringUtils.isBlank(bodyPart.getFileName())) {
+//                    continue; // dealing with attachments only
+//                }
+//                InputStream is = null;
+//                try {
+//                    is = bodyPart.getInputStream();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                /////////////
+//                BufferedReader r = new BufferedReader(new InputStreamReader(is));
+//                StringBuilder total = new StringBuilder();
+//                String line = null;
+//                while (true) {
+//                    try {
+//                        if ((line = r.readLine()) == null) break;
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    total.append(line).append('\n');
+//                }
+//
+//                try {
+//                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("file.txt", Context.MODE_PRIVATE));
+//                    outputStreamWriter.write(total.toString());
+//                    outputStreamWriter.close();
+//                }
+//                catch (IOException e) {
+//                    Log.e("Exception", "File write failed: " + e.toString());
+//                }
+//                attachments.add(file.getAbsolutePath());
+//            }
+//        }
+//
+//        return attachments;
+//    }
+
     //save the attached file
-    private List<String> getAttachedFiles(Message message) throws MessagingException {
+    private List<String> getAttachedFiles(Message message, Context context) throws MessagingException {
         List<String> attachments = new ArrayList<>();
         Multipart multipart = null;
         try {
@@ -313,54 +369,88 @@ public class EmailsManage {
                 InputStream is = null;
                 try {
                     is = bodyPart.getInputStream();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
 
-                String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-                File myDir = new File(root + "/alarms_hunter");
-                if (!myDir.exists()) {
-                    //ignore if the action is successfully
-                    myDir.mkdirs();
-                }
+                //File file=saveImageExternal(is,bodyPart.getFileName());
+                String picName = saveImageInternal(is, bodyPart.getFileName(), context);
 
-                File file = new File(myDir, bodyPart.getFileName());
-
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                byte[] buf = new byte[4096];
-                int bytesRead = 0;
-                while (true) {
-                    try {
-                        if (is != null && (bytesRead = is.read(buf)) == -1) break;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        if (fos != null) {
-                            fos.write(buf, 0, bytesRead);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    if (fos != null) {
-                        fos.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                attachments.add(file.getAbsolutePath());
+                //attachments.add(file.getAbsolutePath());
+                attachments.add(picName);
             }
         }
 
         return attachments;
+    }
+
+
+    private String saveImageInternal(InputStream is, String fileName, Context context) {
+
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+
+        Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
+
+        //String fullFileName = fileName+".jpg";
+
+        FileOutputStream fileOutputStream;
+        try {
+            fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return fileName;
+
+    }
+
+    //save the picture in external
+    private File saveImageExternal(InputStream is, String fileName) {
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root + "/alarms_hunter");
+        if (!myDir.exists()) {
+            //ignore if the action is successfully
+            myDir.mkdirs();
+        }
+
+        File file = new File(myDir, fileName);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        byte[] buf = new byte[4096];
+        int bytesRead = 0;
+        while (true) {
+            try {
+                if (is != null && (bytesRead = is.read(buf)) == -1) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (fos != null) {
+                    fos.write(buf, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            if (fos != null) {
+                fos.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
     }
 
 

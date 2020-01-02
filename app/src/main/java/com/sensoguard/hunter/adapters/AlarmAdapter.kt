@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -214,27 +215,38 @@ class AlarmAdapter(
             }
             tvTime?.text =
                 myAlarm.timeInMillis?.let { getStrDateTimeByMilliSeconds(it, "kk:mm", context) }
-            //tvId?.text=alarm.id
             tvType?.text = myAlarm.type
             tvName?.text = myAlarm.name
 
-            val imgFile = myAlarm.imgsPath?.let { File(it) }
+            //val imgFile = myAlarm.imgsPath?.let { File(it) }
+
+            //get the image from internal storage
+            val imgFile = myAlarm.imgsPath?.let { File(context.filesDir, it) }
 
             if (imgFile != null && imgFile.exists()) {
-                //val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-                //ivAlarmPic?.setImageBitmap(myBitmap)
 
-                //imgFile.absolutePath?.let { Picasso.get().load(File(it)).resize(400, 240).centerCrop().into(ivAlarmPic) }
-                //Picasso.get().load(File(imgFile.absolutePath)).into(ivAlarmPic)
                 ivAlarmPic?.let {
                     Glide.with(context).load(File(imgFile.absolutePath))
                         .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Toast.makeText(
+                                    context,
+                                    "error loading image" + e?.message,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                return false
+                            }
 
                             override fun onResourceReady(
                                 resource: Drawable?,
                                 model: Any?,
                                 target: Target<Drawable>?,
-                                dataSource: com.bumptech.glide.load.DataSource?,
+                                dataSource: DataSource?,
                                 isFirstResource: Boolean
                             ): Boolean {
                                 //if the the image is video then show the video icon
@@ -245,18 +257,9 @@ class AlarmAdapter(
                                 }
 
                                 return false
+
                             }
 
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Toast.makeText(context, "error loading image", Toast.LENGTH_LONG)
-                                    .show()
-                                return false
-                            }
 
                         }).into(it)
 

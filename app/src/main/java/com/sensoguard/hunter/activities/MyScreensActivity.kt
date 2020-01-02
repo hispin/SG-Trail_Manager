@@ -186,7 +186,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         val tabs = findViewById<TabLayout>(R.id.tab_layout)
 
         viewPager = findViewById(R.id.vPager)
-
         collectionPagerAdapter = CollectionPagerAdapter(supportFragmentManager)
         viewPager.adapter = collectionPagerAdapter
         viewPager.setOnTouchListener(object : OnTouchListener {

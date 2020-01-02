@@ -62,7 +62,8 @@ class LargePictureVideoDialogFragment : DialogFragment() {
     private fun showVideo(imgPath: String) {
         ivMyVideo?.visibility = View.VISIBLE
         ivMyCaptureImage?.visibility = View.GONE
-        val imgFile = File(imgPath)
+        //val imgFile = File(imgPath)
+        val imgFile = File(context?.filesDir, imgPath)
         ivMyVideo?.setSource(Uri.fromFile(imgFile))
     }
 
@@ -74,7 +75,8 @@ class LargePictureVideoDialogFragment : DialogFragment() {
 
         if (path == null)
             return
-        val imgFile = File(path)
+        //val imgFile = File(path)
+        val imgFile = File(context?.filesDir, path)
 
         if (imgFile.exists()) {
             //Picasso.get().load(File(imgFile.absolutePath)).into(ivMyCaptureImage)
