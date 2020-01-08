@@ -27,19 +27,19 @@
             android:layout_marginEnd="36dp"
     />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fbTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:src="@android:drawable/ic_menu_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:backgroundTint="@color/divider_list"
-            android:tint="@color/common_google_signin_btn_text_dark_focused"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="36dp"
-    />
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--            android:id="@+id/fbTest"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_gravity="top|end"-->
+    <!--            android:src="@android:drawable/ic_menu_view"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:backgroundTint="@color/divider_list"-->
+    <!--            android:tint="@color/common_google_signin_btn_text_dark_focused"-->
+    <!--            android:layout_marginTop="36dp"-->
+    <!--            android:layout_marginEnd="36dp"-->
+    <!--    />-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fbChangeMapType"

@@ -3,14 +3,18 @@ package com.sensoguard.hunter.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
+import android.content.IntentFilter
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.net.Uri
+import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.sensoguard.hunter.classes.EmailsManage
-import com.sensoguard.hunter.global.getSensorsFromLocally
+import com.sensoguard.hunter.global.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -24,7 +28,18 @@ open class ServiceRepeat : Service() {
     }
 
 
+    private fun setFilter() {
+        val filter = IntentFilter(CREATE_ALARM_KEY)
+        registerReceiver(emailReceiver, filter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(emailReceiver)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        setFilter()
         startSysForeGround()
         shutDownTimer()
         startTimer()
@@ -46,6 +61,7 @@ open class ServiceRepeat : Service() {
 
         // This schedule a task to run every 1 second:
         scheduleTaskExecutor?.scheduleAtFixedRate({
+            stopPlayingAlarm()
             try {
                 val thread = object : Thread() {
                     override fun run() {
@@ -108,6 +124,93 @@ open class ServiceRepeat : Service() {
 
             startForeground(1, notification)
         }
+    }
+
+    private val emailReceiver = object : BroadcastReceiver() {
+        override fun onReceive(arg0: Context, inn: Intent) {
+            //accept currentAlarm
+            if (inn.action == CREATE_ALARM_KEY) {
+
+
+                playAlarmSound()
+
+                playVibrate()
+
+                startTimer()
+
+
+            }
+
+        }
+
+    }
+
+    //execute vibrate
+    private fun playVibrate() {
+
+        val isVibrateWhenAlarm =
+            getBooleanInPreference(this@ServiceRepeat, IS_VIBRATE_WHEN_ALARM_KEY, true)
+        if (isVibrateWhenAlarm) {
+            // Get instance of Vibrator from current Context
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+            // Vibrate for 200 milliseconds
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        1000,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            } else {
+                vibrator.vibrate(1000)
+            }
+
+        }
+
+    }
+
+
+    private var rington: Ringtone? = null
+
+    private fun stopPlayingAlarm() {
+        if (rington != null && rington?.isPlaying!!) {
+            rington?.stop()
+        }
+    }
+
+    //execute vibrate
+    private fun playAlarmSound() {
+
+        val isNotificationSound =
+            getBooleanInPreference(this@ServiceRepeat, IS_NOTIFICATION_SOUND_KEY, true)
+        if (!isNotificationSound) {
+            return
+        }
+
+        val selectedSound =
+            getStringInPreference(this@ServiceRepeat, SELECTED_NOTIFICATION_SOUND_KEY, "-1")
+
+        if (!selectedSound.equals("-1")) {
+
+            try {
+                val uri = Uri.parse(selectedSound)
+                if (rington != null && rington!!.isPlaying) {
+                    //if the sound it is already played,
+                    rington?.stop()
+                    Handler().postDelayed({
+                        rington = RingtoneManager.getRingtone(this@ServiceRepeat, uri)
+                        rington?.play()
+                    }, 1000)
+                } else {
+                    rington = RingtoneManager.getRingtone(this@ServiceRepeat, uri)
+                    rington?.play()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
     }
 
 

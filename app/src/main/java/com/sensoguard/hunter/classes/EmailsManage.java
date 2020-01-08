@@ -175,6 +175,11 @@ public class EmailsManage {
                         String shortModel1 = camera.getCameraModel().replace("-", "");
                         String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
 
+                        //if the camera is not active do not execute arm
+                        if (!camera.isArmed()) {
+                            return;
+                        }
+
                         if (mySubject.contains(camera.getCameraModel())
                                 || mySubject.contains(shortModel1)
                                 || mySubject.contains(shortModel2)
@@ -213,7 +218,12 @@ public class EmailsManage {
                             sendLiveAlarm(camera, context);
                             // Send notification and log the transition details.
                             //createNotificationChannel(context);
+
+
                             sendNotif("new alarm detected", context);
+
+                            Intent inn = new Intent(CREATE_ALARM_KEY);
+                            context.sendBroadcast(inn);
 
 
                             //get attached picture if exist
@@ -224,7 +234,7 @@ public class EmailsManage {
                             //in version 1 support only one attached picture
                             //do not wait to save photo ,to make the process of showing alarm more faster
                             myAlarm.updateAlarm(attachments.get(0), context);
-                            Intent inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
+                            inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
                             context.sendBroadcast(inn);
                         }
                     }

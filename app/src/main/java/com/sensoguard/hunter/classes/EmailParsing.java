@@ -81,11 +81,11 @@ class EmailParsing {
                 String wifiStr = arr[4];
                 wifiStr = wifiStr.substring(0, 2);
                 float wifi = Float.valueOf(wifiStr);
-                if (wifi >= 1 && wifi < 7) {
+                if (wifi >= 1 && wifi < 8) {
                     wifiVal = 24;
                 } else if (wifi >= 8 && wifi < 15) {
                     wifiVal = 49;
-                } else if (wifi >= 16 && wifi < 23) {
+                } else if (wifi >= 15 && wifi < 24) {
                     wifiVal = 74;
                 } else if (wifi >= 24 && wifi < 30) {
                     wifiVal = 99;

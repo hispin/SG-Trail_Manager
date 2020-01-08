@@ -93,7 +93,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
     private var currentLongitude: Double?=null
     private var currentLatitude: Double?=null
     private var fbRefresh: FloatingActionButton?=null
-    private var fbTest:FloatingActionButton?=null
+    //private var fbTest:FloatingActionButton?=null
     private var fbChangeMapType:FloatingActionButton?=null
     private var mapType=GoogleMap.MAP_TYPE_SATELLITE
     private var flickering: Animation?=null
@@ -145,10 +145,10 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
             gotoMyLocation()
         }
 
-        fbTest=view.findViewById(R.id.fbTest)
-        fbTest?.setOnClickListener {
-            showTestEventDialog()
-        }
+//        fbTest=view.findViewById(R.id.fbTest)
+//        fbTest?.setOnClickListener {
+//            showTestEventDialog()
+//        }
 
         //toggle the type of the ic_map_main
         fbChangeMapType=view.findViewById(R.id.fbChangeMapType)
