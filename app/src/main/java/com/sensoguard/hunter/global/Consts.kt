@@ -8,6 +8,7 @@ const val CURRENT_ITEM_TOP_MENU_KEY = "currentItemTopKey"
 
 const val  READ_DATA_KEY="handle.read.data"
 const val  CREATE_ALARM_KEY="handle.create.alarm"
+const val DETECT_ALARM_KEY = "handle.detect.alarm"
 const val ADD_ATTACHED_PHOTOS_KEY = "add.attached.photos"
 const val RESULT_VALIDATION_EMAIL_ACTION = "result.validation.email"
 const val ERROR_RESULT_VALIDATION_EMAIL_ACTION = "error_result.validation.email"

@@ -55,6 +55,7 @@ import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_ID_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_NAME_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.CREATE_ALARM_TYPE_KEY;
+import static com.sensoguard.hunter.global.ConstsKt.DETECT_ALARM_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_RESULT_VALIDATION_EMAIL_ACTION;
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_VALIDATION_EMAIL_MSG_KEY;
 
@@ -128,7 +129,7 @@ public class EmailsManage {
             return;
         }
 
-        //Get all mails in Inbox Forlder
+        //Get all mails in Inbox Folder
         Folder inbox = null;
         try {
             if (store != null) {
@@ -151,10 +152,17 @@ public class EmailsManage {
 
 
                 Calendar cal = Calendar.getInstance();
+                //cal.add(Calendar.MINUTE, -5);
                 cal.roll(Calendar.DATE, false);
+                //cal.roll(Calendar.MINUTE, -2);
+                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
+                //Log.d("textDate",da);
+
+
                 Message[] lastDayMsgs = null;
                 try {
                     lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     return;
@@ -166,76 +174,83 @@ public class EmailsManage {
 
                 for (Message unReadLastDayMsg : unReadLastDayMsgs) {
 
-                    //int msgNum=unReadLastDayMsg.getMessageNumber();
-                    String mySubject = unReadLastDayMsg.getSubject();
+                    Calendar minDate = Calendar.getInstance();
+                    minDate.roll(Calendar.MINUTE, -5);
+                    Calendar maxDate = Calendar.getInstance();
+
+                    //filter to the last 5 minutes
+                    if (unReadLastDayMsg.getReceivedDate().after(minDate.getTime()) && unReadLastDayMsg.getReceivedDate().before(maxDate.getTime())) {
+
+                        //int msgNum=unReadLastDayMsg.getMessageNumber();
+                        String mySubject = unReadLastDayMsg.getSubject();
 
 
-                    if (camera.getCameraModel() != null) {
-                        //if the mode is without "-"
-                        String shortModel1 = camera.getCameraModel().replace("-", "");
-                        String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
+                        if (camera.getCameraModel() != null) {
+                            //if the mode is without "-"
+                            String shortModel1 = camera.getCameraModel().replace("-", "");
+                            String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
 
-                        //if the camera is not active do not execute arm
-                        if (!camera.isArmed()) {
-                            return;
-                        }
-
-                        if (mySubject.contains(camera.getCameraModel())
-                                || mySubject.contains(shortModel1)
-                                || mySubject.contains(shortModel2)
-                                || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
-                        ) {
-
-                            //in HIKVISION you do'nt need to specify the subject
-                            if (!camera.getCameraModel().equals("HIKVISION")) {
-                                int index = mySubject.indexOf(camera.getCameraModel());
-                                if (index == -1) {
-                                    index = mySubject.indexOf(shortModel1);
-                                }
-                                if (index == -1) {
-                                    index = mySubject.indexOf(shortModel2);
-                                }
-                                //if(index!=-1)
-                                mySubject = mySubject.substring(index);
+                            //if the camera is not active do not execute arm
+                            if (!camera.isArmed()) {
+                                return;
                             }
 
+                            if (mySubject.contains(camera.getCameraModel())
+                                    || mySubject.contains(shortModel1)
+                                    || mySubject.contains(shortModel2)
+                                    || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
+                            ) {
+
+                                //in HIKVISION you do'nt need to specify the subject
+                                if (!camera.getCameraModel().equals("HIKVISION")) {
+                                    int index = mySubject.indexOf(camera.getCameraModel());
+                                    if (index == -1) {
+                                        index = mySubject.indexOf(shortModel1);
+                                    }
+                                    if (index == -1) {
+                                        index = mySubject.indexOf(shortModel2);
+                                    }
+                                    //if(index!=-1)
+                                    mySubject = mySubject.substring(index);
+                                }
 
 
-                            //change the message to read email
-                            inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
+                                //change the message to read email
+                                inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
 
-                            //Log.d("testSubject", mySubject);
+                                //Log.d("testSubject", mySubject);
 
-                            Alarm myAlarm = new Alarm();
-                            myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
-                            myAlarm.setCameFromEmail(true);
-                            myAlarm.setLoadPhoto(true);
+                                Alarm myAlarm = new Alarm();
+                                myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
+                                myAlarm.setCameFromEmail(true);
+                                myAlarm.setLoadPhoto(true);
 
-                            String myContent = getTextFromMessage(unReadLastDayMsg);
-                            EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
-
-
-                            sendLiveAlarm(camera, context);
-                            // Send notification and log the transition details.
-                            //createNotificationChannel(context);
+                                String myContent = getTextFromMessage(unReadLastDayMsg);
+                                EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
 
 
-                            sendNotif("new alarm detected", context);
+                                sendLiveAlarm(camera, context);
+                                // Send notification and log the transition details.
+                                //createNotificationChannel(context);
 
-                            Intent inn = new Intent(CREATE_ALARM_KEY);
-                            context.sendBroadcast(inn);
+
+                                sendNotification("new alarm detected", context);
+
+                                Intent inn = new Intent(DETECT_ALARM_KEY);
+                                context.sendBroadcast(inn);
 
 
-                            //get attached picture if exist
-                            List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
+                                //get attached picture if exist
+                                List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
 
-                            //Log.d("checkVideo", attachments.get(0));
+                                //Log.d("checkVideo", attachments.get(0));
 
-                            //in version 1 support only one attached picture
-                            //do not wait to save photo ,to make the process of showing alarm more faster
-                            myAlarm.updateAlarm(attachments.get(0), context);
-                            inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
-                            context.sendBroadcast(inn);
+                                //in version 1 support only one attached picture
+                                //do not wait to save photo ,to make the process of showing alarm more faster
+                                myAlarm.updateAlarm(attachments.get(0), context);
+                                inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
+                                context.sendBroadcast(inn);
+                            }
                         }
                     }
                 }
@@ -397,6 +412,7 @@ public class EmailsManage {
     }
 
 
+    //save the picture in internal
     private String saveImageInternal(InputStream is, String fileName, Context context) {
 
 
@@ -464,7 +480,8 @@ public class EmailsManage {
     }
 
 
-    private void sendNotif(String content, Context context) {
+    //snd notification when accept alarm
+    private void sendNotification(String content, Context context) {
 
         if (context == null)
             return;
@@ -481,7 +498,10 @@ public class EmailsManage {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("New alarm detected")
-                .setContentText(content);
+                .setContentText(content)
+                //remove after click on notification
+                .setAutoCancel(true);
+
         NotificationManager mNotificationManager = (NotificationManager) wContext.get().getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Enable press on notification to open app

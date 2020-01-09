@@ -138,12 +138,12 @@
                 app:allowed_chars="1234567890"
                 app:keep_hint="true"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTelNum"
+                app:layout_constraintEnd_toEndOf="@+id/etSysName"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.052"
                 app:layout_constraintStart_toStartOf="@+id/etSysName"
                 app:layout_constraintTop_toTopOf="@+id/tvTelNum"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.37"
+
                 app:mask="###-#######" />
 
         <TextView
@@ -161,6 +161,7 @@
                 app:layout_constraintVertical_bias="0.299" />
 
         <RelativeLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/edit_text_border"
@@ -170,9 +171,8 @@
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.052"
                 app:layout_constraintStart_toStartOf="@+id/etSysName"
-                app:layout_constraintTop_toTopOf="@+id/tvCameraType"
 
-                >
+                app:layout_constraintTop_toTopOf="@+id/tvCameraType">
 
             <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/spCameraType"
@@ -220,12 +220,11 @@
                 android:inputType="textEmailAddress"
                 android:textSize="14.7sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvMailAddress"
+                app:layout_constraintEnd_toEndOf="@+id/etTelNum"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.052"
                 app:layout_constraintStart_toStartOf="@+id/etSysName"
-                app:layout_constraintTop_toTopOf="@+id/tvMailAddress"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.37" />
+                app:layout_constraintTop_toTopOf="@+id/tvMailAddress" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPassword"
@@ -249,12 +248,11 @@
                 android:inputType="textPassword"
                 android:textSize="14.7sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvPassword"
+                app:layout_constraintEnd_toEndOf="@+id/etMailAddress"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.052"
                 app:layout_constraintStart_toStartOf="@+id/etSysName"
-                app:layout_constraintTop_toTopOf="@+id/tvPassword"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.37" />
+                app:layout_constraintTop_toTopOf="@+id/tvPassword" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvMailServer"

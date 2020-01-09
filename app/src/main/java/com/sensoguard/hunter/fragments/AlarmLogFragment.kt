@@ -231,7 +231,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     }
 
     private fun setFilter() {
-        val filter = IntentFilter(CREATE_ALARM_KEY)
+        val filter = IntentFilter(DETECT_ALARM_KEY)
         activity?.registerReceiver(receiver, filter)
     }
 
@@ -330,7 +330,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(arg0: Context, inn: Intent) {
             //accept currentAlarm
-            if (inn.action == CREATE_ALARM_KEY) {
+            if (inn.action == DETECT_ALARM_KEY) {
 
                 Log.d("testLogAlarm", "accept alarm")
 
