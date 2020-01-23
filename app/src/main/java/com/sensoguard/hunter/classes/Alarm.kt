@@ -2,7 +2,7 @@ package com.sensoguard.hunter.classes
 
 import android.content.Context
 import android.os.Build
-import com.sensoguard.hunter.global.populateAlarmsFromLocally
+import com.sensoguard.hunter.global.getAlarmsFromLocally
 import com.sensoguard.hunter.global.storeAlarmsToLocally
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -130,7 +130,7 @@ class Alarm {
         this.isLocallyDefined = true
         //this.imgsPath=imagePath
 
-        val alarms = wContext.get()?.let { populateAlarmsFromLocally(it) }
+        val alarms = wContext.get()?.let { getAlarmsFromLocally(it) }
         alarms?.add(this)
         if (wContext.get() != null) {
             alarms?.let { storeAlarmsToLocally(it, wContext.get()!!) }
@@ -142,7 +142,7 @@ class Alarm {
         //use WeakReference if the activity is no longer alive
         val wContext: WeakReference<Context> =
             WeakReference(context)
-        val alarms = wContext.get()?.let { populateAlarmsFromLocally(it) }
+        val alarms = wContext.get()?.let { getAlarmsFromLocally(it) }
 
         val iteratorList = alarms?.listIterator()
 

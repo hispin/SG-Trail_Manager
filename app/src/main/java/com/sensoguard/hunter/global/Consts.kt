@@ -53,6 +53,7 @@ const val  SHARED_PREF_FILE_NAME = "SensoGuardPref"
 const val  DETECTORS_LIST_KEY_PREF = "SensorsList"
 const val  ALARM_LIST_KEY_PREF = "AlarmsList"
 const val CAMERA_KEY = "cameraKey"
+const val EMAIL_ACCOUNT_KEY = "emailAccount"
 const val SORT_TYPE_KEY = "sortType"
 const val SORT_BY_SYSTEM_KEY = 1
 const val SORT_BY_DATETIME_KEY = 2

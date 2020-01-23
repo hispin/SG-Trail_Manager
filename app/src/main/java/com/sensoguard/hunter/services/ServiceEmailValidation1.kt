@@ -8,16 +8,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.EmailsManage
-import com.sensoguard.hunter.classes.MyEmailAccount
 import com.sensoguard.hunter.global.CAMERA_KEY
 import com.sensoguard.hunter.global.RESULT_VALIDATION_EMAIL_ACTION
 import com.sensoguard.hunter.global.VALIDATION_EMAIL_RESULT
-import com.sensoguard.hunter.global.convertJsonToMyEmailAccount
+import com.sensoguard.hunter.global.convertJsonToSensor
 
-class ServiceEmailValidation : Service() {
+class ServiceEmailValidation1 : Service() {
 
-    private var myEmailAccount: MyEmailAccount? = null
+    private var myCamera: Camera? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -26,14 +26,14 @@ class ServiceEmailValidation : Service() {
     override fun onStartCommand(myIntent: Intent?, flags: Int, startId: Int): Int {
         startSysForeGround()
 
-        val myEmailAccountStr = myIntent?.extras?.getString(CAMERA_KEY, null)
-        myEmailAccountStr?.let { myEmailAccount = convertJsonToMyEmailAccount(myEmailAccountStr) }
+        val cameraStr = myIntent?.extras?.getString(CAMERA_KEY, null)
+        cameraStr?.let { myCamera = convertJsonToSensor(cameraStr) }
 
         object : Thread() {
             override fun run() {
                 super.run()
                 val resultConnection = EmailsManage.getInstance()
-                    .emailValidation(myEmailAccount, this@ServiceEmailValidation)
+                    .emailValidation(myCamera, this@ServiceEmailValidation1)
                 val inn = Intent(RESULT_VALIDATION_EMAIL_ACTION)
                 inn.putExtra(VALIDATION_EMAIL_RESULT, resultConnection)
                 sendBroadcast(inn)
@@ -45,7 +45,7 @@ class ServiceEmailValidation : Service() {
     }
 
 
-    //The system allows apps to call Context.startForegrozundService() even while the app is in the background. However, the app must call that service's startForeground() method within five seconds after the service is created
+    //The system allows apps to call Context.startForegroundService() even while the app is in the background. However, the app must call that service's startForeground() method within five seconds after the service is created
     private fun startSysForeGround() {
 
         if (Build.VERSION.SDK_INT >= 26) {

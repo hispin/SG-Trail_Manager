@@ -64,6 +64,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         setContentView(R.layout.activity_my_screens)
 
+
         //store locally default values of configuration
         setConfigurationDefault()
 

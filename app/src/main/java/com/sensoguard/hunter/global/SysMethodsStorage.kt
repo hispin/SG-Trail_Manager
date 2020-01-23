@@ -3,7 +3,19 @@ package com.sensoguard.hunter.global
 import android.content.Context
 import com.sensoguard.hunter.classes.Alarm
 import com.sensoguard.hunter.classes.Camera
+import com.sensoguard.hunter.classes.MyEmailAccount
 import java.lang.ref.WeakReference
+
+//get myEmail from locally
+fun getMyEmailAccountFromLocally(context: Context): MyEmailAccount? {
+
+    val myEmailAccountStr = getStringInPreference(context, EMAIL_ACCOUNT_KEY, null)
+    myEmailAccountStr?.let {
+        var myEmailAccount = convertJsonToMyEmailAccount(myEmailAccountStr)
+        return myEmailAccount
+    }
+    return null
+}
 
 //store the sensors to locally
 fun storeSensorsToLocally(sensors: ArrayList<Camera>, context: Context) {
@@ -29,7 +41,7 @@ fun getSensorsFromLocally(activity: Context): ArrayList<Camera>? {
 }
 
 //get the alarms from locally
-fun populateAlarmsFromLocally(context: Context): java.util.ArrayList<Alarm>? {
+fun getAlarmsFromLocally(context: Context): java.util.ArrayList<Alarm>? {
     //use WeakReference if the activity is no longer alive
     val wContext: WeakReference<Context> =
         WeakReference(context)
@@ -54,5 +66,17 @@ fun storeAlarmsToLocally(alarms: java.util.ArrayList<Alarm>, context: Context) {
     if (alarms != null && alarms.size > 0) {
         val alarmsJsonStr = convertToAlarmsGson(alarms)
         setStringInPreference(wContext.get(), ALARM_LIST_KEY_PREF, alarmsJsonStr)
+    }
+}
+
+//store the my email account to locally
+fun storeMyEmailAccountToLocaly(myEmailAccount: MyEmailAccount, context: Context) {
+    //use WeakReference if the activity is no longer alive
+    val wContext: WeakReference<Context> =
+        WeakReference(context)
+
+    if (myEmailAccount != null) {
+        val myEmailAccountStr = convertToGson(myEmailAccount)
+        setStringInPreference(wContext.get(), EMAIL_ACCOUNT_KEY, myEmailAccountStr)
     }
 }

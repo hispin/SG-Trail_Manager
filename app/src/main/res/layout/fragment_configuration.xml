@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
         android:background="@color/gray2"
 >
 
+        <ProgressBar
+                android:id="@+id/pbValidationEmail"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:indeterminateTint="@color/medium_green"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
     <!--sensor amount-->
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constSensorAmount"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
             app:layout_constraintTop_toTopOf="parent"
     >
         <androidx.appcompat.widget.AppCompatImageView
@@ -82,9 +97,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constAlarmSound"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constSensorAmount"
             android:clickable="true"
             android:focusable="true">
@@ -166,9 +180,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constVibAlarm"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constAlarmSound"
     >
         <androidx.appcompat.widget.AppCompatImageView
@@ -219,9 +232,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constAlarmFlicker"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constVibAlarm"
     >
         <androidx.appcompat.widget.AppCompatImageView
@@ -287,9 +299,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constLoadSettings"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constAlarmFlicker"
     >
         <androidx.appcompat.widget.AppCompatImageView
@@ -340,9 +351,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constMapView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constLoadSettings"
     >
         <androidx.appcompat.widget.AppCompatImageView
@@ -415,9 +425,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constLangView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constMapView"
             android:clickable="true"
             android:focusable="true">
@@ -466,13 +475,12 @@
               android:layout_marginEnd="10.7dp"
               android:background="@color/gray4"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <!--alarm log display type-->
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constAlarmDisplay"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent=".125"
+            style="@style/general_configuration"
+
             app:layout_constraintTop_toBottomOf="@+id/constLangView">
 
         <RadioGroup
@@ -511,6 +519,218 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginStart="10.7dp"
+                android:layout_marginEnd="10.7dp"
+                android:background="@color/gray4"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--email account settings-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constEmailAccountSettings"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+
+                app:layout_constraintTop_toBottomOf="@+id/constAlarmDisplay">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMailAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/mail_address_title"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMailAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="60dp"
+                    android:background="@drawable/edit_text_border"
+                    android:inputType="textEmailAddress"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMailAddress"
+                    app:layout_constraintHeight_default="percent"
+                    app:layout_constraintHeight_percent="0.100"
+                    app:layout_constraintStart_toEndOf="@+id/tvMailAddress"
+                    app:layout_constraintTop_toTopOf="@+id/tvMailAddress"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.512" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/password_title"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMailServer"
+                    app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMailAddress" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/edit_text_border"
+                    android:inputType="textPassword"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvPassword"
+                    app:layout_constraintHeight_default="percent"
+                    app:layout_constraintHeight_percent="0.100"
+                    app:layout_constraintStart_toStartOf="@+id/etMailAddress"
+                    app:layout_constraintTop_toTopOf="@+id/tvPassword"
+                    app:layout_constraintWidth_percent="0.512" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMailServer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/incoming_email_server_title"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMailServerPort"
+                    app:layout_constraintStart_toStartOf="@+id/tvPassword"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPassword" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMailServer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/edit_text_border"
+                    android:inputType="text"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMailServer"
+                    app:layout_constraintHeight_default="percent"
+                    app:layout_constraintHeight_percent="0.100"
+                    app:layout_constraintHorizontal_bias="0.928"
+                    app:layout_constraintStart_toStartOf="@+id/etMailAddress"
+                    app:layout_constraintTop_toTopOf="@+id/tvMailServer"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.512" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMailServerPort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/incoming_email_server_port_title"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvIsSSL"
+                    app:layout_constraintStart_toStartOf="@+id/tvMailServer"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMailServer" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMailServerPort"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/edit_text_border"
+                    android:inputType="text"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMailServerPort"
+                    app:layout_constraintHeight_default="percent"
+                    app:layout_constraintHeight_percent="0.100"
+                    app:layout_constraintHorizontal_bias="0.928"
+                    app:layout_constraintStart_toStartOf="@+id/etMailAddress"
+                    app:layout_constraintTop_toTopOf="@+id/tvMailServerPort"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.512" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvIsSSL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/use_ssl_title"
+                    android:textColor="@color/black"
+                    android:textSize="14.7sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/btnSave"
+                    app:layout_constraintStart_toStartOf="@+id/tvMailServerPort"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMailServerPort" />
+
+            <RadioGroup
+                    android:id="@+id/rgIsSSL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvIsSSL"
+                    app:layout_constraintStart_toStartOf="@+id/etMailAddress"
+                    app:layout_constraintTop_toTopOf="@+id/tvIsSSL">
+
+                <RadioButton
+                        android:id="@+id/rbYes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@android:color/transparent"
+                        android:checked="false"
+                        android:drawableStart="@drawable/selector_ssl"
+                        android:drawablePadding="10dp"
+                        android:fontFamily="@font/arialmt"
+                        android:gravity="center"
+                        android:text="@string/yes"
+
+                        android:textColor="@color/black"
+                        android:textSize="14.7sp" />
+
+                <RadioButton
+                        android:id="@+id/rbNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:button="@android:color/transparent"
+                        android:checked="true"
+                        android:drawableStart="@drawable/selector_ssl"
+                        android:drawablePadding="10dp"
+                        android:fontFamily="@font/arialmt"
+                        android:gravity="center"
+                        android:text="@string/no"
+                        android:textColor="@color/black"
+                        android:textSize="14.7sp" />
+
+            </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/green1"
+
+                    android:fontFamily="@font/arialmt"
+                    android:lineSpacingExtra="-9.9sp"
+                    android:text="@string/save"
+                    android:textColor="@color/white"
+                    android:textSize="14.7sp"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvIsSSL"
+
+                    />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--app:layout_constraintHeight_default="percent"-->
+        <!--            app:layout_constraintHeight_percent=".125"-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

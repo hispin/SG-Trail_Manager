@@ -63,6 +63,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(com.sensoguard.hunter.R.layout.activity_main)
 
+        clearAllNotifications()
+
 
         //hide unwanted badge of app icon
         hideBudgetNotification()
@@ -78,6 +80,12 @@ class MainActivity : AppCompatActivity() {
 
         //start repeated timeout to scan alarms from incoming emails
         startServiceRepeat()
+    }
+
+    //remove all notification of the app
+    private fun clearAllNotifications() {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
 

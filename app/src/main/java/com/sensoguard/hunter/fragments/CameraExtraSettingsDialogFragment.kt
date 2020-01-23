@@ -1,6 +1,8 @@
 package com.sensoguard.hunter.fragments
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,9 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.FEATURE_NO_TITLE
-import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.widget.*
 import androidx.core.content.ContextCompat
@@ -25,7 +25,8 @@ import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.ImageStorageManager
 import com.sensoguard.hunter.global.*
-import com.sensoguard.hunter.services.ServiceEmailValidation
+import com.sensoguard.hunter.services.ServiceEmailValidation1
+import java.util.*
 
 
 class CameraExtraSettingsDialogFragment : DialogFragment() {
@@ -38,13 +39,14 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private var ibTakePic: AppCompatImageButton? = null
     private var ibShowPicture: AppCompatImageButton? = null
     private var etEmailAddress: AppCompatEditText? = null
-    private var etEmailServer: AppCompatEditText? = null
-    private var etEmailPort: AppCompatEditText? = null
-    private var rgIsUseSSL: RadioGroup? = null
+    //    private var etEmailServer: AppCompatEditText? = null
+//    private var etEmailPort: AppCompatEditText? = null
+//    private var rgIsUseSSL: RadioGroup? = null
     private var etSysName: AppCompatEditText? = null
     private var etTelNum: MaskedEditText? = null
-    private var etPassword: AppCompatEditText? = null
-    private var etLastVisit: MaskedEditText? = null
+    // private var etPassword: AppCompatEditText? = null
+    private var tvLastVisitValue: AppCompatTextView? = null
+    private var ibOpenDatePicker: AppCompatImageButton? = null
     private var spCameraType: AppCompatSpinner? = null
     private var pbValidationEmail: ProgressBar? = null
 
@@ -78,8 +80,15 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         btnSave = view?.findViewById(R.id.btnSave)
         btnSave?.setOnClickListener {
             populateMyCamera()
-            pbValidationEmail?.visibility = View.VISIBLE
-            startServiceEmailValidation()
+            saveLastVisitPicture()
+//            Toast.makeText(
+//                activity,
+//                resources.getString(R.string.validation_successfully),
+//                Toast.LENGTH_LONG
+//            ).show()
+            sendResult()
+            //pbValidationEmail?.visibility = View.VISIBLE
+            //startServiceEmailValidation()
             //sendResult()
         }
 
@@ -100,45 +109,78 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             openLargePictureDialog()
         }
 
-        etEmailServer = view?.findViewById(R.id.etMailServer)
-        etEmailPort = view?.findViewById(R.id.etMailServerPort)
+        //etEmailServer = view?.findViewById(R.id.etMailServer)
+        //etEmailPort = view?.findViewById(R.id.etMailServerPort)
         etEmailAddress = view?.findViewById(R.id.etMailAddress)
-        rgIsUseSSL = view?.findViewById(R.id.rgIsSSL)
+        //rgIsUseSSL = view?.findViewById(R.id.rgIsSSL)
         etSysName = view?.findViewById(R.id.etSysName)
         etTelNum = view?.findViewById(R.id.etTelNum)
-        etPassword = view?.findViewById(R.id.etPassword)
-        etLastVisit = view?.findViewById(R.id.etLastVisit)
+        //etPassword = view?.findViewById(R.id.etPassword)
+        tvLastVisitValue = view?.findViewById(R.id.tvLastVisitValue)
+        ibOpenDatePicker = view?.findViewById(R.id.ibOpenDatePicker)
+
+
+
+
+        ibOpenDatePicker?.setOnClickListener {
+            if (context != null) {
+                //open date picker to update the dates
+                openDatePicker()
+            }
+        }
+
+
         spCameraType = view?.findViewById(R.id.spCameraType)
         pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
 
-        etEmailAddress?.setOnFocusChangeListener { view, hasFocus ->
+//        etEmailAddress?.setOnFocusChangeListener { view, hasFocus ->
+//
+//            if (!hasFocus) {
+//                if ((view as EditText).text.toString().contains("@gmail.com")) {
+//                    //fill automatically
+//                    etEmailServer?.setText("imap.gmail.com")
+//                    etEmailPort?.setText("993")
+//                    rgIsUseSSL?.check(R.id.rbYes)
+//                }
+//            }
+//        }
+    }
 
-            if (!hasFocus) {
-                if ((view as EditText).text.toString().contains("@gmail.com")) {
-                    etEmailServer?.setText("imap.gmail.com")
-                    etEmailPort?.setText("993")
-                    rgIsUseSSL?.check(R.id.rbYes)
-                }
-            }
-        }
+    //open date picker to update the dates
+    private fun openDatePicker() {
+        val currentDate = Calendar.getInstance()
+        val year = currentDate[Calendar.YEAR]
+        val month = currentDate[Calendar.MONTH]
+        val dayOfMonth = currentDate[Calendar.DAY_OF_MONTH]
+
+        val picker =
+            DatePickerDialog(
+                context!!,
+                OnDateSetListener { _, year1, month1, dayOfMonth1 ->
+                    val selectedCalendar =
+                        dayOfMonth1.toString() + "/" + (month1 + 1) + "/" + year1
+                    tvLastVisitValue?.text = selectedCalendar
+                }, year, month, dayOfMonth
+            )
+        picker.show()
     }
 
     //populate camera object to return it main screen
     private fun populateMyFields() {
-        etEmailServer?.setText(myCamera?.emailServer)
-        etEmailPort?.setText(myCamera?.emailPort)
+        //etEmailServer?.setText(myCamera?.emailServer)
+        //etEmailPort?.setText(myCamera?.emailPort)
         etEmailAddress?.setText(myCamera?.emailAddress)
 
-        if (myCamera?.isUseSSL != null && myCamera?.isUseSSL!!) {
-            rgIsUseSSL?.check(R.id.rbYes)
-        } else {
-            rgIsUseSSL?.check(R.id.rbNo)
-        }
+//if (myCamera?.isUseSSL != null && myCamera?.isUseSSL!!) {
+//rgIsUseSSL?.check(R.id.rbYes)
+//} else {
+//rgIsUseSSL?.check(R.id.rbNo)
+//}
 
         etSysName?.setText(myCamera?.getName())
         etTelNum?.setText(myCamera?.phoneNum)
-        etPassword?.setText(myCamera?.password)
-        etLastVisit?.setText(myCamera?.lastVisitDate)
+        //etPassword?.setText(myCamera?.password)
+        tvLastVisitValue?.text = myCamera?.lastVisitDate
         myCamera?.cameraModelPosition?.let { spCameraType?.setSelection(it) }
         myCamera?.lastVisitPicturePath?.let {
             if (context != null) {
@@ -154,14 +196,14 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     //populate camera object to return it main screen
     private fun populateMyCamera() {
-        myCamera?.emailServer = etEmailServer?.text.toString()
-        myCamera?.emailPort = etEmailPort?.text.toString()
+        //myCamera?.emailServer = etEmailServer?.text.toString()
+        //myCamera?.emailPort = etEmailPort?.text.toString()
         myCamera?.emailAddress = etEmailAddress?.text.toString()
-        myCamera?.isUseSSL = rgIsUseSSL?.checkedRadioButtonId == R.id.rbYes
+        //myCamera?.isUseSSL = rgIsUseSSL?.checkedRadioButtonId == R.id.rbYes
         myCamera?.setName(etSysName?.text.toString())
         myCamera?.phoneNum = etTelNum?.text.toString()
-        myCamera?.password = etPassword?.text.toString()
-        myCamera?.lastVisitDate = etLastVisit?.text.toString()
+        //myCamera?.password = etPassword?.text.toString()
+        myCamera?.lastVisitDate = tvLastVisitValue?.text.toString()
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
     }
@@ -239,7 +281,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     //start email validation
     private fun startServiceEmailValidation() {
 
-        val serviceIntent = Intent(this.context, ServiceEmailValidation::class.java)
+        val serviceIntent = Intent(this.context, ServiceEmailValidation1::class.java)
 
         //val intent = Intent()
         val cameraStr = myCamera?.let { convertToGson(it) }
@@ -293,4 +335,6 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         }
 
     }
+
+
 }

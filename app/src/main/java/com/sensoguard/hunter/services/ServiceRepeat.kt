@@ -66,8 +66,8 @@ open class ServiceRepeat : Service() {
                 val thread = object : Thread() {
                     override fun run() {
 
-
                         val cameras = getSensorsFromLocally(this@ServiceRepeat)
+                        val myEmailAccount = getMyEmailAccountFromLocally(this@ServiceRepeat)
 
                         val iteratorList = cameras?.listIterator()
                         while (iteratorList != null && iteratorList.hasNext()) {
@@ -75,12 +75,17 @@ open class ServiceRepeat : Service() {
 //                            if(!cameraItem.emailServer.isNullOrEmpty()) {
 //                                Log.d("testCamera", "id=" + cameraItem.emailServer)
 //                            }
-                            if (!cameraItem.emailServer.isNullOrEmpty()) {
-                                EmailsManage.getInstance()
-                                    .readeLastDayUnreadEmails(cameraItem, this@ServiceRepeat)
+                            if (!cameraItem.emailAddress.isNullOrEmpty()
+                                && myEmailAccount != null
+                            ) {
+                                EmailsManage.getInstance().readeLastDayUnreadEmails(
+                                    myEmailAccount,
+                                    cameraItem,
+                                    this@ServiceRepeat
+                                )
+                                //.readeLastDayUnreadEmails(cameraItem, this@ServiceRepeat)
                             }
                         }
-
 
                     }
                 }

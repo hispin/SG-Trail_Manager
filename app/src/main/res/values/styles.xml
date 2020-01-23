@@ -68,5 +68,9 @@
 
     </style>
 
+    <style name="general_configuration">
+        <item name="android:layout_height">70dp</item>
+    </style>
+
 
 </resources>

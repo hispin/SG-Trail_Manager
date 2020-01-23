@@ -2,8 +2,10 @@ package com.sensoguard.hunter.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
@@ -14,20 +16,24 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.sensoguard.hunter.R
 import com.sensoguard.hunter.adapters.GeneralItemMenuAdapter
 import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.GeneralItemMenu
 import com.sensoguard.hunter.classes.LanguageManager
+import com.sensoguard.hunter.classes.MyEmailAccount
 import com.sensoguard.hunter.global.*
 import com.sensoguard.hunter.interfaces.CallToParentInterface
 import com.sensoguard.hunter.interfaces.OnFragmentListener
+import com.sensoguard.hunter.services.ServiceEmailValidation
 
 
 open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
 
+    private var myEmailAccount: MyEmailAccount? = null
     private var listPopupWindow: ListPopupWindow?=null
     private var generalItemMenuAdapter: GeneralItemMenuAdapter?=null
     private var etSensorValue: AppCompatEditText?=null
@@ -46,6 +52,13 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
     private var languageValue:TextView?=null
     private var listener: OnFragmentListener? = null
     private var rgAlarmDisplay: RadioGroup? = null
+    private var etMailAddress: AppCompatEditText? = null
+    private var etPassword: AppCompatEditText? = null
+    private var etMailServer: AppCompatEditText? = null
+    private var etMailServerPort: AppCompatEditText? = null
+    private var rgIsSSL: RadioGroup? = null
+    private var pbValidationEmail: ProgressBar? = null
+    private var btnSave: AppCompatButton? = null
 
 
     override fun onAttach(context: Context) {
@@ -170,11 +183,76 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             }
         }
 
+        etMailServer = view.findViewById(R.id.etMailServer)
+        etMailServerPort = view?.findViewById(R.id.etMailServerPort)
+        etMailAddress = view?.findViewById(R.id.etMailAddress)
+        //add automatically when set address as gmail
+        etMailAddress?.setOnFocusChangeListener { view, hasFocus ->
+
+            if (!hasFocus) {
+                if ((view as EditText).text.toString().contains("@gmail.com")) {
+                    //fill automatically
+                    etMailServer?.setError("", null)
+                    etMailServer?.setText("imap.gmail.com")
+                    etMailServerPort?.setError("", null)
+                    etMailServerPort?.setText("993")
+                    rgIsSSL?.check(R.id.rbYes)
+
+                }
+            }
+        }
+        rgIsSSL = view?.findViewById(R.id.rgIsSSL)
+        etPassword = view?.findViewById(R.id.etPassword)
+        pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
+
+        btnSave = view?.findViewById(R.id.btnSave)
+        btnSave?.setOnClickListener {
+            if (validIsEmpty(etMailServer!!)
+                and validIsEmpty(etMailServerPort!!)
+                and validIsEmpty(etMailAddress!!)
+                and validIsEmpty(etPassword!!)
+            ) {
+                myEmailAccount = MyEmailAccount(
+                    etMailAddress?.text.toString()
+                    , etPassword?.text.toString()
+                    , etMailServer?.text.toString()
+                    , etMailServerPort?.text.toString()
+                    , rgIsSSL?.checkedRadioButtonId == R.id.rbYes
+                )
+                pbValidationEmail?.visibility = View.VISIBLE
+                startServiceEmailValidation()
+
+            }
+        }
+
+        setMyEmailAccountFields()
+
         return view
+    }
+
+    private fun setMyEmailAccountFields() {
+        val myEmailAccountStr = getStringInPreference(activity, EMAIL_ACCOUNT_KEY, null)
+        myEmailAccountStr?.let {
+            myEmailAccount = convertJsonToMyEmailAccount(myEmailAccountStr)
+            if (myEmailAccount != null) {
+                etMailAddress?.setText(myEmailAccount?.emailAddress)
+                etMailServer?.setText(myEmailAccount?.emailServer)
+                etMailServerPort?.setText(myEmailAccount?.emailPort)
+                etPassword?.setText(myEmailAccount?.password)
+                if (myEmailAccount?.isUseSSL != null && myEmailAccount?.isUseSSL!!) {
+                    rgIsSSL?.check(R.id.rbYes)
+                } else {
+                    rgIsSSL?.check(R.id.rbNo)
+                }
+            }
+
+
+        }
     }
 
     override fun onStart() {
         super.onStart()
+        setFilter()
         //set the current language (or selected language or language of device)
         val generalItemMenu = LanguageManager.getCurrentLang(GeneralItemMenu.selectedItem)
         if (generalItemMenu != null) {
@@ -418,6 +496,78 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 //                )
 //            )
         }
+    }
+
+    //check if the fields is empty
+    private fun validIsEmpty(editText: EditText): Boolean {
+        var isValid = true
+
+        if (editText.text.isNullOrBlank()) {
+            editText.error =
+                resources.getString(R.string.empty_field_error)
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    //start email validation
+    private fun startServiceEmailValidation() {
+
+        val serviceIntent = Intent(this.context, ServiceEmailValidation::class.java)
+
+        //val intent = Intent()
+        val cameraStr = myEmailAccount?.let { convertToGson(it) }
+        cameraStr?.let {
+            val bdl = Bundle()
+            bdl.putString(CAMERA_KEY, cameraStr)
+            serviceIntent.putExtras(bdl)
+        }
+
+
+        this.context?.let { ContextCompat.startForegroundService(it, serviceIntent) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.unregisterReceiver(receiver)
+    }
+
+    private fun setFilter() {
+        val filter = IntentFilter(RESULT_VALIDATION_EMAIL_ACTION)
+        filter.addAction(ERROR_RESULT_VALIDATION_EMAIL_ACTION)
+        activity?.registerReceiver(receiver, filter)
+    }
+
+
+    //handle broadcast
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == RESULT_VALIDATION_EMAIL_ACTION) {
+                pbValidationEmail?.visibility = View.GONE
+                val resultValidationEmail = intent.getBooleanExtra(VALIDATION_EMAIL_RESULT, false)
+                if (resultValidationEmail) {
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.validation_successfully),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    //store the email account locally
+                    myEmailAccount?.let {
+                        activity?.let { context ->
+                            storeMyEmailAccountToLocaly(
+                                it,
+                                context
+                            )
+                        }
+                    }
+                }
+            } else if (intent?.action == ERROR_RESULT_VALIDATION_EMAIL_ACTION) {
+                val errorMsg = intent.getStringExtra(ERROR_VALIDATION_EMAIL_MSG_KEY)
+                errorMsg?.let { Toast.makeText(activity, it, Toast.LENGTH_LONG).show() }
+            }
+        }
+
     }
 
 
