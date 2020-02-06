@@ -1,10 +1,14 @@
 package com.sensoguard.hunter.global
 
 import android.content.Context
+import android.os.Environment
 import com.sensoguard.hunter.classes.Alarm
 import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.MyEmailAccount
+import java.io.*
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.collections.ArrayList
 
 //get myEmail from locally
 fun getMyEmailAccountFromLocally(context: Context): MyEmailAccount? {
@@ -79,4 +83,41 @@ fun storeMyEmailAccountToLocaly(myEmailAccount: MyEmailAccount, context: Context
         val myEmailAccountStr = convertToGson(myEmailAccount)
         setStringInPreference(wContext.get(), EMAIL_ACCOUNT_KEY, myEmailAccountStr)
     }
+}
+
+//write to log
+fun writeFile(logMsg: String, context: Context) {
+    val thread = object : Thread() {
+        override fun run() {
+            val externalStorageDir = Environment.getExternalStorageDirectory()
+            val myFile = File(externalStorageDir, "hunter_logs.txt")
+
+            if (myFile.exists()) {
+                try {
+                    val currDateStr =
+                        getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy kk:mm:ss", context)
+                    val fostream = FileOutputStream(myFile, true)
+                    val oswriter = OutputStreamWriter(fostream)
+                    val bwriter = BufferedWriter(oswriter)
+                    bwriter.write("$currDateStr:$logMsg")
+                    bwriter.newLine()
+                    bwriter.close()
+                    oswriter.close()
+                    fostream.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            } else {
+                try {
+                    myFile.createNewFile()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+
+        }
+    }
+
+    thread.start()
+
 }

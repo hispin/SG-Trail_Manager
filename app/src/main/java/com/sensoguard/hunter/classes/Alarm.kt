@@ -26,6 +26,7 @@ class Alarm {
     var msgNumber: Int? = null
     var batteryVal: Float? = null
     var wifiVal: Float? = null
+    var fromEmail: String? = null
 
     constructor()
 

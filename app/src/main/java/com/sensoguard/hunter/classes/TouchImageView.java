@@ -31,7 +31,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     PointF last = new PointF();
     PointF start = new PointF();
     float minScale = 1f;
-    float maxScale = 3f;
+    float maxScale = 15f;
     float[] m;
     int viewWidth, viewHeight;
     float saveScale = 1f;

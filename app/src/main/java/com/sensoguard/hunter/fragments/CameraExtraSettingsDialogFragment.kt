@@ -60,6 +60,9 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             container,
             false
         )
+        //prevent click below
+        //dialog?.setCanceledOnTouchOutside(true)
+        isCancelable = false
 
 
         initViews(view)
@@ -222,7 +225,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     //open large picture
     private fun openLargePictureDialog() {
-        if (context != null) {
+        if (context != null && bitmap != null) {
             val settingsDialog = Dialog(context!!)
             if (settingsDialog.window != null) {
                 settingsDialog.window!!.requestFeature(FEATURE_NO_TITLE)

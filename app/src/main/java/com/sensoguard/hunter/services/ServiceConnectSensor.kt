@@ -41,7 +41,7 @@ class ServiceConnectSensor : Service() {
 
         findUsbDevices()
 
-        return return START_NOT_STICKY
+        return START_NOT_STICKY
     }
 
     private val usbReceiver = object : BroadcastReceiver() {

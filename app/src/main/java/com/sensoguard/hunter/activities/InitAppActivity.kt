@@ -38,6 +38,7 @@ class InitAppActivity : AppCompatActivity() {
             val myActivateCode= CryptoHandler.getInstance().encrypt(myImei)
             if(localActivateCode!=null && myActivateCode.startsWith(localActivateCode)){
                 val inn = Intent(this, MainActivity::class.java)
+                inn.putExtra(IS_LOAD_APP, true)
                 inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(inn)
             }else{

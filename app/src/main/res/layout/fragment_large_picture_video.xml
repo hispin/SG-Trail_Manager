@@ -4,7 +4,9 @@
         xmlns:bvp="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/blackCapacity80">
+        android:background="@color/blackCapacity80"
+        android:clickable="true"
+        android:focusable="true">
 
     <com.sensoguard.hunter.classes.TouchImageView
             android:id="@+id/ivMyCaptureImage"

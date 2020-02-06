@@ -9,7 +9,7 @@
     <string name="invalid_mum_sensors">invalid number of sensors</string>
     <string name="name_title">NAME</string>
     <string name="id_title">ID</string>
-    <string name="map_location_title">MAP LOCATION</string>
+    <string name="map_location_title">LOCATION</string>
     <string name="status_title">ACTIVE</string>
     <string name="type_title">TYPE</string>
     <string name="time_title">TIME</string>

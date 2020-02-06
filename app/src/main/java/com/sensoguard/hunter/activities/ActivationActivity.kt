@@ -16,6 +16,7 @@ import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.CryptoHandler
 import com.sensoguard.hunter.global.ACTIVATION_CODE_KEY
 import com.sensoguard.hunter.global.IMEI_KEY
+import com.sensoguard.hunter.global.IS_LOAD_APP
 import com.sensoguard.hunter.global.setStringInPreference
 import org.apache.commons.lang3.StringUtils
 
@@ -84,6 +85,7 @@ class ActivationActivity : AppCompatActivity() {
             if (myActivateCodeWhitespace == tmp) {
                 setStringInPreference(applicationContext,ACTIVATION_CODE_KEY,etEnterCode?.text.toString())
                 val inn = Intent(this, MainActivity::class.java)
+                inn.putExtra(IS_LOAD_APP, true)
                 inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(Intent(inn))
             } else {

@@ -181,6 +181,15 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 //        }
     }
 
+    override fun onPause() {
+        super.onPause()
+        setBooleanInPreference(this, IS_MYSCREENACTIVITY_FOREGROUND, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBooleanInPreference(this, IS_MYSCREENACTIVITY_FOREGROUND, true)
+    }
 
     private fun configTabs() {
 

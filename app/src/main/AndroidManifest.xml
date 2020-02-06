@@ -41,6 +41,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
+        <!--launcher-->
         <activity
                 android:name=".activities.InitAppActivity"
                 android:screenOrientation="portrait"
@@ -88,17 +89,21 @@
         <service
                 android:name=".services.ServiceRepeat"
                 android:enabled="true"
-                android:exported="true" />
+                android:exported="true"
+                android:stopWithTask="false" />
         <service android:name=".services.ServiceEmailValidation1" />
         <service android:name=".services.ServiceEmailValidation" />
+        <service
+                android:name=".services.JobServiceRepeat"
+                android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".classes.BootCompleteReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <!--        <receiver android:name=".classes.BootCompleteReceiver">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
+        <!--                <category android:name="android.intent.category.DEFAULT" />-->
+        <!--            </intent-filter>-->
+        <!--        </receiver>-->
 
         <meta-data
                 android:name="io.fabric.ApiKey"

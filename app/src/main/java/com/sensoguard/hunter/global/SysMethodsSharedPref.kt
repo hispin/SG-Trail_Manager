@@ -89,6 +89,7 @@ fun setBooleanInPreference(context: Context?, key: String, value: Boolean) {
     edit.apply()
 }
 
+
 //read Int ic_share preference
 fun getIntInPreference(context: Context?, key: String, default: Int): Int? {
     if (context == null) {

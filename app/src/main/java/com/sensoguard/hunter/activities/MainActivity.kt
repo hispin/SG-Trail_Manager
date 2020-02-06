@@ -2,10 +2,14 @@ package com.sensoguard.hunter.activities
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.MonthDisplayHelper
 import android.view.WindowManager
 import android.widget.TextView
@@ -17,6 +21,7 @@ import com.sensoguard.hunter.classes.GeneralItemMenu
 import com.sensoguard.hunter.classes.LanguageManager
 import com.sensoguard.hunter.classes.MyExceptionHandler
 import com.sensoguard.hunter.global.*
+import com.sensoguard.hunter.services.JobServiceRepeat
 import com.sensoguard.hunter.services.ServiceRepeat
 import io.fabric.sdk.android.Fabric
 
@@ -63,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(com.sensoguard.hunter.R.layout.activity_main)
 
-        clearAllNotifications()
+        //clearAllNotifications()
 
 
         //hide unwanted badge of app icon
@@ -79,7 +84,16 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         //start repeated timeout to scan alarms from incoming emails
-        startServiceRepeat()
+        val isLoadApp = intent.getBooleanExtra(IS_LOAD_APP, false)
+        if (isLoadApp) {
+            //startServiceRepeat()
+            startJobServiceRepeat()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        clearAllNotifications()
     }
 
     //remove all notification of the app
@@ -173,7 +187,50 @@ class MainActivity : AppCompatActivity() {
     private fun startServiceRepeat() {
         val serviceIntent = Intent(this, ServiceRepeat::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
+
+
     }
 
+    //start job scheduler that supervision on serviceRepeat
+    private fun startJobServiceRepeat() {
+        Log.d("checkJob", "start from main")
+        val scheduler = this.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val JOB_ID = 1
 
+        if (isBeenScheduled(JOB_ID)) {
+            Log.i("mainActivity", "scheduler.cancel(JOB_ID)")
+            scheduler.cancel(JOB_ID)
+        } else {
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                val jobInfo =
+                    JobInfo.Builder(0, ComponentName(this, JobServiceRepeat::class.java))
+                        .setPersisted(true)
+                        .setPeriodic(900000)
+                        .build()
+                scheduler.schedule(jobInfo)
+            } else {
+                val jobInfo =
+                    JobInfo.Builder(0, ComponentName(this, JobServiceRepeat::class.java))
+                        .setPersisted(true)
+                        .setPeriodic(900000)
+                        .build()
+
+                scheduler.schedule(jobInfo)
+            }
+        }
+
+    }
+
+    // check if this schedule with JOB_ID is active
+    private fun isBeenScheduled(JOB_ID: Int): Boolean {
+        val scheduler = this.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        var hasBeenScheduled = false
+        for (jobInfo in scheduler.allPendingJobs) {
+            if (jobInfo.id == JOB_ID) {
+                hasBeenScheduled = true
+            }
+        }
+        return hasBeenScheduled
+    }
 }

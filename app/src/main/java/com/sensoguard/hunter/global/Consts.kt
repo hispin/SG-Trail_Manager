@@ -85,5 +85,7 @@ const val SORT_PICK_DATE_TIME_REQUEST_CODE = 4
 const val CHANNEL_NAME = "newAlarmDetected"
 const val CHANNEL_ID = "1.0"
 
-
+const val IS_MYSCREENACTIVITY_FOREGROUND = "isMyScreenActivityForeground"
+const val IS_LOAD_APP = "isLoadApp"
+const val HUNTER_LOG = "hunterLog"
 
