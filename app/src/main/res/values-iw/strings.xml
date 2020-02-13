@@ -95,6 +95,12 @@
     <string name="date_older">לא ניתן שתאריך הסיום יהיה מוקדם מתאריך ההתחלה</string>
     <string name="validation_error">שגיאת אימות</string>
     <string name="validation_successfully">האימות הצליח</string>
+    <string name="no_photo">אין תמונה</string>
+    <string name="select_all">בחר הכל</string>
+    <string name="select">בחר</string>
+    <string name="do_you_realy_want_delete_selected_alarm">אם אתה בטוח שאתה מעוניין למחוק התראות נבחרות?</string>
+    <string name="no_selected_alarms">אין התראות שנבחרו</string>
+    <string name="selected_alarms">התראות נבחרו</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

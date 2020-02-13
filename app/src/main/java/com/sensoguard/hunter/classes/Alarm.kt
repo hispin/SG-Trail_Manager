@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Alarm {
+    var isReadyToDelete: Boolean = false
     var id: String? = null
     var name: String? = null
     var type: String? = null

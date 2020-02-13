@@ -73,6 +73,18 @@ class AlarmAdapter(
         private var ivWifiLevel: AppCompatImageView? = null
 
 
+        init {
+            itemView.setOnLongClickListener {
+
+                //toggle the status of ready to delete
+                alarms[adapterPosition].isReadyToDelete = !alarms[adapterPosition].isReadyToDelete
+                notifyItemChanged(adapterPosition, alarms[adapterPosition])
+
+                return@setOnLongClickListener false
+
+            }
+
+        }
 
 //        init {
 //            itemView.setOnClickListener {
@@ -87,16 +99,28 @@ class AlarmAdapter(
             tvDate = _itemView.findViewById(R.id.tvDate)
             tvType = _itemView.findViewById(R.id.tvType)
             tvTime = _itemView.findViewById(R.id.tvTime)
+
+
             ivAlarmPic = _itemView.findViewById(R.id.ivAlarmPic)
             ivAlarmPic?.setOnClickListener {
                 itemClick.invoke(myAlarm, 1)
                 //alarm.imgsPath?.let { it1 -> onAdapterListener.openLargePictureDialog(it1) }
             }
+
+            //because it have onclick listener ,itemView long click does not influence it, it set specify
+            ivAlarmPic?.setOnLongClickListener {
+                alarms[adapterPosition].isReadyToDelete = !alarms[adapterPosition].isReadyToDelete
+                notifyItemChanged(adapterPosition, alarms[adapterPosition])
+                return@setOnLongClickListener true
+            }
+
             ivShare = _itemView.findViewById(R.id.ivShare)
             ivShare?.setOnClickListener {
                 itemClick.invoke(myAlarm, 2)
             }
             ivIconVideo = _itemView.findViewById(R.id.ivIconVideo)
+
+
 
 
 
@@ -176,26 +200,6 @@ class AlarmAdapter(
 
 
 
-
-//            if(alarm.isArmed!=null
-//                && alarm.isArmed!!
-//                && alarm.isLocallyDefined!=null
-//                && alarm.isLocallyDefined!!
-//            ){
-//                tvName?.setTextColor( ContextCompat.getColor(context,R.color.red))
-//                tvDate?.setTextColor( ContextCompat.getColor(context,R.color.red))
-//                //tvId?.setTextColor( ContextCompat.getColor(context,R.color.red))
-//                tvType?.setTextColor( ContextCompat.getColor(context,R.color.red))
-//                tvTime?.setTextColor( ContextCompat.getColor(context,R.color.red))
-//            }else{
-//                tvName?.setTextColor( ContextCompat.getColor(context,R.color.black))
-//                tvDate?.setTextColor( ContextCompat.getColor(context,R.color.black))
-//                //tvId?.setTextColor( ContextCompat.getColor(context,R.color.black))
-//                tvType?.setTextColor( ContextCompat.getColor(context,R.color.black))
-//                tvTime?.setTextColor( ContextCompat.getColor(context, R.color.black))
-//            }
-
-
             if (!isGrid) {
                 tvDate?.text = myAlarm.timeInMillis?.let {
                     getStrDateTimeByMilliSeconds(
@@ -218,10 +222,11 @@ class AlarmAdapter(
             tvType?.text = myAlarm.type
             tvName?.text = myAlarm.name
 
-            //val imgFile = myAlarm.imgsPath?.let { File(it) }
+            //get the image from external storage
+            val imgFile = myAlarm.imgsPath?.let { File(it) }
 
             //get the image from internal storage
-            val imgFile = myAlarm.imgsPath?.let { File(context.filesDir, it) }
+            //val imgFile = myAlarm.imgsPath?.let { File(context.filesDir, it) }
 
             if (imgFile != null && imgFile.exists()) {
 
@@ -264,6 +269,13 @@ class AlarmAdapter(
                         }).into(it)
 
                 }
+            }
+
+            //set selected/unselected
+            if (myAlarm.isReadyToDelete) {
+                itemView.alpha = 0.5F
+            } else {
+                itemView.alpha = 1.0F
             }
         }
     }

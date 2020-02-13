@@ -83,7 +83,7 @@ public class EmailsManage {
         String protocol = null;
 
         //IMAPS protocol
-        if (myEmailAccount.getEmailServer() != null) {
+        if (myEmailAccount != null && myEmailAccount.getEmailServer() != null) {
             protocol = myEmailAccount.getEmailServer().substring(0, myEmailAccount.getEmailServer().indexOf("."));
             props.setProperty("mail.store.protocol", protocol);
         } else {
@@ -895,11 +895,13 @@ public class EmailsManage {
                 }
 
 
-                //File file=saveImageExternal(is,bodyPart.getFileName());
-                String picName = saveImageInternal(is, bodyPart.getFileName(), context);
+                //store in external storage
+                File file = saveImageExternal(is, bodyPart.getFileName());
+                attachments.add(file.getAbsolutePath());
 
-                //attachments.add(file.getAbsolutePath());
-                attachments.add(picName);
+                //store in internal storage
+                //String picName = saveImageInternal(is, bodyPart.getFileName(), context);
+                //attachments.add(picName);
             }
         }
 

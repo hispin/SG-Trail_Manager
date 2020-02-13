@@ -28,7 +28,7 @@
     <string name="camera_title">Cameras</string>
     <string name="map_title">Map</string>
     <string name="config_title">Configuration</string>
-    <string name="alarm_log_title">Alarm log</string>
+    <string name="alarm_log_title">Alarm</string>
     <string name="not_located">Not Located</string>
     <string name="located">Located</string>
     <string name="date_title">DATE</string>
@@ -87,9 +87,9 @@
     <string name="grid_view">grid view</string>
     <string name="list_view">list view</string>
     <string name="alarm_display">alarm display</string>
-    <string name="systems_filter">system</string>
-    <string name="date_time">date and time</string>
-    <string name="filter_by">filter by:</string>
+    <string name="systems_filter">System</string>
+    <string name="date_time">Date and time</string>
+    <string name="filter_by">Filter by:</string>
     <string name="apply">apply</string>
     <string name="from">from</string>
     <string name="to">to</string>
@@ -97,6 +97,12 @@
     <string name="date_older">End date may not be earlier than start date</string>
     <string name="validation_error">validation error</string>
     <string name="validation_successfully">The verification was successful</string>
+    <string name="no_photo">no photo</string>
+    <string name="select_all">Select all</string>
+    <string name="select">Select</string>
+    <string name="do_you_realy_want_delete_selected_alarm">Do you realy want to delete selected alarms?</string>
+    <string name="no_selected_alarms">No selected alarm</string>
+    <string name="selected_alarms">selected alarm</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

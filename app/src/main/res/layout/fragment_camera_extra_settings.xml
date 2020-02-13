@@ -489,7 +489,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tvLastVisitValue"
                 app:layout_constraintStart_toEndOf="@+id/tvLastVisitValue"
                 app:layout_constraintTop_toTopOf="@+id/tvLastVisitValue"
-                app:srcCompat="@android:drawable/ic_menu_mapmode" />
+                app:srcCompat="@drawable/ic_open_date" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

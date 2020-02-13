@@ -3,6 +3,7 @@ package com.sensoguard.hunter.fragments
 //import android.support.v4.app.Fragment
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -52,6 +55,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    private var isAdapterSorted: Boolean = false
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -63,6 +67,8 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     private var viewBetweenContainer: View? = null
     private var btnFilterSystem: Button? = null
     private var btnFilterDateTime: Button? = null
+    private var cbIsSelected: CheckBox? = null
+    private var ibDeleteSelectedItems: ImageButton? = null
 
 
 
@@ -143,7 +149,17 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
                     if (type == 1) {
                         openLargePictureDialog(alarm)
                     } else if (type == 2) {
-                        alarm.imgsPath?.let { shareImage(it) }
+                        try {
+                            alarm.imgsPath?.let { shareImage(it) }
+                        } catch (ex: java.lang.Exception) {
+                            ex.printStackTrace()
+                            Toast.makeText(
+                                activity,
+                                resources.getString(R.string.no_photo),
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                        }
                     }
                 }
             }
@@ -167,6 +183,10 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         rvAlarm=view.findViewById(R.id.rvAlarm)
         btnFilterSystem = view.findViewById(R.id.btnFilterSystem)
         btnFilterSystem?.setOnClickListener {
+
+            //clear if selected
+            clearSelection()
+
             this@AlarmLogFragment.context?.let { it1 ->
                 ContextCompat.getColor(
                     it1, R.color.green2
@@ -186,6 +206,10 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         }
         btnFilterDateTime = view.findViewById(R.id.btnFilterDateTime)
         btnFilterDateTime?.setOnClickListener {
+
+            //clear if selected
+            clearSelection()
+
             this@AlarmLogFragment.context?.let { it1 ->
                 ContextCompat.getColor(
                     it1, R.color.green2
@@ -204,30 +228,47 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
             openSortByType(SORT_BY_DATETIME_KEY, SORT_PICK_DATE_TIME_REQUEST_CODE)
         }
 
+        cbIsSelected = view.findViewById(R.id.cbIsSelected)
+        cbIsSelected?.setOnCheckedChangeListener { _, isChecked ->
+            if (isAdapterSorted) {
+                mySortedAlarms?.let { toggleItemSelected(it, isChecked) }
+            } else {
+                myAlarms?.let { toggleItemSelected(it, isChecked) }
+            }
+        }
 
-//        btnCsv=view.findViewById(R.id.btnCsv)
-//
-//        btnCsv?.setOnClickListener{
-//            val alarms=populateAlarmsFromLocally()
-//            //val csvFile=CsvFile()
-//            HistoryWarningFragment@this.context?.let {
-//                    it1 ->
-//
-//                    val alarmsStr=alarmsListToCsvFile(alarms, it1)
-//                    if(writeCsvFile(alarmsStr)){
-//                        activity?.let { it2 -> shareCsv(it2) }
-//                        //Toast.makeText(context,"success",Toast.LENGTH_SHORT).show()
-//                    }else{
-//                        Toast.makeText(context,"failed",Toast.LENGTH_SHORT).show()
-//                    }
-//
-//
-//            }
-//
-//        }
+        ibDeleteSelectedItems = view.findViewById(R.id.ibDeleteSelectedItems)
+        ibDeleteSelectedItems?.setOnClickListener {
+
+            var alarmCounter = 0
+            if (isAdapterSorted) {
+                mySortedAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
+            } else {
+                myAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
+            }
+            if (alarmCounter > 0) {
+                showDeleteDialog(alarmCounter)
+            } else {
+                Toast.makeText(
+                    activity,
+                    resources.getString(R.string.no_selected_alarms),
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            }
+        }
+
+        isAdapterSorted = false
 
         // Inflate the layout for this fragment
         return view
+    }
+
+    //clear the selection of the sorted and normal array
+    private fun clearSelection() {
+        cbIsSelected?.isChecked = false
+        mySortedAlarms?.let { toggleItemSelected(it, false) }
+        myAlarms?.let { toggleItemSelected(it, false) }
     }
 
     private fun setFilter() {
@@ -269,6 +310,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     }
 
     private fun refreshAlarmsFromPref(){
+        isAdapterSorted = false
         myAlarms = ArrayList()
 
         val _alarms=populateAlarmsFromLocally()
@@ -344,7 +386,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     //open large picture
     private fun openLargePictureDialog(alarm: Alarm) {
         if (alarm.imgsPath != null && alarm.imgsPath!!.endsWith("mp4")) {
-            openLargePictureVideoByType(ACTION_VIDEO_KEY, alarm.imgsPath, 0)
+            //from external storage(ACTION_VIDEO_KEY, alarm.imgsPath, 0)
         } else {
             openLargePictureVideoByType(ACTION_PICTURE_KEY, alarm.imgsPath, 0)
         }
@@ -395,6 +437,24 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     //open fragment dialog to see a large picture or video
     private fun openLargePictureVideoByType(type: Int, imgPath: String?, requestCode: Int) {
 
+
+        if (imgPath == null) {
+            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        val imgFile = File(imgPath)
+
+        //from internal storage
+        //val imgFile = File(context?.filesDir, path)
+
+        if (!imgFile.exists()) {
+            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
         val fr = LargePictureVideoDialogFragment()
 
         //deliver selected camera to continue add data
@@ -405,9 +465,10 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         fr.arguments = bdl
         fr.setTargetFragment(this, requestCode)
         val fm = activity?.supportFragmentManager
-        val fragmentTransaction = fm?.beginTransaction()
-        fragmentTransaction?.add(R.id.flSortBySystemCamera, fr)
-        fragmentTransaction?.commit()
+        fm?.let { fr.show(it, "LargePictureVideoDialogFragment") }
+//        val fragmentTransaction = fm?.beginTransaction()
+//        fragmentTransaction?.add(R.id.flSortBySystemCamera, fr)
+//        fragmentTransaction?.commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -457,10 +518,12 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
                 try {
                     val fromCalendar: Calendar =
                         intent?.getSerializableExtra("fromCalendar") as Calendar
+                    fromCalendar.add(Calendar.DATE, -1)
                     //val fromDateStr=activity?.let { it1 -> getStringFromCalendar(fromCalendar, "dd/MM/yy kk:mm:ss", it1) }
                     val toCalendar: Calendar = intent.getSerializableExtra("toCalendar") as Calendar
 
                     sortAlarm(fromCalendar, toCalendar)
+                    isAdapterSorted = true
                     //val toDateStr=activity?.let { it1 -> getStringFromCalendar(toCalendar, "dd/MM/yy kk:mm:ss", it1) }
                     //Log.d("testCalendar",fromDateStr)
                     //Log.d("testCalendar",toDateStr)
@@ -514,61 +577,82 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         return false
     }
 
-//    fun openDateTimeDialog(){
-//
-////        var now = Calendar.getInstance()
-////        var dpd = DatePickerDialog.newInstance(
-////          this,
-////          now.get(Calendar.YEAR),
-////          now.get(Calendar.MONTH),
-////          now.get(Calendar.DAY_OF_MONTH)
-////        )
-////        //dpd.show()
-////        dpd?.show( activity?.supportFragmentManager, "Datepickerdialog")
-//
-////        val dateTimeDialogFragment = SwitchDateTimeDialogFragment.newInstance(
-////        "Title example",
-////        "OK",
-////        "Cancel"
-////     )
-////
-////      // Assign values
-////        dateTimeDialogFragment.startAtCalendarView()
-////        dateTimeDialogFragment.set24HoursMode(true)
-////                dateTimeDialogFragment.minimumDateTime = GregorianCalendar(2015, Calendar.JANUARY, 1).time
-////                dateTimeDialogFragment.maximumDateTime = GregorianCalendar(2025, Calendar.DECEMBER, 31).time
-////                dateTimeDialogFragment.setDefaultDateTime(GregorianCalendar(2017, Calendar.MARCH, 4, 15, 20).time)
-////        // Show
-////        activity?.supportFragmentManager?.let { dateTimeDialogFragment.show(it, "dialog_time") };
-////        val intent = DateTimeRangePickerActivity.newIntent(
-////            context,
-////            TimeZone.getDefault(),
-////            DateTime.now().millis,
-////            DateTime.now().plusDays(2).millis
-////        )
-////        activity?.startActivityForResult(intent, RQC_PICK_DATE_TIME_RANGE)
-//    }
+    //toggle selected/unselected alarms
+    private fun toggleItemSelected(alarms: ArrayList<Alarm>, isSelected: Boolean) {
+        val iteratorList = alarms.listIterator()
+        while (iteratorList != null && iteratorList.hasNext()) {
+            val item = iteratorList.next()
+            item.isReadyToDelete = isSelected
+            alarmAdapter?.setDetects(alarms)
+            alarmAdapter?.notifyDataSetChanged()
+        }
+    }
 
-//    override fun onTimeSet(
-//        view: RadialPickerLayout?,
-//        hourOfDay: Int,
-//        minute: Int,
-//        hourOfDayEnd: Int,
-//        minuteEnd: Int
-//    ) {
-//
-//    }
-//
-//    override fun onDateSet(
-//        view: DatePickerDialog?,
-//        year: Int,
-//        monthOfYear: Int,
-//        dayOfMonth: Int,
-//        yearEnd: Int,
-//        monthOfYearEnd: Int,
-//        dayOfMonthEnd: Int
-//    ) {
-//
-//    }
+    //get the counter of selected alarms
+    private fun getCountItemSelected(alarms: ArrayList<Alarm>): Int {
+        val iteratorList = alarms.listIterator()
+        var counter = 0
+        while (iteratorList != null && iteratorList.hasNext()) {
+            val item = iteratorList.next()
+            if (item.isReadyToDelete) {
+                counter++
+            }
 
+        }
+        return counter
+    }
+
+    //delete the selected alarms
+    private fun deleteItemSelected(alarms: ArrayList<Alarm>): Int {
+        val iteratorList = alarms.listIterator()
+        var counter = 0
+        while (iteratorList != null && iteratorList.hasNext()) {
+            val item = iteratorList.next()
+            if (item.isReadyToDelete) {
+                iteratorList.remove()
+                counter++
+            }
+
+        }
+        return counter
+    }
+
+    //show dialog before delete alarms
+    private fun showDeleteDialog(alarmCounter: Int) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(alarmCounter.toString() + " " + context!!.resources.getString(R.string.selected_alarms))
+        val yes = context!!.resources.getString(R.string.yes)
+        val no = context!!.resources.getString(R.string.no)
+        builder.setMessage(context!!.resources.getString(R.string.do_you_realy_want_delete_selected_alarm))
+            .setCancelable(false)
+        builder.setPositiveButton(yes) { dialog, which ->
+
+            //delete from main array and also from sort array
+            myAlarms?.let { deleteItemSelected(it) }
+            mySortedAlarms?.let { deleteItemSelected(it) }
+            //save the changing in shared preference
+            if (context != null && myAlarms != null && myAlarms?.size != null && myAlarms?.size!! > 0) {
+                myAlarms?.let { storeAlarmsToLocally(it, context!!) }
+            }
+
+            //refresh the system
+            if (isAdapterSorted) {
+                clearSelection()
+                alarmAdapter?.setDetects(mySortedAlarms)
+                alarmAdapter?.notifyDataSetChanged()
+            } else {
+                refreshAlarmsFromPref()
+            }
+
+            dialog.dismiss()
+        }
+
+
+        // Display a negative button on alert dialog
+        builder.setNegativeButton(no) { dialog, which ->
+            dialog.dismiss()
+        }
+        val alert = builder.create()
+        alert.show()
+    }
 }

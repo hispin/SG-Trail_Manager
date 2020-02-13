@@ -4,24 +4,15 @@
         xmlns:bvp="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/blackCapacity80"
+        android:background="@color/gray"
         android:clickable="true"
         android:focusable="true">
 
     <com.sensoguard.hunter.classes.TouchImageView
             android:id="@+id/ivMyCaptureImage"
             android:scaleType="centerCrop"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.807"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.321"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.955" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
     <com.halilibo.bvpkotlin.BetterVideoPlayer
@@ -55,6 +46,7 @@
     <!--            />-->
 
     <androidx.appcompat.widget.AppCompatImageButton
+            android:padding="5dp"
             android:id="@+id/ibClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,5 +56,5 @@
             android:contentDescription="@string/description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/btn_close" />
+            app:srcCompat="@drawable/ic_close_red" />
 </androidx.constraintlayout.widget.ConstraintLayout>
