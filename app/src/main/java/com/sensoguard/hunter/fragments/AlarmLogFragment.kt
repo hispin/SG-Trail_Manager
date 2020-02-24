@@ -7,14 +7,12 @@ import android.app.AlertDialog
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
+import android.text.util.Linkify
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -55,7 +53,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private var isAdapterSorted: Boolean = false
+    private var typeOfSorted: Int = NO_SORTED
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -69,6 +67,12 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     private var btnFilterDateTime: Button? = null
     private var cbIsSelected: CheckBox? = null
     private var ibDeleteSelectedItems: ImageButton? = null
+    private var tvReset: TextView? = null
+
+    var mySortedCameras: ArrayList<Camera>? = null
+    var fromCalendar: Calendar? = null
+    var toCalendar: Calendar? = null
+
 
 
 
@@ -230,7 +234,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
 
         cbIsSelected = view.findViewById(R.id.cbIsSelected)
         cbIsSelected?.setOnCheckedChangeListener { _, isChecked ->
-            if (isAdapterSorted) {
+            if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) {
                 mySortedAlarms?.let { toggleItemSelected(it, isChecked) }
             } else {
                 myAlarms?.let { toggleItemSelected(it, isChecked) }
@@ -241,7 +245,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         ibDeleteSelectedItems?.setOnClickListener {
 
             var alarmCounter = 0
-            if (isAdapterSorted) {
+            if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) {
                 mySortedAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
             } else {
                 myAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
@@ -258,7 +262,16 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
             }
         }
 
-        isAdapterSorted = false
+        tvReset = view.findViewById(R.id.tvReset)
+        if (tvReset != null) {
+            Linkify.addLinks(tvReset!!, Linkify.WEB_URLS)
+        }
+        //tvReset?.movementMethod = LinkMovementMethod.getInstance()
+        tvReset?.setOnClickListener {
+            typeOfSorted = NO_SORTED
+            refreshAlarmsFromPref()
+        }
+        typeOfSorted = NO_SORTED
 
         // Inflate the layout for this fragment
         return view
@@ -310,7 +323,6 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     }
 
     private fun refreshAlarmsFromPref(){
-        isAdapterSorted = false
         myAlarms = ArrayList()
 
         val _alarms=populateAlarmsFromLocally()
@@ -328,8 +340,22 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
             this.myAlarms = ArrayList(myAlarms.sortedWith(compareByDescending { it.timeInMillis }))
             //myAlarms?.let { alarms?.addAll(it) }
 
-            alarmAdapter?.setDetects(this.myAlarms)
-            alarmAdapter?.notifyDataSetChanged()
+            when (typeOfSorted) {
+                DATE_SORTED -> {
+                    sortByDateAlarm()
+                    alarmAdapter?.setDetects(mySortedAlarms)
+                    alarmAdapter?.notifyDataSetChanged()
+                }
+                CAMERA_SORTED -> {
+                    sortByCamerasAlarm()
+                    alarmAdapter?.setDetects(mySortedAlarms)
+                    alarmAdapter?.notifyDataSetChanged()
+                }
+                else -> {
+                    alarmAdapter?.setDetects(this.myAlarms)
+                    alarmAdapter?.notifyDataSetChanged()
+                }
+            }
         }
 
     }
@@ -508,25 +534,33 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         if (requestCode == SORT_BY_SYSTEM_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val cameraStr = intent?.extras?.getString(CAMERA_KEY, null)
-                var myCameras: ArrayList<Camera>? = null
-                cameraStr?.let { myCameras = convertJsonToSensorList(cameraStr) }
-                sortAlarm(myCameras)
+                cameraStr?.let { mySortedCameras = convertJsonToSensorList(cameraStr) }
+                if (mySortedCameras != null) {
+                    typeOfSorted = CAMERA_SORTED
+                    refreshAlarmsFromPref()
+                }
             }
         } else if (requestCode == SORT_PICK_DATE_TIME_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //get the start date and end date for sorting
                 try {
-                    val fromCalendar: Calendar =
+                    fromCalendar =
                         intent?.getSerializableExtra("fromCalendar") as Calendar
-                    fromCalendar.add(Calendar.DATE, -1)
-                    //val fromDateStr=activity?.let { it1 -> getStringFromCalendar(fromCalendar, "dd/MM/yy kk:mm:ss", it1) }
-                    val toCalendar: Calendar = intent.getSerializableExtra("toCalendar") as Calendar
-
-                    sortAlarm(fromCalendar, toCalendar)
-                    isAdapterSorted = true
-                    //val toDateStr=activity?.let { it1 -> getStringFromCalendar(toCalendar, "dd/MM/yy kk:mm:ss", it1) }
-                    //Log.d("testCalendar",fromDateStr)
-                    //Log.d("testCalendar",toDateStr)
+                    toCalendar = intent.getSerializableExtra("toCalendar") as Calendar
+                    if (fromCalendar != null && toCalendar != null) {
+                        typeOfSorted = DATE_SORTED
+                        refreshAlarmsFromPref()
+                    }
+                    //val fromDateStr = activity?.let { it1 ->
+//                            getStringFromCalendar(
+//                                fromCalendar!!,
+//                                "dd/MM/yy kk:mm:ss",
+//                                it1
+//                            )
+//                        }
+//                    val toDateStr=activity?.let { it1 -> getStringFromCalendar(toCalendar, "dd/MM/yy kk:mm:ss", it1) }
+//                    Log.d("testCalendar",fromDateStr)
+//                    Log.d("testCalendar",toDateStr)
                 } catch (ex: Exception) {
                     Toast.makeText(activity, resources.getString(R.string.error), Toast.LENGTH_LONG)
                         .show()
@@ -536,32 +570,35 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     }
 
     //sort the alarm by date time
-    private fun sortAlarm(fromCalendar: Calendar, toCalendar: Calendar) {
+    private fun sortByDateAlarm() {
+        if (toCalendar == null || fromCalendar == null) {
+            return
+        }
         mySortedAlarms = ArrayList()
         val iteratorList = myAlarms?.listIterator()
         while (iteratorList != null && iteratorList.hasNext()) {
             val item = iteratorList.next()
             if (item.timeInMillis != null
-                && item.timeInMillis!! <= toCalendar.timeInMillis
-                && item.timeInMillis!! >= fromCalendar.timeInMillis
+                && item.timeInMillis!! <= toCalendar!!.timeInMillis
+                && item.timeInMillis!! >= fromCalendar!!.timeInMillis
             )
                 mySortedAlarms?.add(item)
         }
-        alarmAdapter?.setDetects(mySortedAlarms)
-        alarmAdapter?.notifyDataSetChanged()
     }
 
     //sort the alarm by sorter camera
-    private fun sortAlarm(myCameras: ArrayList<Camera>?) {
+    private fun sortByCamerasAlarm() {
+        if (mySortedCameras == null) {
+            return
+        }
+
         mySortedAlarms = ArrayList()
         val iteratorList = myAlarms?.listIterator()
         while (iteratorList != null && iteratorList.hasNext()) {
             val item = iteratorList.next()
-            if (isAlarmSorted(item, myCameras))
+            if (isAlarmSorted(item, mySortedCameras))
                 mySortedAlarms?.add(item)
         }
-        alarmAdapter?.setDetects(mySortedAlarms)
-        alarmAdapter?.notifyDataSetChanged()
     }
 
     //check if the camera of alarm is sorted
@@ -631,18 +668,13 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
             myAlarms?.let { deleteItemSelected(it) }
             mySortedAlarms?.let { deleteItemSelected(it) }
             //save the changing in shared preference
-            if (context != null && myAlarms != null && myAlarms?.size != null && myAlarms?.size!! > 0) {
+            if (context != null && myAlarms != null) {
                 myAlarms?.let { storeAlarmsToLocally(it, context!!) }
             }
 
-            //refresh the system
-            if (isAdapterSorted) {
-                clearSelection()
-                alarmAdapter?.setDetects(mySortedAlarms)
-                alarmAdapter?.notifyDataSetChanged()
-            } else {
-                refreshAlarmsFromPref()
-            }
+            clearSelection()
+
+            refreshAlarmsFromPref()
 
             dialog.dismiss()
         }

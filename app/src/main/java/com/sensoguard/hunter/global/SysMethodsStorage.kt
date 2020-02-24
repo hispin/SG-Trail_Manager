@@ -67,7 +67,7 @@ fun storeAlarmsToLocally(alarms: java.util.ArrayList<Alarm>, context: Context) {
         WeakReference(context)
     // sort the list of events by date in descending
     val alarms = java.util.ArrayList(alarms.sortedWith(compareByDescending { it.timeInMillis }))
-    if (alarms != null && alarms.size > 0) {
+    if (alarms != null) {
         val alarmsJsonStr = convertToAlarmsGson(alarms)
         setStringInPreference(wContext.get(), ALARM_LIST_KEY_PREF, alarmsJsonStr)
     }
@@ -99,7 +99,7 @@ fun writeFile(logMsg: String, context: Context) {
                     val fostream = FileOutputStream(myFile, true)
                     val oswriter = OutputStreamWriter(fostream)
                     val bwriter = BufferedWriter(oswriter)
-                    bwriter.write("$currDateStr:$logMsg")
+                    bwriter.write("$currDateStr:log:$logMsg")
                     bwriter.newLine()
                     bwriter.close()
                     oswriter.close()

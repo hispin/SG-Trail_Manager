@@ -93,6 +93,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+                android:id="@+id/tvReset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/reset"
+                android:textColor="@color/blue"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/btnFilterDateTime"
+                app:layout_constraintStart_toStartOf="@+id/btnFilterDateTime"
+                app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -133,11 +147,11 @@
                 android:layoutDirection="ltr"
                 tools:listitem="@layout/item_alarm" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+                android:id="@+id/flSortBySystemCamera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <FrameLayout
-            android:id="@+id/flSortBySystemCamera"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

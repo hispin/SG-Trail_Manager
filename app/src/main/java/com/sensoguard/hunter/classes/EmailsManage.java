@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -17,9 +15,9 @@ import androidx.core.app.NotificationCompat;
 import com.sensoguard.hunter.R;
 import com.sensoguard.hunter.activities.InitAppActivity;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,6 +26,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -60,13 +59,19 @@ import static com.sensoguard.hunter.global.ConstsKt.DETECT_ALARM_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_RESULT_VALIDATION_EMAIL_ACTION;
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_VALIDATION_EMAIL_MSG_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.IS_MYSCREENACTIVITY_FOREGROUND;
+import static com.sensoguard.hunter.global.ConstsKt.LAST_DATE_ALARM;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getBooleanInPreference;
+import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getLongInPreference;
+import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.setLongInPreference;
 import static com.sensoguard.hunter.global.SysMethodsStorageKt.getAlarmsFromLocally;
 import static com.sensoguard.hunter.global.SysMethodsStorageKt.getSensorsFromLocally;
+import static com.sensoguard.hunter.global.SysMethodsStorageKt.writeFile;
+
 
 public class EmailsManage {
     private static final EmailsManage ourInstance = new EmailsManage();
     private static Alarm prevAlarm = new Alarm();
+    private static Calendar lastEmailDate = null;
 
     private EmailsManage() {
     }
@@ -101,11 +106,12 @@ public class EmailsManage {
         try {
             store = imapSession.getStore(protocol);
         } catch (NoSuchProviderException e) {
+            writeFile("readeLastDayUnreadEmails", context);
             e.printStackTrace();
         }
 
         //Connect to server by sending username and password.
-        store = connectToServer(store, myEmailAccount);
+        store = connectToServer(store, myEmailAccount, context);
 
         if (store == null) {
             return;
@@ -113,39 +119,54 @@ public class EmailsManage {
 
 
         //Get all mails in Inbox Folder
-        Folder inbox = getInbox(store);
+        Folder inbox = getInbox(store, context);
 
 
         //Return result to array of message
         try {
             if (inbox != null) {
 
+                long longLastDateAlarm = getLongInPreference(context, LAST_DATE_ALARM, -1);
+                if (longLastDateAlarm == -1) {
+                    lastEmailDate = Calendar.getInstance();
+                    lastEmailDate.roll(Calendar.DATE, false);
+                } else {
+                    lastEmailDate = Calendar.getInstance();
+                    lastEmailDate.setTimeInMillis(longLastDateAlarm);
+                }
 
-                Calendar cal = Calendar.getInstance();
-                //cal.add(Calendar.MINUTE, -5);
-                cal.roll(Calendar.DATE, false);
-                //cal.roll(Calendar.MINUTE, -2);
-                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
-                //Log.d("textDate",da);
+//                String lastDate=getStringFromCalendar(lastEmailDate,"kk:mm dd/MM/yy",context);
+//                Log.d("testEmails","lastDate"+lastDate);
+
+                Calendar currentDate = Calendar.getInstance();
+                currentDate.roll(Calendar.DATE, false);
+//                String da=getStringFromCalendar(currentDate,"kk:mm dd/MM/yy",context);
+//                Log.d("testEmails","currentDate"+da);
 
 
-//                Message[] lastDayMsgs = null;
-//                try {
-//                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-//
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                    return;
-//                }
+                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, currentDate.getTime()));
 
-//                Flags seen = new Flags(Flags.Flag.SEEN);
-//                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-//                //Message[] unReadLastDayMsgs = inbox.search(unseenFlagTerm, lastDayMsgs);
-                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-
+                if (unReadLastDayMsgs.length < 1) {
+                    return;
+                }
+                //reverse : the newer message is the first
+                ArrayUtils.reverse(unReadLastDayMsgs);
                 for (Message unReadLastDayMsg : unReadLastDayMsgs) {
 
+
+                    //if received date of this email is already scanned
+                    Date receivedDate = unReadLastDayMsg.getReceivedDate();
+                    if (receivedDate != null
+                            && (lastEmailDate.getTime().after(receivedDate) || lastEmailDate.getTime().compareTo(receivedDate) == 0)) {
+                        lastEmailDate.setTime(unReadLastDayMsgs[0].getReceivedDate());
+                        setLongInPreference(context, LAST_DATE_ALARM, lastEmailDate.getTimeInMillis());
+
+                        //close connection
+                        closeConnection(store, context);
+                        return;
+                    }
                     //Log.d("testEmails", unReadLastDayMsg.getSubject());
+
 
                     //check if the email is already exist
                     if (isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
@@ -195,32 +216,35 @@ public class EmailsManage {
                     //get attached picture if exist
                     List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
 
-                    //Log.d("checkVideo", attachments.get(0));
-
                     //in version 1 support only one attached picture
                     //do not wait to save photo ,to make the process of showing alarm more faster
                     myAlarm.updateAlarm(attachments.get(0), context);
                     inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
                     context.sendBroadcast(inn);
                 }
-
+                //update the newest email date
+                lastEmailDate.setTime(unReadLastDayMsgs[0].getReceivedDate());
+                setLongInPreference(context, LAST_DATE_ALARM, lastEmailDate.getTimeInMillis());
             }
 
         } catch (MessagingException e) {
+            Log.d("textDate", "exception" + e.getMessage());
+            writeFile("readeLastDayUnreadEmails", context);
             e.printStackTrace();
-            closeConnection(store);
+            closeConnection(store, context);
         }
 
         //close connection
-        closeConnection(store);
+        closeConnection(store, context);
     }
 
-    private void closeConnection(Store store) {
+    private void closeConnection(Store store, Context context) {
         try {
             if (store != null) {
                 store.close();
             }
         } catch (MessagingException e) {
+            writeFile("MessagingException", context);
             e.printStackTrace();
         }
     }
@@ -241,13 +265,13 @@ public class EmailsManage {
             }
 
             //check if the email from is identity to email from that setting in camera
-            boolean isEmailFromIsIdentity = isEmailFromIsIdentity(cameraItem, unReadLastDayMsg);
+            boolean isEmailFromIsIdentity = isEmailFromIsIdentity(cameraItem, unReadLastDayMsg, context);
             if (!isEmailFromIsIdentity) {
                 //go to next camera
                 continue;
             }
 
-            boolean isEmailModelIsIdentity = isEmailModelIsIdentity(unReadLastDayMsg, cameraItem, arrMySubject);
+            boolean isEmailModelIsIdentity = isEmailModelIsIdentity(unReadLastDayMsg, cameraItem, arrMySubject, context);
             if (isEmailModelIsIdentity) {
                 return cameraItem;
             }
@@ -258,11 +282,12 @@ public class EmailsManage {
     }
 
     //check if the model is identity to model that setting in camera
-    private boolean isEmailModelIsIdentity(Message unReadLastDayMsg, Camera camera, String[] arrMySubject) {
+    private boolean isEmailModelIsIdentity(Message unReadLastDayMsg, Camera camera, String[] arrMySubject, Context context) {
         String mySubject = null;
         try {
             mySubject = unReadLastDayMsg.getSubject();
         } catch (MessagingException e) {
+            writeFile("isEmailModelIsIdentity", context);
             e.printStackTrace();
         }
 
@@ -302,12 +327,13 @@ public class EmailsManage {
     }
 
     //check if the email from is identity to email from that setting in camera
-    private boolean isEmailFromIsIdentity(Camera cameraItem, Message unReadLastDayMsg) {
+    private boolean isEmailFromIsIdentity(Camera cameraItem, Message unReadLastDayMsg, Context context) {
         if (cameraItem.getEmailAddress() != null) {
             Address[] address = new Address[0];
             try {
                 address = unReadLastDayMsg.getFrom();
             } catch (MessagingException e) {
+                writeFile("isEmailFromIsIdentity", context);
                 e.printStackTrace();
             }
             if (address.length > 0) {
@@ -323,7 +349,7 @@ public class EmailsManage {
     }
 
     //Get all mails in Inbox Folder
-    private Folder getInbox(Store store) {
+    private Folder getInbox(Store store, Context context) {
         //Get all mails in Inbox Folder
         Folder inbox = null;
         try {
@@ -331,6 +357,7 @@ public class EmailsManage {
                 inbox = store.getFolder("Inbox");
             }
         } catch (MessagingException e) {
+            writeFile("isEmailFromIsIdentity", context);
             e.printStackTrace();
             return null;
         }
@@ -339,6 +366,7 @@ public class EmailsManage {
                 inbox.open(Folder.READ_WRITE);
             }
         } catch (MessagingException e) {
+            writeFile("isEmailFromIsIdentity", context);
             e.printStackTrace();
             return null;
         }
@@ -368,13 +396,14 @@ public class EmailsManage {
     }
 
     //Connect to server by sending username and password.
-    private Store connectToServer(Store store, MyEmailAccount myEmailAccount) {
+    private Store connectToServer(Store store, MyEmailAccount myEmailAccount, Context context) {
         try {
             if (store != null) {
                 int port = -1;
                 try {
                     port = Integer.valueOf(Objects.requireNonNull(myEmailAccount.getEmailPort()));
                 } catch (NumberFormatException ex) {
+                    writeFile("connectToServer", context);
                     ex.printStackTrace();
                     return null;
                 }
@@ -383,7 +412,7 @@ public class EmailsManage {
             }
         } catch (MessagingException e) {
             e.printStackTrace();
-            Log.d("testConnectMail", "exception connect " + e.getMessage());
+            writeFile("connectToServer", context);
             return null;
         }
         return store;
@@ -391,245 +420,245 @@ public class EmailsManage {
 
 
     //read camera's unread emails of last day
-    public void readeLastDayUnreadEmails(MyEmailAccount myEmailAccount, Camera camera, Context context) throws IOException {
-
-        Properties props = new Properties();
-        String protocol = null;
-
-        //IMAPS protocol
-        if (myEmailAccount.getEmailServer() != null) {
-            protocol = myEmailAccount.getEmailServer().substring(0, myEmailAccount.getEmailServer().indexOf("."));
-            props.setProperty("mail.store.protocol", protocol);
-        } else {
-            return;
-        }
-
-        //Set host address
-        props.setProperty("mail.imap.host", myEmailAccount.getEmailServer());
-
-        //Set specified port
-        if (myEmailAccount.getEmailPort() != null) {
-            props.setProperty("mail.imap.port", myEmailAccount.getEmailPort());
-        }
-
-        //Using SSL
-        if (myEmailAccount.isUseSSL()) {
-            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        }
-
-        props.setProperty("mail.imap.socketFactory.fallback", "false");
-
-
-        //Setting IMAP session
-        Session imapSession = Session.getInstance(props);
-
-        Store store = null;
-        try {
-            store = imapSession.getStore(protocol);
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        }
-
-
-        //Connect to server by sending username and password.
-        try {
-            if (store != null) {
-                int port = -1;
-                try {
-                    port = Integer.valueOf(Objects.requireNonNull(myEmailAccount.getEmailPort()));
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                    return;
-                }
-
-                store.connect(myEmailAccount.getEmailServer(), port, myEmailAccount.getEmailAddress(), myEmailAccount.getPassword());
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            Log.d("testConnectMail", "exception connect " + e.getMessage());
-            return;
-        }
-
-        //Get all mails in Inbox Folder
-        Folder inbox = null;
-        try {
-            if (store != null) {
-                inbox = store.getFolder("Inbox");
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (inbox != null) {
-                inbox.open(Folder.READ_WRITE);
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        //Return result to array of message
-        try {
-            if (inbox != null) {
-
-
-                Calendar cal = Calendar.getInstance();
-                //cal.add(Calendar.MINUTE, -5);
-                cal.roll(Calendar.DATE, false);
-                //cal.roll(Calendar.MINUTE, -2);
-                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
-                //Log.d("textDate",da);
-
-
-                Message[] lastDayMsgs = null;
-                try {
-                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    return;
-                }
-
-//                Flags seen = new Flags(Flags.Flag.SEEN);
-//                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-//                //Message[] unReadLastDayMsgs = inbox.search(unseenFlagTerm, lastDayMsgs);
-                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-
-                for (Message unReadLastDayMsg : unReadLastDayMsgs) {
-
-                    Log.d("testEmails", unReadLastDayMsg.getSubject());
-
-                    if (!isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
-
-                        Address[] address = unReadLastDayMsg.getFrom();
-                        if (address.length > 0) {
-
-                            //if the address from is the same as defined
-                            String addressFrom = ((InternetAddress) address[0]).getAddress();
-
-                            if (!Objects.equals(camera.getEmailAddress(), addressFrom)) {
-                                continue;
-                            }
-
-                            //if the the the interval time between alarms is short and  previous alarm is the same the return (there is another test if the interval time is bigger)
-                            if (checkIfPrevIsSame(prevAlarm, unReadLastDayMsg, addressFrom)) {
-                                continue;
-                            }
-
-                            //set the previous alarm
-                            if (prevAlarm != null) {
-                                prevAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
-                                prevAlarm.setFromEmail(addressFrom);
-                            }
-
-                            //Log.d("testEmails", ((InternetAddress) address[0]).getAddress());
-                        }
-
-                        //cancel the filter of last 5 minutes
-//                    Calendar minDate = Calendar.getInstance();
-//                    minDate.roll(Calendar.MINUTE, -5);
-//                    Calendar maxDate = Calendar.getInstance();
+//    public void readeLastDayUnreadEmails(MyEmailAccount myEmailAccount, Camera camera, Context context) throws IOException {
 //
-//                    //filter the message received in the last 5 minutes
-//                    if (unReadLastDayMsg.getReceivedDate().after(minDate.getTime())
-//                            && unReadLastDayMsg.getReceivedDate().before(maxDate.getTime())
-//                            //check if the message is already has been accepted as alarm
-//                            && !isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
-
-
-                        //int msgNum=unReadLastDayMsg.getMessageNumber();
-                        String mySubject = unReadLastDayMsg.getSubject();
-
-
-                        //filter the message with specify models
-                        if (camera.getCameraModel() != null) {
-                            //if the mode is without "-"
-                            String shortModel1 = camera.getCameraModel().replace("-", "");
-                            String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
-
-                            //if the camera is not active do not execute arm
-                            if (!camera.isArmed()) {
-                                return;
-                            }
-
-                            if (mySubject.contains(camera.getCameraModel())
-                                    || mySubject.contains(shortModel1)
-                                    || mySubject.contains(shortModel2)
-                                    || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
-                            ) {
-
-                                //in HIKVISION you do'nt need to specify the subject
-                                if (!camera.getCameraModel().equals("HIKVISION")) {
-                                    int index = mySubject.indexOf(camera.getCameraModel());
-                                    if (index == -1) {
-                                        index = mySubject.indexOf(shortModel1);
-                                    }
-                                    if (index == -1) {
-                                        index = mySubject.indexOf(shortModel2);
-                                    }
-                                    //if(index!=-1)
-                                    mySubject = mySubject.substring(index);
-                                }
-
-
-                                //change the message to read email
-                                //inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
-
-                                //Log.d("testSubject", mySubject);
-
-                                Alarm myAlarm = new Alarm();
-                                myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
-                                myAlarm.setCameFromEmail(true);
-                                myAlarm.setLoadPhoto(true);
-
-
-                                String myContent = getTextFromMessage(unReadLastDayMsg);
-                                EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
-
-
-                                sendLiveAlarm(camera, context);
-                                // Send notification and log the transition details.
-                                //createNotificationChannel(context);
-
-
-                                boolean isMyScreenActivityForeground = getBooleanInPreference(context, IS_MYSCREENACTIVITY_FOREGROUND, false);
-                                if (!isMyScreenActivityForeground) {
-                                    sendNotification("new alarm detected", context);
-                                }
-
-                                Intent inn = new Intent(DETECT_ALARM_KEY);
-                                context.sendBroadcast(inn);
-
-
-                                //get attached picture if exist
-                                List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
-
-                                //Log.d("checkVideo", attachments.get(0));
-
-                                //in version 1 support only one attached picture
-                                //do not wait to save photo ,to make the process of showing alarm more faster
-                                myAlarm.updateAlarm(attachments.get(0), context);
-                                inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
-                                context.sendBroadcast(inn);
-                            }
-                        }
-                    }
-                }
-
-            }
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        //close connection
-        try {
-            if (store != null) {
-                store.close();
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
+//        Properties props = new Properties();
+//        String protocol = null;
+//
+//        //IMAPS protocol
+//        if (myEmailAccount.getEmailServer() != null) {
+//            protocol = myEmailAccount.getEmailServer().substring(0, myEmailAccount.getEmailServer().indexOf("."));
+//            props.setProperty("mail.store.protocol", protocol);
+//        } else {
+//            return;
+//        }
+//
+//        //Set host address
+//        props.setProperty("mail.imap.host", myEmailAccount.getEmailServer());
+//
+//        //Set specified port
+//        if (myEmailAccount.getEmailPort() != null) {
+//            props.setProperty("mail.imap.port", myEmailAccount.getEmailPort());
+//        }
+//
+//        //Using SSL
+//        if (myEmailAccount.isUseSSL()) {
+//            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//        }
+//
+//        props.setProperty("mail.imap.socketFactory.fallback", "false");
+//
+//
+//        //Setting IMAP session
+//        Session imapSession = Session.getInstance(props);
+//
+//        Store store = null;
+//        try {
+//            store = imapSession.getStore(protocol);
+//        } catch (NoSuchProviderException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        //Connect to server by sending username and password.
+//        try {
+//            if (store != null) {
+//                int port = -1;
+//                try {
+//                    port = Integer.valueOf(Objects.requireNonNull(myEmailAccount.getEmailPort()));
+//                } catch (NumberFormatException ex) {
+//                    ex.printStackTrace();
+//                    return;
+//                }
+//
+//                store.connect(myEmailAccount.getEmailServer(), port, myEmailAccount.getEmailAddress(), myEmailAccount.getPassword());
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//            Log.d("testConnectMail", "exception connect " + e.getMessage());
+//            return;
+//        }
+//
+//        //Get all mails in Inbox Folder
+//        Folder inbox = null;
+//        try {
+//            if (store != null) {
+//                inbox = store.getFolder("Inbox");
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            if (inbox != null) {
+//                inbox.open(Folder.READ_WRITE);
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //Return result to array of message
+//        try {
+//            if (inbox != null) {
+//
+//
+//                Calendar cal = Calendar.getInstance();
+//                //cal.add(Calendar.MINUTE, -5);
+//                cal.roll(Calendar.DATE, false);
+//                //cal.roll(Calendar.MINUTE, -2);
+//                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
+//                //Log.d("textDate",da);
+//
+//
+//                Message[] lastDayMsgs = null;
+//                try {
+//                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+//
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                    return;
+//                }
+//
+////                Flags seen = new Flags(Flags.Flag.SEEN);
+////                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
+////                //Message[] unReadLastDayMsgs = inbox.search(unseenFlagTerm, lastDayMsgs);
+//                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+//
+//                for (Message unReadLastDayMsg : unReadLastDayMsgs) {
+//
+//                    Log.d("testEmails", unReadLastDayMsg.getSubject());
+//
+//                    if (!isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
+//
+//                        Address[] address = unReadLastDayMsg.getFrom();
+//                        if (address.length > 0) {
+//
+//                            //if the address from is the same as defined
+//                            String addressFrom = ((InternetAddress) address[0]).getAddress();
+//
+//                            if (!Objects.equals(camera.getEmailAddress(), addressFrom)) {
+//                                continue;
+//                            }
+//
+//                            //if the the the interval time between alarms is short and  previous alarm is the same the return (there is another test if the interval time is bigger)
+//                            if (checkIfPrevIsSame(prevAlarm, unReadLastDayMsg, addressFrom)) {
+//                                continue;
+//                            }
+//
+//                            //set the previous alarm
+//                            if (prevAlarm != null) {
+//                                prevAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
+//                                prevAlarm.setFromEmail(addressFrom);
+//                            }
+//
+//                            //Log.d("testEmails", ((InternetAddress) address[0]).getAddress());
+//                        }
+//
+//                        //cancel the filter of last 5 minutes
+////                    Calendar minDate = Calendar.getInstance();
+////                    minDate.roll(Calendar.MINUTE, -5);
+////                    Calendar maxDate = Calendar.getInstance();
+////
+////                    //filter the message received in the last 5 minutes
+////                    if (unReadLastDayMsg.getReceivedDate().after(minDate.getTime())
+////                            && unReadLastDayMsg.getReceivedDate().before(maxDate.getTime())
+////                            //check if the message is already has been accepted as alarm
+////                            && !isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
+//
+//
+//                        //int msgNum=unReadLastDayMsg.getMessageNumber();
+//                        String mySubject = unReadLastDayMsg.getSubject();
+//
+//
+//                        //filter the message with specify models
+//                        if (camera.getCameraModel() != null) {
+//                            //if the mode is without "-"
+//                            String shortModel1 = camera.getCameraModel().replace("-", "");
+//                            String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
+//
+//                            //if the camera is not active do not execute arm
+//                            if (!camera.isArmed()) {
+//                                return;
+//                            }
+//
+//                            if (mySubject.contains(camera.getCameraModel())
+//                                    || mySubject.contains(shortModel1)
+//                                    || mySubject.contains(shortModel2)
+//                                    || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
+//                            ) {
+//
+//                                //in HIKVISION you do'nt need to specify the subject
+//                                if (!camera.getCameraModel().equals("HIKVISION")) {
+//                                    int index = mySubject.indexOf(camera.getCameraModel());
+//                                    if (index == -1) {
+//                                        index = mySubject.indexOf(shortModel1);
+//                                    }
+//                                    if (index == -1) {
+//                                        index = mySubject.indexOf(shortModel2);
+//                                    }
+//                                    //if(index!=-1)
+//                                    mySubject = mySubject.substring(index);
+//                                }
+//
+//
+//                                //change the message to read email
+//                                //inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
+//
+//                                //Log.d("testSubject", mySubject);
+//
+//                                Alarm myAlarm = new Alarm();
+//                                myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
+//                                myAlarm.setCameFromEmail(true);
+//                                myAlarm.setLoadPhoto(true);
+//
+//
+//                                String myContent = getTextFromMessage(unReadLastDayMsg);
+//                                EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
+//
+//
+//                                sendLiveAlarm(camera, context);
+//                                // Send notification and log the transition details.
+//                                //createNotificationChannel(context);
+//
+//
+//                                boolean isMyScreenActivityForeground = getBooleanInPreference(context, IS_MYSCREENACTIVITY_FOREGROUND, false);
+//                                if (!isMyScreenActivityForeground) {
+//                                    sendNotification("new alarm detected", context);
+//                                }
+//
+//                                Intent inn = new Intent(DETECT_ALARM_KEY);
+//                                context.sendBroadcast(inn);
+//
+//
+//                                //get attached picture if exist
+//                                List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
+//
+//                                //Log.d("checkVideo", attachments.get(0));
+//
+//                                //in version 1 support only one attached picture
+//                                //do not wait to save photo ,to make the process of showing alarm more faster
+//                                myAlarm.updateAlarm(attachments.get(0), context);
+//                                inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
+//                                context.sendBroadcast(inn);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //close connection
+//        try {
+//            if (store != null) {
+//                store.close();
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     //if the the the interval time between alarms is short and  previous alarm is the same the return (there is another test if the interval time is bigger)
     private boolean checkIfPrevIsSame(Alarm prevAlarm, Message unReadLastDayMsg, String addressFrom) {
@@ -641,217 +670,217 @@ public class EmailsManage {
     }
 
 
-    //read camera's unread emails of last day
-    public void readeLastDayUnreadEmails(Camera camera, Context context) throws IOException {
-
-        Properties props = new Properties();
-        String protocol = null;
-
-        //IMAPS protocol
-        if (camera.getEmailServer() != null) {
-            protocol = camera.getEmailServer().substring(0, camera.getEmailServer().indexOf("."));
-            props.setProperty("mail.store.protocol", protocol);
-        } else {
-            return;
-        }
-
-        //Set host address
-        props.setProperty("mail.imap.host", camera.getEmailServer());
-
-        //Set specified port
-        if (camera.getEmailPort() != null) {
-            props.setProperty("mail.imap.port", camera.getEmailPort());
-        }
-
-        //Using SSL
-        if (camera.isUseSSL()) {
-            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        }
-
-        props.setProperty("mail.imap.socketFactory.fallback", "false");
-
-
-        //Setting IMAP session
-        Session imapSession = Session.getInstance(props);
-
-        Store store = null;
-        try {
-            store = imapSession.getStore(protocol);
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        }
-
-
-        //Connect to server by sending username and password.
-        try {
-            if (store != null) {
-                int port = -1;
-                try {
-                    port = Integer.valueOf(Objects.requireNonNull(camera.getEmailPort()));
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                    return;
-                }
-
-                store.connect(camera.getEmailServer(), port, camera.getEmailAddress(), camera.getPassword());
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            Log.d("testConnectMail", "exception connect " + e.getMessage());
-            return;
-        }
-
-        //Get all mails in Inbox Folder
-        Folder inbox = null;
-        try {
-            if (store != null) {
-                inbox = store.getFolder("Inbox");
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (inbox != null) {
-                inbox.open(Folder.READ_WRITE);
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        //Return result to array of message
-        try {
-            if (inbox != null) {
-
-
-                Calendar cal = Calendar.getInstance();
-                //cal.add(Calendar.MINUTE, -5);
-                cal.roll(Calendar.DATE, false);
-                //cal.roll(Calendar.MINUTE, -2);
-                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
-                //Log.d("textDate",da);
-
-
-                Message[] lastDayMsgs = null;
-                try {
-                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    return;
-                }
-
-//                Flags seen = new Flags(Flags.Flag.SEEN);
-//                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-//                //Message[] unReadLastDayMsgs = inbox.search(unseenFlagTerm, lastDayMsgs);
-                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
-
-                for (Message unReadLastDayMsg : unReadLastDayMsgs) {
-
-                    Log.d("testEmails", unReadLastDayMsg.getSubject());
-                    Address[] address = unReadLastDayMsg.getFrom();
-                    if (address.length > 0) {
-                        Log.d("testEmails", ((InternetAddress) address[0]).getAddress());
-                    }
-
-                    Calendar minDate = Calendar.getInstance();
-                    minDate.roll(Calendar.MINUTE, -5);
-                    Calendar maxDate = Calendar.getInstance();
-
-                    //filter to the last 5 minutes
-                    if (unReadLastDayMsg.getReceivedDate().after(minDate.getTime())
-                            && unReadLastDayMsg.getReceivedDate().before(maxDate.getTime())
-                            //check if the message is already has been accepted as alarm
-                            && !isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
-
-                        //int msgNum=unReadLastDayMsg.getMessageNumber();
-                        String mySubject = unReadLastDayMsg.getSubject();
-
-
-                        if (camera.getCameraModel() != null) {
-                            //if the mode is without "-"
-                            String shortModel1 = camera.getCameraModel().replace("-", "");
-                            String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
-
-                            //if the camera is not active do not execute arm
-                            if (!camera.isArmed()) {
-                                return;
-                            }
-
-                            if (mySubject.contains(camera.getCameraModel())
-                                    || mySubject.contains(shortModel1)
-                                    || mySubject.contains(shortModel2)
-                                    || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
-                            ) {
-
-                                //in HIKVISION you do'nt need to specify the subject
-                                if (!camera.getCameraModel().equals("HIKVISION")) {
-                                    int index = mySubject.indexOf(camera.getCameraModel());
-                                    if (index == -1) {
-                                        index = mySubject.indexOf(shortModel1);
-                                    }
-                                    if (index == -1) {
-                                        index = mySubject.indexOf(shortModel2);
-                                    }
-                                    //if(index!=-1)
-                                    mySubject = mySubject.substring(index);
-                                }
-
-
-                                //change the message to read email
-                                //inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
-
-                                //Log.d("testSubject", mySubject);
-
-                                Alarm myAlarm = new Alarm();
-                                myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
-                                myAlarm.setCameFromEmail(true);
-                                myAlarm.setLoadPhoto(true);
-
-                                String myContent = getTextFromMessage(unReadLastDayMsg);
-                                EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
-
-
-                                sendLiveAlarm(camera, context);
-                                // Send notification and log the transition details.
-                                //createNotificationChannel(context);
-
-
-                                sendNotification("new alarm detected", context);
-
-                                Intent inn = new Intent(DETECT_ALARM_KEY);
-                                context.sendBroadcast(inn);
-
-
-                                //get attached picture if exist
-                                List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
-
-                                //Log.d("checkVideo", attachments.get(0));
-
-                                //in version 1 support only one attached picture
-                                //do not wait to save photo ,to make the process of showing alarm more faster
-                                myAlarm.updateAlarm(attachments.get(0), context);
-                                inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
-                                context.sendBroadcast(inn);
-                            }
-                        }
-                    }
-                }
-
-            }
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        //close connection
-        try {
-            if (store != null) {
-                store.close();
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
+//    //read camera's unread emails of last day
+//    public void readeLastDayUnreadEmails(Camera camera, Context context) throws IOException {
+//
+//        Properties props = new Properties();
+//        String protocol = null;
+//
+//        //IMAPS protocol
+//        if (camera.getEmailServer() != null) {
+//            protocol = camera.getEmailServer().substring(0, camera.getEmailServer().indexOf("."));
+//            props.setProperty("mail.store.protocol", protocol);
+//        } else {
+//            return;
+//        }
+//
+//        //Set host address
+//        props.setProperty("mail.imap.host", camera.getEmailServer());
+//
+//        //Set specified port
+//        if (camera.getEmailPort() != null) {
+//            props.setProperty("mail.imap.port", camera.getEmailPort());
+//        }
+//
+//        //Using SSL
+//        if (camera.isUseSSL()) {
+//            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//        }
+//
+//        props.setProperty("mail.imap.socketFactory.fallback", "false");
+//
+//
+//        //Setting IMAP session
+//        Session imapSession = Session.getInstance(props);
+//
+//        Store store = null;
+//        try {
+//            store = imapSession.getStore(protocol);
+//        } catch (NoSuchProviderException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        //Connect to server by sending username and password.
+//        try {
+//            if (store != null) {
+//                int port = -1;
+//                try {
+//                    port = Integer.valueOf(Objects.requireNonNull(camera.getEmailPort()));
+//                } catch (NumberFormatException ex) {
+//                    ex.printStackTrace();
+//                    return;
+//                }
+//
+//                store.connect(camera.getEmailServer(), port, camera.getEmailAddress(), camera.getPassword());
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//            Log.d("testConnectMail", "exception connect " + e.getMessage());
+//            return;
+//        }
+//
+//        //Get all mails in Inbox Folder
+//        Folder inbox = null;
+//        try {
+//            if (store != null) {
+//                inbox = store.getFolder("Inbox");
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            if (inbox != null) {
+//                inbox.open(Folder.READ_WRITE);
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //Return result to array of message
+//        try {
+//            if (inbox != null) {
+//
+//
+//                Calendar cal = Calendar.getInstance();
+//                //cal.add(Calendar.MINUTE, -5);
+//                cal.roll(Calendar.DATE, false);
+//                //cal.roll(Calendar.MINUTE, -2);
+//                //String da=getStringFromCalendar(cal,"kk:mm dd/MM/yy",context);
+//                //Log.d("textDate",da);
+//
+//
+//                Message[] lastDayMsgs = null;
+//                try {
+//                    lastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+//
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                    return;
+//                }
+//
+////                Flags seen = new Flags(Flags.Flag.SEEN);
+////                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
+////                //Message[] unReadLastDayMsgs = inbox.search(unseenFlagTerm, lastDayMsgs);
+//                Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, cal.getTime()));
+//
+//                for (Message unReadLastDayMsg : unReadLastDayMsgs) {
+//
+//                    Log.d("testEmails", unReadLastDayMsg.getSubject());
+//                    Address[] address = unReadLastDayMsg.getFrom();
+//                    if (address.length > 0) {
+//                        Log.d("testEmails", ((InternetAddress) address[0]).getAddress());
+//                    }
+//
+//                    Calendar minDate = Calendar.getInstance();
+//                    minDate.roll(Calendar.MINUTE, -5);
+//                    Calendar maxDate = Calendar.getInstance();
+//
+//                    //filter to the last 5 minutes
+//                    if (unReadLastDayMsg.getReceivedDate().after(minDate.getTime())
+//                            && unReadLastDayMsg.getReceivedDate().before(maxDate.getTime())
+//                            //check if the message is already has been accepted as alarm
+//                            && !isEmailAlreadyReceived(unReadLastDayMsg.getMessageNumber(), context)) {
+//
+//                        //int msgNum=unReadLastDayMsg.getMessageNumber();
+//                        String mySubject = unReadLastDayMsg.getSubject();
+//
+//
+//                        if (camera.getCameraModel() != null) {
+//                            //if the mode is without "-"
+//                            String shortModel1 = camera.getCameraModel().replace("-", "");
+//                            String shortModel2 = camera.getCameraModel().replaceFirst("-", "");
+//
+//                            //if the camera is not active do not execute arm
+//                            if (!camera.isArmed()) {
+//                                return;
+//                            }
+//
+//                            if (mySubject.contains(camera.getCameraModel())
+//                                    || mySubject.contains(shortModel1)
+//                                    || mySubject.contains(shortModel2)
+//                                    || (camera.getCameraModel().equals("HIKVISION") && mySubject.contains("Network Video Recorder"))
+//                            ) {
+//
+//                                //in HIKVISION you do'nt need to specify the subject
+//                                if (!camera.getCameraModel().equals("HIKVISION")) {
+//                                    int index = mySubject.indexOf(camera.getCameraModel());
+//                                    if (index == -1) {
+//                                        index = mySubject.indexOf(shortModel1);
+//                                    }
+//                                    if (index == -1) {
+//                                        index = mySubject.indexOf(shortModel2);
+//                                    }
+//                                    //if(index!=-1)
+//                                    mySubject = mySubject.substring(index);
+//                                }
+//
+//
+//                                //change the message to read email
+//                                //inbox.setFlags(new Message[]{unReadLastDayMsg}, new Flags(Flags.Flag.SEEN), true);
+//
+//                                //Log.d("testSubject", mySubject);
+//
+//                                Alarm myAlarm = new Alarm();
+//                                myAlarm.setMsgNumber(unReadLastDayMsg.getMessageNumber());
+//                                myAlarm.setCameFromEmail(true);
+//                                myAlarm.setLoadPhoto(true);
+//
+//                                String myContent = getTextFromMessage(unReadLastDayMsg);
+//                                EmailParsing.getInstance().parseByModel(camera, mySubject, myAlarm, myContent, context);
+//
+//
+//                                sendLiveAlarm(camera, context);
+//                                // Send notification and log the transition details.
+//                                //createNotificationChannel(context);
+//
+//
+//                                sendNotification("new alarm detected", context);
+//
+//                                Intent inn = new Intent(DETECT_ALARM_KEY);
+//                                context.sendBroadcast(inn);
+//
+//
+//                                //get attached picture if exist
+//                                List<String> attachments = getAttachedFiles(unReadLastDayMsg, context);
+//
+//                                //Log.d("checkVideo", attachments.get(0));
+//
+//                                //in version 1 support only one attached picture
+//                                //do not wait to save photo ,to make the process of showing alarm more faster
+//                                myAlarm.updateAlarm(attachments.get(0), context);
+//                                inn = new Intent(ADD_ATTACHED_PHOTOS_KEY);
+//                                context.sendBroadcast(inn);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //close connection
+//        try {
+//            if (store != null) {
+//                store.close();
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 
@@ -875,6 +904,7 @@ public class EmailsManage {
         try {
             multipart = (Multipart) message.getContent();
         } catch (IOException | MessagingException e) {
+            writeFile("getAttachedFiles", context);
             Log.d("testSubject", e.getMessage());
             e.printStackTrace();
         }
@@ -891,12 +921,13 @@ public class EmailsManage {
                     is = bodyPart.getInputStream();
 
                 } catch (IOException e) {
+                    writeFile("getAttachedFiles", context);
                     e.printStackTrace();
                 }
 
 
                 //store in external storage
-                File file = saveImageExternal(is, bodyPart.getFileName());
+                File file = saveImageExternal(is, bodyPart.getFileName(), context);
                 attachments.add(file.getAbsolutePath());
 
                 //store in internal storage
@@ -909,31 +940,31 @@ public class EmailsManage {
     }
 
 
-    //save the picture in internal
-    private String saveImageInternal(InputStream is, String fileName, Context context) {
-
-
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
-
-        Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
-
-        //String fullFileName = fileName+".jpg";
-
-        FileOutputStream fileOutputStream;
-        try {
-            fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return fileName;
-
-    }
+//    //save the picture in internal
+//    private String saveImageInternal(InputStream is, String fileName, Context context) {
+//
+//
+//        BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+//
+//        Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
+//
+//        //String fullFileName = fileName+".jpg";
+//
+//        FileOutputStream fileOutputStream;
+//        try {
+//            fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+//            bmp.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
+//            fileOutputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return fileName;
+//
+//    }
 
     //save the picture in external
-    private File saveImageExternal(InputStream is, String fileName) {
+    private File saveImageExternal(InputStream is, String fileName, Context context) {
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/alarms_hunter");
         if (!myDir.exists()) {
@@ -947,6 +978,7 @@ public class EmailsManage {
         try {
             fos = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
+            writeFile("saveImageExternal", context);
             e.printStackTrace();
         }
         byte[] buf = new byte[4096];
@@ -955,6 +987,7 @@ public class EmailsManage {
             try {
                 if (is != null && (bytesRead = is.read(buf)) == -1) break;
             } catch (IOException e) {
+                writeFile("saveImageExternal", context);
                 e.printStackTrace();
             }
             try {
@@ -962,6 +995,7 @@ public class EmailsManage {
                     fos.write(buf, 0, bytesRead);
                 }
             } catch (IOException e) {
+                writeFile("saveImageExternal", context);
                 e.printStackTrace();
             }
         }
@@ -1048,6 +1082,7 @@ public class EmailsManage {
         try {
             store = imapSession.getStore(protocol);
         } catch (NoSuchProviderException e) {
+            writeFile("emailValidation", context);
             sendErrorMsg(e.getMessage(), context);
             e.printStackTrace();
         }
@@ -1060,6 +1095,7 @@ public class EmailsManage {
                 try {
                     port = Integer.valueOf(Objects.requireNonNull(camera.getEmailPort()));
                 } catch (NumberFormatException ex) {
+                    writeFile("emailValidation", context);
                     ex.printStackTrace();
                     sendErrorMsg(ex.getMessage(), context);
                     return false;
@@ -1070,6 +1106,7 @@ public class EmailsManage {
                 return store.isConnected();
             }
         } catch (MessagingException e) {
+            writeFile("emailValidation", context);
             e.printStackTrace();
             sendErrorMsg(e.getMessage(), context);
             return false;
@@ -1113,6 +1150,7 @@ public class EmailsManage {
         try {
             store = imapSession.getStore(protocol);
         } catch (NoSuchProviderException e) {
+            writeFile("emailValidation", context);
             sendErrorMsg(e.getMessage(), context);
             e.printStackTrace();
         }
@@ -1135,6 +1173,7 @@ public class EmailsManage {
                 return store.isConnected();
             }
         } catch (MessagingException e) {
+            writeFile("emailValidation", context);
             e.printStackTrace();
             sendErrorMsg(e.getMessage(), context);
             return false;

@@ -4,9 +4,9 @@ import android.content.Context
 
 
 //read Long ic_share preference
-fun getLongInPreference(context: Context?, key: String, default: Long): Long? {
+fun getLongInPreference(context: Context?, key: String, default: Long): Long {
     if (context == null) {
-        return null
+        return -1
     }
     val pref=context.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)
     return pref.getLong(key, default)

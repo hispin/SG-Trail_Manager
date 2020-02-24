@@ -32,7 +32,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.150"
-             app:layout_constraintEnd_toEndOf="parent"/>
+            android:ellipsize="end"
+            android:ems="5"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
             android:id="@+id/etName"

@@ -89,3 +89,9 @@ const val IS_MYSCREENACTIVITY_FOREGROUND = "isMyScreenActivityForeground"
 const val IS_LOAD_APP = "isLoadApp"
 const val HUNTER_LOG = "hunterLog"
 
+const val NO_SORTED = 0
+const val DATE_SORTED = 1
+const val CAMERA_SORTED = 2
+
+const val LAST_DATE_ALARM = "lastDateAlarm"
+

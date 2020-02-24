@@ -7,12 +7,12 @@
     <string name="csv">csv</string>
     <string name="dialog_new_sensor_title">Configure Sensors</string>
     <string name="invalid_mum_sensors">invalid number of sensors</string>
-    <string name="name_title">NAME</string>
-    <string name="id_title">ID</string>
-    <string name="map_location_title">LOCATION</string>
-    <string name="status_title">ACTIVE</string>
-    <string name="type_title">TYPE</string>
-    <string name="time_title">TIME</string>
+    <string name="name_title">Name</string>
+    <string name="id_title">Id</string>
+    <string name="map_location_title">Location</string>
+    <string name="status_title">Active</string>
+    <string name="type_title">Type</string>
+    <string name="time_title">Time</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="content_delete_extra_sensor">The System has more sensors than configured, do you want to delete extra
@@ -21,7 +21,7 @@
     <string name="remove_extra_sensors">Remove extra sensors</string>
     <string name="csv_date_title"><![CDATA[Date&Time]]></string>
     <string name="csv_name_title">Sensor Name</string>
-    <string name="csv_id_title">ID</string>
+    <string name="csv_id_title">Id</string>
     <string name="csv_alarm_type_title">Alarm Type</string>
     <string name="csv_latitude_title">latitude</string>
     <string name="csv_longitude_title">longitude</string>
@@ -31,14 +31,14 @@
     <string name="alarm_log_title">Alarm</string>
     <string name="not_located">Not Located</string>
     <string name="located">Located</string>
-    <string name="date_title">DATE</string>
-    <string name="date_title1">DATE:</string>
-    <string name="save">save</string>
+    <string name="date_title">Date</string>
+    <string name="date_title1">Date:</string>
+    <string name="save">Save</string>
     <string name="define_sensor_amount">Define sensor amount</string>
     <string name="choose_alarm_sound">Choose alarm sound</string>
     <string name="vibration_when_alarm">Vibration when alarm</string>
     <string name="alarm_flickering_time">Alarm flickering time</string>
-    <string name="default_str">default</string>
+    <string name="default_str">Default</string>
 
 
     <string-array name="state_types">
@@ -61,7 +61,7 @@
     <string name="no_selected_sound">no selected sound</string>
     <string name="channel_name">my_channel_01_name</string>
     <string name="channel_description">my_channel_01_description</string>
-    <string name="share">share</string>
+    <string name="share">Share</string>
     <string name="enter_code">enter activation code</string>
     <string name="wrong_activate_code">wrong activate code</string>
     <string name="sign_in">sign in</string>
@@ -103,6 +103,7 @@
     <string name="do_you_realy_want_delete_selected_alarm">Do you realy want to delete selected alarms?</string>
     <string name="no_selected_alarms">No selected alarm</string>
     <string name="selected_alarms">selected alarm</string>
+    <string name="reset">reset</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

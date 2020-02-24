@@ -63,6 +63,7 @@
 
         <Button
                 android:id="@+id/btncn"
+                android:textAllCaps="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

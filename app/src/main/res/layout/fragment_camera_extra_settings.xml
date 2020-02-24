@@ -433,7 +433,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@color/green1"
-
+                android:textAllCaps="false"
                 android:fontFamily="@font/arialmt"
                 android:lineSpacingExtra="-9.9sp"
                 android:text="@string/save"
@@ -459,7 +459,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@color/orange"
-
+                android:textAllCaps="false"
                 android:fontFamily="@font/arialmt"
                 android:lineSpacingExtra="-9.9sp"
                 android:text="@string/cancel"
