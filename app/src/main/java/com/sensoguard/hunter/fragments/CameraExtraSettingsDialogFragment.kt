@@ -84,15 +84,10 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         btnSave?.setOnClickListener {
             populateMyCamera()
             saveLastVisitPicture()
-//            Toast.makeText(
-//                activity,
-//                resources.getString(R.string.validation_successfully),
-//                Toast.LENGTH_LONG
-//            ).show()
+            //remove last date and enable scan last date
+            removePreference(activity, LAST_DATE_ALARM)
             sendResult()
-            //pbValidationEmail?.visibility = View.VISIBLE
-            //startServiceEmailValidation()
-            //sendResult()
+
         }
 
         btnCancel = view?.findViewById(R.id.btnCancel)

@@ -429,7 +429,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
     private fun isSensorAlarmTimeout(alarmProcess: AlarmSensor?):Boolean{
 
         val timeout= getLongInPreference(activity,ALARM_FLICKERING_DURATION_KEY,ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS)
-        val futureTimeout = timeout?.let{alarmProcess?.alarmTime?.timeInMillis?.plus(it*1000)}
+        val futureTimeout = timeout.let { alarmProcess?.alarmTime?.timeInMillis?.plus(it * 1000) }
 
         if (futureTimeout != null) {
             val calendar=Calendar.getInstance()

@@ -409,6 +409,8 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             return
         }
 
+        //remove last date and enable scan last date
+        removePreference(activity, LAST_DATE_ALARM)
 
         if(numSensorsRequest!=null) {
             //add numSensors sensors
@@ -547,6 +549,10 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 pbValidationEmail?.visibility = View.GONE
                 val resultValidationEmail = intent.getBooleanExtra(VALIDATION_EMAIL_RESULT, false)
                 if (resultValidationEmail) {
+
+                    //remove last date and enable scan last date
+                    removePreference(activity, LAST_DATE_ALARM)
+
                     Toast.makeText(
                         activity,
                         resources.getString(R.string.validation_successfully),

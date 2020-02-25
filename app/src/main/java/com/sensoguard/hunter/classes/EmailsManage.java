@@ -60,6 +60,7 @@ import static com.sensoguard.hunter.global.ConstsKt.ERROR_RESULT_VALIDATION_EMAI
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_VALIDATION_EMAIL_MSG_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.IS_MYSCREENACTIVITY_FOREGROUND;
 import static com.sensoguard.hunter.global.ConstsKt.LAST_DATE_ALARM;
+import static com.sensoguard.hunter.global.SysMethodDateKt.getStringFromCalendar;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getBooleanInPreference;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getLongInPreference;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.setLongInPreference;
@@ -135,13 +136,13 @@ public class EmailsManage {
                     lastEmailDate.setTimeInMillis(longLastDateAlarm);
                 }
 
-//                String lastDate=getStringFromCalendar(lastEmailDate,"kk:mm dd/MM/yy",context);
-//                Log.d("testEmails","lastDate"+lastDate);
+                String lastDate = getStringFromCalendar(lastEmailDate, "kk:mm dd/MM/yy", context);
+                Log.d("testEmails", "lastDate" + lastDate);
 
                 Calendar currentDate = Calendar.getInstance();
                 currentDate.roll(Calendar.DATE, false);
-//                String da=getStringFromCalendar(currentDate,"kk:mm dd/MM/yy",context);
-//                Log.d("testEmails","currentDate"+da);
+                String da = getStringFromCalendar(currentDate, "kk:mm dd/MM/yy", context);
+                Log.d("testEmails", "currentDate" + da);
 
 
                 Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, currentDate.getTime()));
@@ -165,7 +166,7 @@ public class EmailsManage {
                         closeConnection(store, context);
                         return;
                     }
-                    //Log.d("testEmails", unReadLastDayMsg.getSubject());
+                    Log.d("testEmails", unReadLastDayMsg.getSubject());
 
 
                     //check if the email is already exist
