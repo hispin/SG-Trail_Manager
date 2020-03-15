@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.EmailsManage
 import com.sensoguard.hunter.classes.MyEmailAccount
 import com.sensoguard.hunter.global.CAMERA_KEY
@@ -47,7 +48,11 @@ class ServiceEmailValidation : Service() {
 
     //The system allows apps to call Context.startForegrozundService() even while the app is in the background. However, the app must call that service's startForeground() method within five seconds after the service is created
     private fun startSysForeGround() {
-
+        fun getNotificationIcon(): Int {
+            val useWhiteIcon =
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+            return if (useWhiteIcon) R.drawable.ic_app_notification else R.mipmap.ic_launcher
+        }
         if (Build.VERSION.SDK_INT >= 26) {
             val CHANNEL_ID = "my_channel_01"
             val channel = NotificationChannel(
@@ -63,6 +68,7 @@ class ServiceEmailValidation : Service() {
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("")
+                .setSmallIcon(getNotificationIcon())
                 .setContentText("").build()
 
             startForeground(1, notification)

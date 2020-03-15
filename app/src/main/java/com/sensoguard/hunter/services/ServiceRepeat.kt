@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.EmailsManage
 import com.sensoguard.hunter.global.*
 import java.util.concurrent.Executors
@@ -76,55 +77,45 @@ open class ServiceRepeat : Service() {
     // execute the time
     private fun executeTimer() {
 
-
         // This schedule a task to run every 1 second:
         scheduleTaskExecutor?.scheduleAtFixedRate({
 
 
             stopPlayingAlarm()
-            //Log.d("testEmails", "try to start scan")
+
+            Log.d("testEmails", "try to start scan")
+
+            val isEmailConfig =
+                getBooleanInPreference(this@ServiceRepeat, IS_EMAIL_CONFIG_PREF_KEY, false)
+            if (!isEmailConfig) {
+                return@scheduleAtFixedRate
+            }
+
             //prevent scanning  if the network is not connected
             val isNetWorkConnected = checkNetworkState()
             if (isNetWorkConnected && !isScanning) {
                 //Log.d("testEmails", "start scan")
-            try {
-                isScanning = true
-                val thread = object : Thread() {
-                    override fun run() {
+                try {
+                    isScanning = true
+                    val thread = object : Thread() {
+                        override fun run() {
 
-                        val myEmailAccount = getMyEmailAccountFromLocally(this@ServiceRepeat)
-                        EmailsManage.getInstance().readeLastDayUnreadEmails(
-                            myEmailAccount,
-                            this@ServiceRepeat
-                        )
-
-//                        val cameras = getSensorsFromLocally(this@ServiceRepeat)
-//                        val myEmailAccount = getMyEmailAccountFromLocally(this@ServiceRepeat)
-//
-//                        val iteratorList = cameras?.listIterator()
-//                        while (iteratorList != null && iteratorList.hasNext()) {
-//                            val cameraItem = iteratorList.next()
-//                            if (!cameraItem.emailAddress.isNullOrEmpty()
-//                                && myEmailAccount != null
-//                            ) {
-//                                EmailsManage.getInstance().readeLastDayUnreadEmails(
-//                                    myEmailAccount,
-//                                    cameraItem,
-//                                    this@ServiceRepeat
-//                                )
-//                            }
-//                        }
-                        isScanning = false
+                            val myEmailAccount = getMyEmailAccountFromLocally(this@ServiceRepeat)
+                            EmailsManage.getInstance().readeLastDayUnreadEmails(
+                                myEmailAccount,
+                                this@ServiceRepeat
+                            )
+                            isScanning = false
+                        }
                     }
-                }
 
-                thread.start()
-            } catch (ex: Exception) {
-                //write to log
-                writeFile("exception in executeTimer:" + ex.message, this)
-                Log.d(HUNTER_LOG, "exception in executeTimer:" + ex.message)
-                Log.d("testEmails", "exception in executeTimer:" + ex.message)
-            }
+                    thread.start()
+                } catch (ex: Exception) {
+                    //write to log
+                    writeFile("exception in executeTimer:" + ex.message, this)
+                    Log.d(HUNTER_LOG, "exception in executeTimer:" + ex.message)
+                    Log.d("testEmails", "exception in executeTimer:" + ex.message)
+                }
             } else {
                 if (!isNetWorkConnected) {
                     Log.d("testEmails", "network is not connected")
@@ -149,9 +140,15 @@ open class ServiceRepeat : Service() {
 
     //The system allows apps to call Context.startForegroundService() even while the app is in the background. However, the app must call that service's startForeground() method within five seconds after the service is created
     private fun startSysForeGround() {
+        fun getNotificationIcon(): Int {
+            val useWhiteIcon =
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+            return if (useWhiteIcon) R.drawable.ic_app_notification else R.mipmap.ic_launcher
+        }
 
+        val CHANNEL_ID = "my_channel_01"
         if (Build.VERSION.SDK_INT >= 26) {
-            val CHANNEL_ID = "my_channel_01"
+
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "Channel human readable title",
@@ -162,13 +159,14 @@ open class ServiceRepeat : Service() {
             if (`object` != null && `object` is NotificationManager) {
                 `object`.createNotificationChannel(channel)
             }
-
+        }
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("")
-                .setContentText("").build()
+                .setContentText("SG-Hunter is running")
+                .setSmallIcon(getNotificationIcon())
+                .build()
 
             startForeground(1, notification)
-        }
+
     }
 
     private val emailReceiver = object : BroadcastReceiver() {

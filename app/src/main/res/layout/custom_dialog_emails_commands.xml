@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
+        android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCommandTitle"
+            style="@style/commands_emails_fields"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/arialmt"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5.6sp"
+            android:text="@string/emails_title"
+            android:textColor="@color/medium_green"
+            android:textSize="15.3sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etField1"
+            style="@style/commands_emails_fields"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="100dp"
+            android:ems="10"
+            android:hint="@string/email1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCommandTitle" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etField2"
+            style="@style/commands_emails_fields"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:hint="@string/email2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etField1" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etField3"
+            style="@style/commands_emails_fields"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:hint="@string/email3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etField2" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etField4"
+            style="@style/commands_emails_fields"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:hint="@string/email4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etField3" />
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSendCommand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/green1"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/send_command"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toEndOf="@+id/btnCancel"
+            app:layout_constraintTop_toBottomOf="@+id/etField4" />
+
+    <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:background="@color/orange"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14.7sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSendCommand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnSendCommand" />
+</androidx.constraintlayout.widget.ConstraintLayout>

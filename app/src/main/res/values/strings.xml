@@ -104,6 +104,29 @@
     <string name="no_selected_alarms">No selected alarm</string>
     <string name="selected_alarms">selected alarm</string>
     <string name="reset">reset</string>
+    <string name="get_snapshot">Get snapshot</string>
+    <string name="delete_all_images">Delete all images</string>
+    <string name="get_battery_status">Get battery status</string>
+    <string name="get_parameters">Get parameters</string>
+    <string name="arm_camera">Arm camera</string>
+    <string name="disarm_camera">Disarm camera</string>
+    <string name="set_email_recipient">Set email recipients</string>
+    <string name="set_mms_recipients">Set mms recipients</string>
+    <string name="missing_phone_number">Missing phone number</string>
+    <string name="emails_title">Add emails</string>
+    <string name="send_command">Send command</string>
+    <string name="email1">Email 1</string>
+    <string name="email2">Email 2</string>
+    <string name="email3">Email 3</string>
+    <string name="email4">Email 4</string>
+    <string name="phone_num_title">Add phone numbers</string>
+    <string name="phone_num_1">Phone number 1</string>
+    <string name="phone_num_2">Phone number 2</string>
+    <string name="phone_num_3">Phone number 3</string>
+    <string name="phone_num_4">Phone number 4</string>
+    <string name="you_need_at_least_one_email">You need at least one email</string>
+    <string name="you_need_at_least_one_phone_num">You need at least one phone number</string>
+    <string name="invalid_email">Invalid email</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

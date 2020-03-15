@@ -221,7 +221,9 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 )
                 pbValidationEmail?.visibility = View.VISIBLE
                 startServiceEmailValidation()
-
+            } else {
+                //set false the flag of email configuration
+                setBooleanInPreference(activity, IS_EMAIL_CONFIG_PREF_KEY, false)
             }
         }
 
@@ -516,6 +518,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
     //start email validation
     private fun startServiceEmailValidation() {
 
+
         val serviceIntent = Intent(this.context, ServiceEmailValidation::class.java)
 
         //val intent = Intent()
@@ -550,6 +553,9 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 val resultValidationEmail = intent.getBooleanExtra(VALIDATION_EMAIL_RESULT, false)
                 if (resultValidationEmail) {
 
+                    //set true the flag of email configuration
+                    setBooleanInPreference(activity, IS_EMAIL_CONFIG_PREF_KEY, true)
+
                     //remove last date and enable scan last date
                     removePreference(activity, LAST_DATE_ALARM)
 
@@ -567,10 +573,20 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                             )
                         }
                     }
+                } else {
+                    //set false the flag of email configuration
+                    setBooleanInPreference(activity, IS_EMAIL_CONFIG_PREF_KEY, false)
+
+                    //remove email account locally
+                    removePreference(context, EMAIL_ACCOUNT_KEY)
+
+
                 }
             } else if (intent?.action == ERROR_RESULT_VALIDATION_EMAIL_ACTION) {
                 val errorMsg = intent.getStringExtra(ERROR_VALIDATION_EMAIL_MSG_KEY)
                 errorMsg?.let { Toast.makeText(activity, it, Toast.LENGTH_LONG).show() }
+                //set false the flag of email configuration
+                setBooleanInPreference(activity, IS_EMAIL_CONFIG_PREF_KEY, false)
             }
         }
 

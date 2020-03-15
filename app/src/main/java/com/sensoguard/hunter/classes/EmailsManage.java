@@ -60,7 +60,6 @@ import static com.sensoguard.hunter.global.ConstsKt.ERROR_RESULT_VALIDATION_EMAI
 import static com.sensoguard.hunter.global.ConstsKt.ERROR_VALIDATION_EMAIL_MSG_KEY;
 import static com.sensoguard.hunter.global.ConstsKt.IS_MYSCREENACTIVITY_FOREGROUND;
 import static com.sensoguard.hunter.global.ConstsKt.LAST_DATE_ALARM;
-import static com.sensoguard.hunter.global.SysMethodDateKt.getStringFromCalendar;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getBooleanInPreference;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.getLongInPreference;
 import static com.sensoguard.hunter.global.SysMethodsSharedPrefKt.setLongInPreference;
@@ -136,13 +135,13 @@ public class EmailsManage {
                     lastEmailDate.setTimeInMillis(longLastDateAlarm);
                 }
 
-                String lastDate = getStringFromCalendar(lastEmailDate, "kk:mm dd/MM/yy", context);
-                Log.d("testEmails", "lastDate" + lastDate);
+                //String lastDate = getStringFromCalendar(lastEmailDate, "kk:mm dd/MM/yy", context);
+                //Log.d("testEmails", "lastDate" + lastDate);
 
                 Calendar currentDate = Calendar.getInstance();
                 currentDate.roll(Calendar.DATE, false);
-                String da = getStringFromCalendar(currentDate, "kk:mm dd/MM/yy", context);
-                Log.d("testEmails", "currentDate" + da);
+                //String da = getStringFromCalendar(currentDate, "kk:mm dd/MM/yy", context);
+                //Log.d("testEmails", "currentDate" + da);
 
 
                 Message[] unReadLastDayMsgs = inbox.search(new ReceivedDateTerm(ComparisonTerm.GT, currentDate.getTime()));
@@ -166,7 +165,7 @@ public class EmailsManage {
                         closeConnection(store, context);
                         return;
                     }
-                    Log.d("testEmails", unReadLastDayMsg.getSubject());
+                    //Log.d("testEmails", unReadLastDayMsg.getSubject());
 
 
                     //check if the email is already exist
@@ -1011,9 +1010,17 @@ public class EmailsManage {
         return file;
     }
 
+    //in android 7 need a white-transparent icon
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if (useWhiteIcon) {
+            return R.drawable.ic_app_notification;
+        } else return R.mipmap.ic_launcher;
+    }
 
     //snd notification when accept alarm
     private void sendNotification(String content, Context context) {
+
 
         if (context == null)
             return;
@@ -1028,7 +1035,7 @@ public class EmailsManage {
 
         long oneTimeID = SystemClock.uptimeMillis();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(getNotificationIcon())
                 .setContentTitle("New alarm detected")
                 .setContentText(content)
                 //remove after click on notification

@@ -50,6 +50,8 @@ const val  MAP_TYPE_KEY="mapTypeKey"
 const val  ERROR_RESP = "-1"
 
 const val  SHARED_PREF_FILE_NAME = "SensoGuardPref"
+const val IS_EMAIL_CONFIG_PREF_KEY = "isEmailConfigPrefKey"
+
 const val  DETECTORS_LIST_KEY_PREF = "SensorsList"
 const val  ALARM_LIST_KEY_PREF = "AlarmsList"
 const val CAMERA_KEY = "cameraKey"

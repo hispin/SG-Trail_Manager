@@ -9,12 +9,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.FEATURE_NO_TITLE
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.*
@@ -29,7 +31,7 @@ import com.sensoguard.hunter.services.ServiceEmailValidation1
 import java.util.*
 
 
-class CameraExtraSettingsDialogFragment : DialogFragment() {
+class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener {
 
     //set as global in order to show it as big picture
     private var bitmap: Bitmap? = null
@@ -39,14 +41,18 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private var ibTakePic: AppCompatImageButton? = null
     private var ibShowPicture: AppCompatImageButton? = null
     private var etEmailAddress: AppCompatEditText? = null
-    //    private var etEmailServer: AppCompatEditText? = null
-//    private var etEmailPort: AppCompatEditText? = null
-//    private var rgIsUseSSL: RadioGroup? = null
     private var etSysName: AppCompatEditText? = null
     private var etTelNum: MaskedEditText? = null
-    // private var etPassword: AppCompatEditText? = null
-    private var tvLastVisitValue: AppCompatTextView? = null
-    private var ibOpenDatePicker: AppCompatImageButton? = null
+    private var btnGetSnapshot: Button? = null
+    private var btnDeleteAllImages: Button? = null
+    private var btnGetBatteryStatus: Button? = null
+    private var btnGetParameters: Button? = null
+    private var btnArmCamera: Button? = null
+    private var btnDisarmCamera: Button? = null
+    private var btnSetEmailRecipients: Button? = null
+    private var btnSetMmsRecipients: Button? = null
+    //    private var tvLastVisitValue: AppCompatTextView? = null
+//    private var ibOpenDatePicker: AppCompatImageButton? = null
     private var spCameraType: AppCompatSpinner? = null
     private var pbValidationEmail: ProgressBar? = null
 
@@ -107,41 +113,42 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             openLargePictureDialog()
         }
 
-        //etEmailServer = view?.findViewById(R.id.etMailServer)
-        //etEmailPort = view?.findViewById(R.id.etMailServerPort)
         etEmailAddress = view?.findViewById(R.id.etMailAddress)
-        //rgIsUseSSL = view?.findViewById(R.id.rgIsSSL)
         etSysName = view?.findViewById(R.id.etSysName)
         etTelNum = view?.findViewById(R.id.etTelNum)
-        //etPassword = view?.findViewById(R.id.etPassword)
-        tvLastVisitValue = view?.findViewById(R.id.tvLastVisitValue)
-        ibOpenDatePicker = view?.findViewById(R.id.ibOpenDatePicker)
 
 
+        btnGetSnapshot = view?.findViewById(R.id.btnGetSnapshot)
+        btnGetSnapshot?.setOnClickListener(this)
+        btnDeleteAllImages = view?.findViewById(R.id.btnDeleteAllImages)
+        btnDeleteAllImages?.setOnClickListener(this)
+        btnGetBatteryStatus = view?.findViewById(R.id.btnGetBatteryStatus)
+        btnGetBatteryStatus?.setOnClickListener(this)
+        btnGetParameters = view?.findViewById(R.id.btnGetParameters)
+        btnGetParameters?.setOnClickListener(this)
+        btnArmCamera = view?.findViewById(R.id.btnArmCamera)
+        btnArmCamera?.setOnClickListener(this)
+        btnDisarmCamera = view?.findViewById(R.id.btnDisarmCamera)
+        btnDisarmCamera?.setOnClickListener(this)
+        btnSetEmailRecipients = view?.findViewById(R.id.btnSetEmailRecipients)
+        btnSetEmailRecipients?.setOnClickListener(this)
+        btnSetMmsRecipients = view?.findViewById(R.id.btnSetMmsRecipients)
+        btnSetMmsRecipients?.setOnClickListener(this)
+//        tvLastVisitValue = view?.findViewById(R.id.tvLastVisitValue)
+//        ibOpenDatePicker = view?.findViewById(R.id.ibOpenDatePicker)
 
 
-        ibOpenDatePicker?.setOnClickListener {
-            if (context != null) {
-                //open date picker to update the dates
-                openDatePicker()
-            }
-        }
+//        ibOpenDatePicker?.setOnClickListener {
+//            if (context != null) {
+//                //open date picker to update the dates
+//                openDatePicker()
+//            }
+//        }
 
 
         spCameraType = view?.findViewById(R.id.spCameraType)
         pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
 
-//        etEmailAddress?.setOnFocusChangeListener { view, hasFocus ->
-//
-//            if (!hasFocus) {
-//                if ((view as EditText).text.toString().contains("@gmail.com")) {
-//                    //fill automatically
-//                    etEmailServer?.setText("imap.gmail.com")
-//                    etEmailPort?.setText("993")
-//                    rgIsUseSSL?.check(R.id.rbYes)
-//                }
-//            }
-//        }
     }
 
     //open date picker to update the dates
@@ -157,7 +164,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 OnDateSetListener { _, year1, month1, dayOfMonth1 ->
                     val selectedCalendar =
                         dayOfMonth1.toString() + "/" + (month1 + 1) + "/" + year1
-                    tvLastVisitValue?.text = selectedCalendar
+                    //tvLastVisitValue?.text = selectedCalendar
                 }, year, month, dayOfMonth
             )
         picker.show()
@@ -169,16 +176,10 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         //etEmailPort?.setText(myCamera?.emailPort)
         etEmailAddress?.setText(myCamera?.emailAddress)
 
-//if (myCamera?.isUseSSL != null && myCamera?.isUseSSL!!) {
-//rgIsUseSSL?.check(R.id.rbYes)
-//} else {
-//rgIsUseSSL?.check(R.id.rbNo)
-//}
 
         etSysName?.setText(myCamera?.getName())
         etTelNum?.setText(myCamera?.phoneNum)
-        //etPassword?.setText(myCamera?.password)
-        tvLastVisitValue?.text = myCamera?.lastVisitDate
+        //tvLastVisitValue?.text = myCamera?.lastVisitDate
         myCamera?.cameraModelPosition?.let { spCameraType?.setSelection(it) }
         myCamera?.lastVisitPicturePath?.let {
             if (context != null) {
@@ -194,14 +195,10 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     //populate camera object to return it main screen
     private fun populateMyCamera() {
-        //myCamera?.emailServer = etEmailServer?.text.toString()
-        //myCamera?.emailPort = etEmailPort?.text.toString()
         myCamera?.emailAddress = etEmailAddress?.text.toString()
-        //myCamera?.isUseSSL = rgIsUseSSL?.checkedRadioButtonId == R.id.rbYes
         myCamera?.setName(etSysName?.text.toString())
         myCamera?.phoneNum = etTelNum?.text.toString()
-        //myCamera?.password = etPassword?.text.toString()
-        myCamera?.lastVisitDate = tvLastVisitValue?.text.toString()
+        //myCamera?.lastVisitDate = tvLastVisitValue?.text.toString()
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
     }
@@ -332,6 +329,186 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             }
         }
 
+    }
+
+    override fun onClick(v: View?) {
+
+        if (myCamera == null || myCamera?.phoneNum == null) {
+            Toast.makeText(
+                activity,
+                resources.getString(R.string.missing_phone_number),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        if (myCamera?.cameraModel.equals("MG-983G-30M") ||
+            myCamera?.cameraModel.equals("MG-984G-36M") ||
+            myCamera?.cameraModel.equals("MG-984G-30M") ||
+            myCamera?.cameraModel.equals("MG-983G-36M")
+        ) {
+
+            var command: String? = ""
+            if (v?.id == R.id.btnGetSnapshot) {
+                command = "#E#T#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnDeleteAllImages) {
+                command = "#F#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnGetBatteryStatus) {
+                command = "#C#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnGetParameters) {
+                command = "#L#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnArmCamera) {
+                command = "#A#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnDisarmCamera) {
+                command = "#D#"
+                sendSMS(command)
+            } else if (v?.id == R.id.btnSetEmailRecipients) {
+                showEmailsDialog()
+            } else if (v?.id == R.id.btnSetMmsRecipients) {
+                showPhoneNumDialog()
+            }
+
+
+        }
+    }
+
+    private fun sendSMS(command: String?) {
+        val uri = Uri.parse("smsto:" + myCamera?.phoneNum)
+        val intent = Intent(Intent.ACTION_SENDTO, uri)
+        intent.putExtra("sms_body", command)
+        startActivity(intent)
+    }
+
+    //show dialog with emails fields
+    private fun showEmailsDialog() {
+
+        if (this@CameraExtraSettingsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraExtraSettingsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_dialog_emails_commands)
+
+            dialog.setCancelable(true)
+
+            val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
+            val etField2 = dialog.findViewById<AppCompatEditText>(R.id.etField2)
+            val etField3 = dialog.findViewById<AppCompatEditText>(R.id.etField3)
+            val etField4 = dialog.findViewById<AppCompatEditText>(R.id.etField4)
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = "#R#"
+                command = addEmailToCommand(command, etField1)
+                command = addEmailToCommand(command, etField2)
+                command = addEmailToCommand(command, etField3)
+                command = addEmailToCommand(command, etField4)
+                if (command == "#R#") {
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.you_need_at_least_one_email),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    sendSMS(command)
+                    dialog.dismiss()
+                }
+
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+
+    }
+
+    //add phone number to command if it is not empty
+    private fun addPhoneNumToCommand(
+        command: String,
+        etField: AppCompatEditText
+    ): String {
+
+        var myCommand = command
+
+
+        if (etField.text != null
+            && etField.text.toString().isNotEmpty()
+            && !etField.text.toString().startsWith("000")
+        ) {
+            myCommand += etField.text?.toString() + "#"
+        }
+        return myCommand
+    }
+
+    //add phone number to command if it is not empty
+    private fun addEmailToCommand(
+        command: String,
+        etField: AppCompatEditText
+    ): String {
+
+        var myCommand = command
+
+        if (etField.text != null
+            && etField.text.toString().isNotEmpty()
+        ) {
+            if (etField.text.toString().contains("@")) {
+                myCommand += etField.text?.toString() + "#"
+            } else {
+                Toast.makeText(
+                    activity,
+                    resources.getString(R.string.invalid_email),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+        return myCommand
+    }
+
+    //show dialog with phone numbers fields
+    private fun showPhoneNumDialog() {
+
+        if (this@CameraExtraSettingsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraExtraSettingsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_dialog_phonenum_command)
+
+            dialog.setCancelable(true)
+
+            val tvCommandTitle = dialog.findViewById<AppCompatTextView>(R.id.tvCommandTitle)
+            tvCommandTitle.text = resources.getString(R.string.phone_num_title)
+            val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
+            val etField2 = dialog.findViewById<AppCompatEditText>(R.id.etField2)
+            val etField3 = dialog.findViewById<AppCompatEditText>(R.id.etField3)
+            val etField4 = dialog.findViewById<AppCompatEditText>(R.id.etField4)
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = "#R#"
+                command = addPhoneNumToCommand(command, etField1)
+                command = addPhoneNumToCommand(command, etField2)
+                command = addPhoneNumToCommand(command, etField3)
+                command = addPhoneNumToCommand(command, etField4)
+                if (command == "#R#") {
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.you_need_at_least_one_phone_num),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    sendSMS(command)
+                    dialog.dismiss()
+                }
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
     }
 
 
