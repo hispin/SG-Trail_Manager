@@ -125,6 +125,9 @@
     <string name="you_need_at_least_one_email">צריך לפחות אימייל אחד</string>
     <string name="you_need_at_least_one_phone_num">צריך לפחות מספר טלפון אחד</string>
     <string name="invalid_email">אימייל שגוי</string>
+    <string name="set_admin">הגדר מנהל</string>
+    <string name="incorrect_phone_number_or_password">מספר טלפון או סיסמה שגויים</string>
+
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

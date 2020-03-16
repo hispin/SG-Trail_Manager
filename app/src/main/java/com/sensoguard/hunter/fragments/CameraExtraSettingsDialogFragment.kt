@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.*
@@ -51,6 +52,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
     private var btnDisarmCamera: Button? = null
     private var btnSetEmailRecipients: Button? = null
     private var btnSetMmsRecipients: Button? = null
+    private var btnSetAdmin: AppCompatButton? = null
     //    private var tvLastVisitValue: AppCompatTextView? = null
 //    private var ibOpenDatePicker: AppCompatImageButton? = null
     private var spCameraType: AppCompatSpinner? = null
@@ -134,6 +136,8 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
         btnSetEmailRecipients?.setOnClickListener(this)
         btnSetMmsRecipients = view?.findViewById(R.id.btnSetMmsRecipients)
         btnSetMmsRecipients?.setOnClickListener(this)
+        btnSetAdmin = view?.findViewById(R.id.btnSetAdmin)
+        btnSetAdmin?.setOnClickListener(this)
 //        tvLastVisitValue = view?.findViewById(R.id.tvLastVisitValue)
 //        ibOpenDatePicker = view?.findViewById(R.id.ibOpenDatePicker)
 
@@ -350,7 +354,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
 
             var command: String? = ""
             if (v?.id == R.id.btnGetSnapshot) {
-                command = "#E#T#"
+                command = "#T#E#"
                 sendSMS(command)
             } else if (v?.id == R.id.btnDeleteAllImages) {
                 command = "#F#"
@@ -371,6 +375,8 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
                 showEmailsDialog()
             } else if (v?.id == R.id.btnSetMmsRecipients) {
                 showPhoneNumDialog()
+            } else if (v?.id == R.id.btnSetAdmin) {
+                showSetAdminDialog()
             }
 
 
@@ -483,15 +489,13 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
             val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
             val etField2 = dialog.findViewById<AppCompatEditText>(R.id.etField2)
             val etField3 = dialog.findViewById<AppCompatEditText>(R.id.etField3)
-            val etField4 = dialog.findViewById<AppCompatEditText>(R.id.etField4)
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
-                var command = "#R#"
+                var command = "#N#"
                 command = addPhoneNumToCommand(command, etField1)
                 command = addPhoneNumToCommand(command, etField2)
                 command = addPhoneNumToCommand(command, etField3)
-                command = addPhoneNumToCommand(command, etField4)
-                if (command == "#R#") {
+                if (command == "#N#") {
                     Toast.makeText(
                         activity,
                         resources.getString(R.string.you_need_at_least_one_phone_num),
@@ -509,6 +513,57 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
 
             dialog.show()
         }
+    }
+
+    //show dialog to set admin
+    private fun showSetAdminDialog() {
+
+        if (this@CameraExtraSettingsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraExtraSettingsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_dialog_set_admin_command)
+
+            dialog.setCancelable(true)
+
+
+            val etAdminPhone = dialog.findViewById<MaskedEditText>(R.id.etAdminPhone)
+            val etPassword = dialog.findViewById<AppCompatEditText>(R.id.etPassword)
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                if (!etAdminPhone.text.toString().startsWith("000")
+                    && validIsEmpty(etPassword)
+                ) {
+                    var command = "#" + myCamera?.cameraModel + "#"
+                    command += etPassword.text.toString() + "#"
+                    command += etAdminPhone.text.toString() + "#"
+                    sendSMS(command)
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.incorrect_phone_number_or_password),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+    }
+
+    private fun validIsEmpty(editText: EditText): Boolean {
+        var isValid = true
+
+        if (editText.text.isNullOrBlank()) {
+            editText.error =
+                resources.getString(R.string.empty_field_error)
+            isValid = false
+        }
+
+        return isValid
     }
 
 

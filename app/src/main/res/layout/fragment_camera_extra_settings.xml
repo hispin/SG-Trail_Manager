@@ -277,14 +277,25 @@
         <!--                app:layout_constraintTop_toTopOf="@+id/tvLastVisitValue"-->
         <!--                app:srcCompat="@drawable/ic_open_date" />-->
 
+
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGetSnapshot"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnSetAdmin"
                 style="@style/commands_buttons"
+                android:layout_width="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="@string/get_snapshot"
+                android:text="@string/set_admin"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
                 app:layout_constraintTop_toBottomOf="@+id/tvMailAddress" />
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGetSnapshot"
+                style="@style/commands_buttons"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/get_snapshot"
+                app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
+                app:layout_constraintTop_toBottomOf="@+id/btnSetAdmin" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDeleteAllImages"

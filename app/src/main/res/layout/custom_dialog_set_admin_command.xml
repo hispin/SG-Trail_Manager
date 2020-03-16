@@ -15,7 +15,7 @@
             android:fontFamily="@font/arialmt"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="5.6sp"
-            android:text="@string/emails_title"
+            android:text="@string/set_admin"
             android:textColor="@color/medium_green"
             android:textSize="15.3sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <br.com.sapereaude.maskedEditText.MaskedEditText
-            android:id="@+id/etField1"
+            android:id="@+id/etAdminPhone"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginStart="32dp"
@@ -41,62 +41,20 @@
             app:layout_constraintTop_toBottomOf="@+id/tvCommandTitle"
             app:mask="###-#######" />
 
-    <br.com.sapereaude.maskedEditText.MaskedEditText
-            android:id="@+id/etField2"
-            android:layout_width="wrap_content"
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etPassword"
+            android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/edit_text_border"
-            android:hint="0000000000"
             android:imeOptions="actionDone"
-            android:inputType="number"
-            android:maxLines="1"
-            android:textAlignment="viewStart"
+            android:inputType="textPassword"
+            android:text="0518"
             android:textSize="14.7sp"
-            app:allowed_chars="1234567890"
-            app:keep_hint="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etField1"
-            app:mask="###-#######" />
+            app:layout_constraintEnd_toEndOf="@+id/etAdminPhone"
+            app:layout_constraintStart_toStartOf="@+id/etAdminPhone"
+            app:layout_constraintTop_toBottomOf="@+id/etAdminPhone" />
 
-    <br.com.sapereaude.maskedEditText.MaskedEditText
-            android:id="@+id/etField3"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/edit_text_border"
-            android:hint="0000000000"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:maxLines="1"
-            android:textAlignment="viewStart"
-            android:textSize="14.7sp"
-            app:allowed_chars="1234567890"
-            app:keep_hint="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etField2"
-            app:mask="###-#######" />
-
-    <!--    <br.com.sapereaude.maskedEditText.MaskedEditText-->
-    <!--            android:id="@+id/etField4"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="30dp"-->
-    <!--            android:layout_marginStart="32dp"-->
-    <!--            android:layout_marginTop="32dp"-->
-    <!--            android:background="@drawable/edit_text_border"-->
-    <!--            android:hint="0000000000"-->
-    <!--            android:imeOptions="actionDone"-->
-    <!--            android:inputType="number"-->
-    <!--            android:maxLines="1"-->
-    <!--            android:textAlignment="viewStart"-->
-    <!--            android:textSize="14.7sp"-->
-    <!--            app:allowed_chars="1234567890"-->
-    <!--            app:keep_hint="true"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/etField3"-->
-    <!--            app:mask="###-#######" />-->
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSendCommand"
@@ -114,7 +72,7 @@
             android:textColor="@color/white"
             android:textSize="14.7sp"
             app:layout_constraintStart_toEndOf="@+id/btnCancel"
-            app:layout_constraintTop_toBottomOf="@+id/etField3" />
+            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <Button
             android:id="@+id/btnCancel"
