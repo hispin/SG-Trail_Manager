@@ -24,8 +24,8 @@ android {
         applicationId "com.sensoguard.hunter"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 28
-        versionName "1.28"
+        versionCode 29
+        versionName "1.29"
         vectorDrawables.useSupportLibrary = true
         //testInstrumentationRunner "android.support.openExtraCameraSettings.runner.AndroidJUnitRunner"
     }

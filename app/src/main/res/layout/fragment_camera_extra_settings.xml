@@ -317,33 +317,37 @@
                 android:id="@+id/btnArmCamera"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="@string/arm_camera"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetSnapshot"
-                app:layout_constraintStart_toStartOf="@+id/etMailAddress" />
+                app:layout_constraintStart_toEndOf="@+id/btnGetSnapshot" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDisarmCamera"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="@string/disarm_camera"
                 app:layout_constraintBottom_toBottomOf="@+id/btnDeleteAllImages"
-                app:layout_constraintStart_toStartOf="@+id/etMailAddress" />
+                app:layout_constraintStart_toEndOf="@+id/btnDeleteAllImages" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSetEmailRecipients"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="@string/set_email_recipient"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetBatteryStatus"
-                app:layout_constraintStart_toStartOf="@+id/etMailAddress" />
+                app:layout_constraintStart_toEndOf="@+id/btnGetBatteryStatus" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSetMmsRecipients"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="@string/set_mms_recipients"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetParameters"
-                app:layout_constraintStart_toStartOf="@+id/etMailAddress" />
+                app:layout_constraintStart_toEndOf="@+id/btnGetParameters" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSave"
