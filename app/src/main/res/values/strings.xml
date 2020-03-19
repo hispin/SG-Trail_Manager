@@ -127,9 +127,9 @@
     <string name="you_need_at_least_one_email">You need at least one email</string>
     <string name="you_need_at_least_one_phone_num">You need at least one phone number</string>
     <string name="invalid_email">Invalid email</string>
-    <string name="set_admin">Set Admin</string>
     <string name="set_admin_title">Set admin</string>
     <string name="incorrect_phone_number_or_password">Incorrect phone number or password</string>
+    <string name="phone_num">Phone number:</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

@@ -117,7 +117,7 @@
     <string name="email2">אימייל 2</string>
     <string name="email3">אימייל 3</string>
     <string name="email4">אימייל 4</string>
-    <string name="phone_num_title">Add phone numbers</string>
+    <string name="phone_num_title">הוסף מספרי טלפון</string>
     <string name="phone_num_1">מספר טלפון 1</string>
     <string name="phone_num_2">מספר טלפון 2</string>
     <string name="phone_num_3">מספר טלפון 3</string>
@@ -125,8 +125,9 @@
     <string name="you_need_at_least_one_email">צריך לפחות אימייל אחד</string>
     <string name="you_need_at_least_one_phone_num">צריך לפחות מספר טלפון אחד</string>
     <string name="invalid_email">אימייל שגוי</string>
-    <string name="set_admin">הגדר מנהל</string>
+    <string name="set_admin_title">הגדר מנהל</string>
     <string name="incorrect_phone_number_or_password">מספר טלפון או סיסמה שגויים</string>
+    <string name="phone_num">:מספר טלפון</string>
 
 
     <string-array name="camera_model">

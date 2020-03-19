@@ -23,7 +23,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import br.com.sapereaude.maskedEditText.MaskedEditText
 import com.sensoguard.hunter.R
 import com.sensoguard.hunter.classes.Camera
 import com.sensoguard.hunter.classes.ImageStorageManager
@@ -43,7 +42,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
     private var ibShowPicture: AppCompatImageButton? = null
     private var etEmailAddress: AppCompatEditText? = null
     private var etSysName: AppCompatEditText? = null
-    private var etTelNum: MaskedEditText? = null
+    private var etTelNum: AppCompatEditText? = null
     private var btnGetSnapshot: Button? = null
     private var btnDeleteAllImages: Button? = null
     private var btnGetBatteryStatus: Button? = null
@@ -406,20 +405,26 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
                 var command = "#R#"
-                command = addEmailToCommand(command, etField1)
-                command = addEmailToCommand(command, etField2)
-                command = addEmailToCommand(command, etField3)
-                command = addEmailToCommand(command, etField4)
-                if (command == "#R#") {
-                    Toast.makeText(
-                        activity,
-                        resources.getString(R.string.you_need_at_least_one_email),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    sendSMS(command)
-                    dialog.dismiss()
-                }
+                //insert "#" also if the there is no email
+                //delete "-"
+                command += etField1.text?.toString() + "#"
+                command += etField2.text?.toString() + "#"
+                command += etField3.text?.toString() + "#"
+                command += etField4.text?.toString() + "#"
+//                command = addEmailToCommand(command, etField1)
+//                command = addEmailToCommand(command, etField2)
+//                command = addEmailToCommand(command, etField3)
+//                command = addEmailToCommand(command, etField4)
+//                if (command == "#R#") {
+//                    Toast.makeText(
+//                        activity,
+//                        resources.getString(R.string.you_need_at_least_one_email),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                } else {
+                sendSMS(command)
+                dialog.dismiss()
+//                }
 
             }
             val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
@@ -440,14 +445,20 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
     ): String {
 
         var myCommand = command
-
-
-        if (etField.text != null
-            && etField.text.toString().isNotEmpty()
-            && !etField.text.toString().startsWith("000")
-        ) {
-            myCommand += etField.text?.toString() + "#"
+        if (etField.text.toString().startsWith("000")) {
+            myCommand += "#"
+        } else {
+            //delete "-"
+            var phnum = etField.text?.toString()
+            phnum = phnum?.replace("-", "")
+            myCommand += "$phnum#"
         }
+//        if (etField.text != null
+//            && etField.text.toString().isNotEmpty()
+//            && !etField.text.toString().startsWith("000")
+//        ) {
+//            myCommand += etField.text?.toString() + "#"
+//        }
         return myCommand
     }
 
@@ -495,16 +506,21 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
                 command = addPhoneNumToCommand(command, etField1)
                 command = addPhoneNumToCommand(command, etField2)
                 command = addPhoneNumToCommand(command, etField3)
-                if (command == "#N#") {
-                    Toast.makeText(
-                        activity,
-                        resources.getString(R.string.you_need_at_least_one_phone_num),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
+
+
+//                if (command == "#N#") {
+//                command = addPhoneNumToCommand(command, etField1)
+//                command = addPhoneNumToCommand(command, etField2)
+//                command = addPhoneNumToCommand(command, etField3)
+//                    Toast.makeText(
+//                        activity,
+//                        resources.getString(R.string.you_need_at_least_one_phone_num),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                } else {
                     sendSMS(command)
                     dialog.dismiss()
-                }
+//                }
             }
             val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
             btnCancel.setOnClickListener {
@@ -525,7 +541,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
             dialog.setCancelable(true)
 
 
-            val etAdminPhone = dialog.findViewById<MaskedEditText>(R.id.etAdminPhone)
+            val etAdminPhone = dialog.findViewById<AppCompatEditText>(R.id.etAdminPhone)
             val etPassword = dialog.findViewById<AppCompatEditText>(R.id.etPassword)
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
@@ -534,7 +550,9 @@ class CameraExtraSettingsDialogFragment : DialogFragment(), View.OnClickListener
                 ) {
                     var command = "#" + myCamera?.cameraModel + "#"
                     command += etPassword.text.toString() + "#"
-                    command += etAdminPhone.text.toString() + "#"
+                    var phAdmin = etAdminPhone.text.toString()
+                    phAdmin = phAdmin.replace("-", "")
+                    command += "$phAdmin#"
                     sendSMS(command)
                     dialog.dismiss()
                 } else {

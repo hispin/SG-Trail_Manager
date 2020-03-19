@@ -8,13 +8,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvCommandTitle"
-            style="@style/commands_emails_fields"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:fontFamily="@font/arialmt"
             android:gravity="center_horizontal"
-            android:lineSpacingExtra="5.6sp"
             android:text="@string/emails_title"
             android:textColor="@color/medium_green"
             android:textSize="15.3sp"
@@ -26,43 +24,96 @@
             android:id="@+id/etField1"
             style="@style/commands_emails_fields"
             android:layout_width="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginStart="8dp"
             android:ems="10"
-            android:hint="@string/email1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCommandTitle" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmail1"
+            app:layout_constraintStart_toEndOf="@+id/tvEmail1"
+            app:layout_constraintTop_toTopOf="@+id/tvEmail1" />
 
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etField2"
             style="@style/commands_emails_fields"
             android:layout_width="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="8dp"
             android:ems="10"
-            android:hint="@string/email2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etField1" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmail2"
+            app:layout_constraintStart_toEndOf="@+id/tvEmail2"
+            app:layout_constraintTop_toTopOf="@+id/tvEmail2" />
 
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etField3"
             style="@style/commands_emails_fields"
             android:layout_width="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="8dp"
             android:ems="10"
-            android:hint="@string/email3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etField2" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmail3"
+            app:layout_constraintStart_toEndOf="@+id/tvEmail3"
+            app:layout_constraintTop_toTopOf="@+id/tvEmail3" />
+
 
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etField4"
             style="@style/commands_emails_fields"
             android:layout_width="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="8dp"
             android:ems="10"
-            android:hint="@string/email4"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmail4"
+            app:layout_constraintStart_toEndOf="@+id/tvEmail4"
+            app:layout_constraintTop_toTopOf="@+id/tvEmail4" />
+
+    <TextView
+            android:id="@+id/tvEmail1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/email1"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCommandTitle" />
+
+    <TextView
+            android:id="@+id/tvEmail2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/email2"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etField1" />
+
+    <TextView
+            android:id="@+id/tvEmail3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/email3"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etField2" />
+
+    <TextView
+            android:id="@+id/tvEmail4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/email4"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etField3" />
 

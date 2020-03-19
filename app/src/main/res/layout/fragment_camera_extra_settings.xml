@@ -19,7 +19,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.900"
+            app:layout_constraintHeight_percent="0.970"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.321"
@@ -128,20 +128,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.209" />
 
-        <br.com.sapereaude.maskedEditText.MaskedEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etTelNum"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="0501234567"
                 android:imeOptions="actionDone"
-                android:inputType="number"
                 android:maxLines="1"
                 android:textAlignment="viewStart"
                 android:textSize="14.7sp"
-                app:allowed_chars="1234567890"
-                app:keep_hint="true"
-                app:mask="###-#######"
+                android:digits="0123456789+-"
+                android:inputType="phone"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTelNum"
                 app:layout_constraintEnd_toEndOf="@+id/etSysName"
                 app:layout_constraintHeight_default="percent"
@@ -282,17 +279,18 @@
                 android:id="@+id/btnSetAdmin"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/set_admin"
+                android:layout_marginTop="8dp"
+                android:text="@string/set_admin_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
-                app:layout_constraintTop_toBottomOf="@+id/tvMailAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/etMailAddress" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnGetSnapshot"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
                 android:text="@string/get_snapshot"
                 app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
                 app:layout_constraintTop_toBottomOf="@+id/btnSetAdmin" />
@@ -301,7 +299,8 @@
                 android:id="@+id/btnDeleteAllImages"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
                 android:text="@string/delete_all_images"
                 app:layout_constraintStart_toStartOf="@+id/btnGetSnapshot"
                 app:layout_constraintTop_toBottomOf="@+id/btnGetSnapshot" />
@@ -310,7 +309,8 @@
                 android:id="@+id/btnGetBatteryStatus"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
                 android:text="@string/get_battery_status"
                 app:layout_constraintStart_toStartOf="@+id/btnDeleteAllImages"
                 app:layout_constraintTop_toBottomOf="@+id/btnDeleteAllImages" />
@@ -319,7 +319,8 @@
                 android:id="@+id/btnGetParameters"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
                 android:text="@string/get_parameters"
                 app:layout_constraintStart_toStartOf="@+id/btnGetBatteryStatus"
                 app:layout_constraintTop_toBottomOf="@+id/btnGetBatteryStatus" />
@@ -328,7 +329,8 @@
                 android:id="@+id/btnArmCamera"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="4dp"
+                android:ems="8"
                 android:text="@string/arm_camera"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetSnapshot"
                 app:layout_constraintStart_toEndOf="@+id/btnGetSnapshot" />
@@ -337,7 +339,8 @@
                 android:id="@+id/btnDisarmCamera"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="4dp"
+                android:ems="8"
                 android:text="@string/disarm_camera"
                 app:layout_constraintBottom_toBottomOf="@+id/btnDeleteAllImages"
                 app:layout_constraintStart_toEndOf="@+id/btnDeleteAllImages" />
@@ -346,7 +349,8 @@
                 android:id="@+id/btnSetEmailRecipients"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="4dp"
+                android:ems="8"
                 android:text="@string/set_email_recipient"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetBatteryStatus"
                 app:layout_constraintStart_toEndOf="@+id/btnGetBatteryStatus" />
@@ -355,7 +359,8 @@
                 android:id="@+id/btnSetMmsRecipients"
                 style="@style/commands_buttons"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="4dp"
+                android:ems="8"
                 android:text="@string/set_mms_recipients"
                 app:layout_constraintBottom_toBottomOf="@+id/btnGetParameters"
                 app:layout_constraintStart_toEndOf="@+id/btnGetParameters" />
