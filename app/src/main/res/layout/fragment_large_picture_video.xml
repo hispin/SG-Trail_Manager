@@ -8,7 +8,7 @@
         android:clickable="true"
         android:focusable="true">
 
-    <com.sensoguard.hunter.classes.TouchImageView
+    <com.sensoguard.trailmanager.classes.TouchImageView
             android:id="@+id/ivMyCaptureImage"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
