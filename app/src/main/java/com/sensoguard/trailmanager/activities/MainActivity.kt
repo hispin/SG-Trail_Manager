@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         val isLoadApp = intent.getBooleanExtra(IS_LOAD_APP, false)
         if (isLoadApp) {
             //startServiceRepeat()
-            startJobServiceRepeat()
+            //startJobServiceRepeat()
         }
     }
 

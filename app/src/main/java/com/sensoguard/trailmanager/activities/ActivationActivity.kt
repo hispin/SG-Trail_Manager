@@ -15,8 +15,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.CryptoHandler
 import com.sensoguard.trailmanager.global.ACTIVATION_CODE_KEY
+import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
 import com.sensoguard.trailmanager.global.IMEI_KEY
-import com.sensoguard.trailmanager.global.IS_LOAD_APP
 import com.sensoguard.trailmanager.global.setStringInPreference
 import org.apache.commons.lang3.StringUtils
 
@@ -84,10 +84,10 @@ class ActivationActivity : AppCompatActivity() {
 
             if (myActivateCodeWhitespace == tmp) {
                 setStringInPreference(applicationContext,ACTIVATION_CODE_KEY,etEnterCode?.text.toString())
-                val inn = Intent(this, MainActivity::class.java)
-                inn.putExtra(IS_LOAD_APP, true)
-                inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(Intent(inn))
+                openCameraScreen()
+//                val inn = Intent(this, MainActivity::class.java)
+//                inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                startActivity(Intent(inn))
             } else {
                 Toast.makeText(
                     this,
@@ -96,6 +96,14 @@ class ActivationActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    //in trail manager ,open camera screen immediately
+    private fun openCameraScreen() {
+        val inn = Intent(this, MyScreensActivity::class.java)
+        inn.putExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
+        inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(inn)
     }
 
     //check if the field of edit text is empty

@@ -37,10 +37,10 @@ class InitAppActivity : AppCompatActivity() {
         if(!localActivateCode.equals(NO_DATA)){
             val myActivateCode= CryptoHandler.getInstance().encrypt(myImei)
             if(localActivateCode!=null && myActivateCode.startsWith(localActivateCode)){
-                val inn = Intent(this, MainActivity::class.java)
-                inn.putExtra(IS_LOAD_APP, true)
-                inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(inn)
+                openCameraScreen()
+//                val inn = Intent(this, MainActivity::class.java)
+//                inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                startActivity(inn)
             }else{
                 Toast.makeText(this,resources.getString(R.string.wrong_activate_code), Toast.LENGTH_SHORT).show()
                 openActivation()
@@ -48,6 +48,14 @@ class InitAppActivity : AppCompatActivity() {
         }else{
             openActivation()
         }
+    }
+
+    //in trail manager ,open camera screen immediately
+    private fun openCameraScreen() {
+        val inn = Intent(this, MyScreensActivity::class.java)
+        inn.putExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
+        inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(inn)
     }
 
     //open activation screen

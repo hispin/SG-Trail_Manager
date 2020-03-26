@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.classes.LanguageManager
@@ -34,7 +33,6 @@ import com.sensoguard.trailmanager.fragments.SensorsFragment
 import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 import com.sensoguard.trailmanager.services.ServiceHandleAlarms
-import kotlinx.android.synthetic.main.activity_my_screens.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -193,7 +191,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     private fun configTabs() {
 
-        val tabs = findViewById<TabLayout>(R.id.tab_layout)
+        //val tabs = findViewById<TabLayout>(R.id.tab_layout)
 
         viewPager = findViewById(R.id.vPager)
         collectionPagerAdapter = CollectionPagerAdapter(supportFragmentManager)
@@ -206,11 +204,11 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         })
 
         //relate the tab layout to viewpager because we need to add the icons
-        tabs.setupWithViewPager(vPager)
-        tabs.getTabAt(0)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
-        tabs.getTabAt(1)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_map_tab)
-        tabs.getTabAt(2)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_config_tab)
-        tabs.getTabAt(3)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_alarm_log_tab)
+//        tabs.setupWithViewPager(vPager)
+//        tabs.getTabAt(0)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
+//        tabs.getTabAt(1)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_map_tab)
+//        tabs.getTabAt(2)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_config_tab)
+//        tabs.getTabAt(3)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_alarm_log_tab)
 
         viewPager.currentItem = currentItemTopMenu
 
