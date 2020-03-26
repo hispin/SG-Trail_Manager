@@ -21,7 +21,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.sensoguard.trailmanager"
+        applicationId "com.sensoguard.hunter"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 33
@@ -37,10 +37,10 @@ android {
 
     signingConfigs {
         release {
-//            storeFile file("sensorKeystore.jks")
-//            storePassword "sensor1234"
-//            keyAlias "sensoralias"
-//            keyPassword "sensor1234"
+            storeFile file("sensorKeystore.jks")
+            storePassword "sensor1234"
+            keyAlias "sensoralias"
+            keyPassword "sensor1234"
         }
     }
 

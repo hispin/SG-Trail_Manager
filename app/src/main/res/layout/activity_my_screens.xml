@@ -56,7 +56,7 @@
                 android:visibility="gone"/>
 
 
-    <com.sensoguard.trailmanager.classes.NonSwipeAbleViewPager
+    <com.sensoguard.hunter.classes.NonSwipeAbleViewPager
             android:id="@+id/vPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -84,7 +84,7 @@
         />
 
 
-    </com.sensoguard.trailmanager.classes.NonSwipeAbleViewPager>
+    </com.sensoguard.hunter.classes.NonSwipeAbleViewPager>
 
     <!--</androidx.appcompat.widget.Toolbar>-->
 
