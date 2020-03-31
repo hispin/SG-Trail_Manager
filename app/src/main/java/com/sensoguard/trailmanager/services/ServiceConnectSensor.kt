@@ -262,7 +262,7 @@ class ServiceConnectSensor : Service() {
             }
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentText("SG-Hunter is running")
+                .setContentText("SG-Trail Managerr is running")
                 .setSmallIcon(getNotificationIcon())
                 .build()
 

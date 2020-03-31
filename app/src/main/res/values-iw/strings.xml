@@ -136,6 +136,7 @@
     <string name="commands_camera_title">מסך פקודות</string>
     <string name="get_snapshot_mms">צילום תמונה יזומה ב mms</string>
     <string name="oredr_cannot_sent">לא ניתן לשלוח פקודות ללא מספר טלפון</string>
+    <string name="invalid_telephone_number">מספר טלפון לא תקין</string>
 
 
     <string-array name="camera_model">

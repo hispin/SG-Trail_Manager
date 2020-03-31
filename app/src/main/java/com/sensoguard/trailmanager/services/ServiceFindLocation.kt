@@ -100,7 +100,7 @@ class ServiceFindLocation :Service(){
             }
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentText("SG-Hunter is running")
+                .setContentText("SG-Trail Manager is running")
                 .setSmallIcon(getNotificationIcon())
                 .build()
 

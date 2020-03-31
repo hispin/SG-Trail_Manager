@@ -187,12 +187,12 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="30dp"
                     android:background="@android:color/transparent"
                     android:entries="@array/camera_model"
                     android:gravity="center"
                     android:spinnerMode="dropdown"
-                    android:textDirection="locale"
+                    android:textDirection="rtl"
                     tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
             <androidx.appcompat.widget.AppCompatImageView

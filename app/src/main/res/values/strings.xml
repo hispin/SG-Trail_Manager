@@ -138,6 +138,7 @@
     <string name="commands_camera_title">Command screen</string>
     <string name="get_snapshot_mms">Get snapshot to mms</string>
     <string name="oredr_cannot_sent">Orders cannot be sent without a phone number</string>
+    <string name="invalid_telephone_number">Invalid telephone number</string>
 
     <string-array name="camera_model">
         <item>MG-983G-30M</item>

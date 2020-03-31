@@ -21,6 +21,7 @@ import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.ImageStorageManager
 import com.sensoguard.trailmanager.global.*
+import java.util.regex.Pattern
 
 
 class CameraExtraSettingsDialogFragment : DialogFragment() {
@@ -68,11 +69,19 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private fun initViews(view: View?) {
         btnSave = view?.findViewById(R.id.btnSave)
         btnSave?.setOnClickListener {
-            populateMyCamera()
-            saveLastVisitPicture()
-            //remove last date and enable scan last date
-            removePreference(activity, LAST_DATE_ALARM)
-            sendResult()
+            if (isValidMobile(etTelNum?.text.toString())) {
+                populateMyCamera()
+                saveLastVisitPicture()
+                //remove last date and enable scan last date
+                removePreference(activity, LAST_DATE_ALARM)
+                sendResult()
+            } else {
+                Toast.makeText(
+                    activity,
+                    resources.getString(R.string.invalid_telephone_number),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
 
         }
 
@@ -127,6 +136,14 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
     }
+
+    //phone number validation
+    private fun isValidMobile(phone: String): Boolean {
+        return if (!Pattern.matches("[a-zA-Z]+", phone)) {
+            phone.length in 10..16
+        } else false
+    }
+
 
     private fun saveLastVisitPicture() {
         bitmap?.let {
