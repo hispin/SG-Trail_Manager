@@ -97,3 +97,7 @@ const val CAMERA_SORTED = 2
 
 const val LAST_DATE_ALARM = "lastDateAlarm"
 
+const val EDIT_ACTION_TYPE = 1
+const val DELETE_ACTION_TYPE = 2
+const val COMMANDS_ACTION_TYPE = 3
+

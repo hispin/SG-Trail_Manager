@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SG-Hunter</string>
+    <string name="app_name">SG-Trail Manager</string>
     <string name="empty_field_error">נא למלא את השדה</string>
     <string name="rename">שנה שם</string>
     <string name="csv">csv</string>
@@ -102,7 +102,7 @@
     <string name="no_selected_alarms">אין התראות שנבחרו</string>
     <string name="selected_alarms">התראות נבחרו</string>
     <string name="reset">איפוס</string>
-    <string name="get_snapshot">צילום תמונה יזומה באימייל</string>
+    <string name="get_snapshot_email">צילום תמונה יזומה באימייל</string>
     <string name="delete_all_images">מחיקת כל התמונות בזיכרון</string>
     <string name="get_battery_status">בדיקת מצב סוללה</string>
     <string name="get_parameters">בירור פרמטרים</string>
@@ -117,7 +117,7 @@
     <string name="email2">אימייל 2</string>
     <string name="email3">אימייל 3</string>
     <string name="email4">אימייל 4</string>
-    <string name="phone_num_title">הוסף מספרי טלפון</string>
+    <string name="add_phone_num_title">הוסף מספרי טלפון</string>
     <string name="phone_num_1">מספר טלפון 1</string>
     <string name="phone_num_2">מספר טלפון 2</string>
     <string name="phone_num_3">מספר טלפון 3</string>
@@ -128,6 +128,14 @@
     <string name="set_admin_title">הגדר מנהל</string>
     <string name="incorrect_phone_number_or_password">מספר טלפון או סיסמה שגויים</string>
     <string name="phone_num">:מספר טלפון</string>
+    <string name="settings">הגדרות</string>
+    <string name="phone_num_title">מספר טלפון</string>
+    <string name="commands">פקודות</string>
+    <string name="delete">מחק</string>
+    <string name="back">חזור</string>
+    <string name="commands_camera_title">מסך פקודות</string>
+    <string name="get_snapshot_mms">צילום תמונה יזומה ב mms</string>
+    <string name="oredr_cannot_sent">לא ניתן לשלוח פקודות ללא מספר טלפון</string>
 
 
     <string-array name="camera_model">

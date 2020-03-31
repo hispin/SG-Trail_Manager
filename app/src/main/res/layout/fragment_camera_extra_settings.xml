@@ -104,6 +104,9 @@
                 android:background="@drawable/edit_text_border"
                 android:inputType="text"
                 android:textSize="14.7sp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                tools:text="test"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSysName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_default="percent"
@@ -135,17 +138,19 @@
                 android:background="@drawable/edit_text_border"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:textAlignment="viewStart"
                 android:textSize="14.7sp"
                 android:digits="0123456789+-"
                 android:inputType="phone"
+                android:paddingStart="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTelNum"
                 app:layout_constraintEnd_toEndOf="@+id/etSysName"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.052"
                 app:layout_constraintStart_toStartOf="@+id/etSysName"
                 app:layout_constraintTop_toTopOf="@+id/tvTelNum"
-
+                android:paddingEnd="5dp"
+                android:textDirection="ltr"
+                tools:text="test"
                 />
 
         <TextView
@@ -187,6 +192,7 @@
                     android:entries="@array/camera_model"
                     android:gravity="center"
                     android:spinnerMode="dropdown"
+                    android:textDirection="locale"
                     tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -200,170 +206,6 @@
 
         </RelativeLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvMailAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/arialmt"
-                android:lineSpacingExtra="-9.9sp"
-                android:text="@string/mail_address_title"
-                android:textColor="@color/black"
-                android:textSize="14.7sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvSysName"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.391" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etMailAddress"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/edit_text_border"
-                android:inputType="textEmailAddress"
-                android:textSize="14.7sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvMailAddress"
-                app:layout_constraintEnd_toEndOf="@+id/etTelNum"
-                app:layout_constraintHeight_default="percent"
-                app:layout_constraintHeight_percent="0.052"
-                app:layout_constraintStart_toStartOf="@+id/etSysName"
-                app:layout_constraintTop_toTopOf="@+id/tvMailAddress" />
-
-
-        <!--last visit-->
-
-        <!--        <androidx.appcompat.widget.AppCompatTextView-->
-        <!--                android:id="@+id/tvLastVisit"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:fontFamily="@font/arialmt"-->
-        <!--                android:lineSpacingExtra="-9.9sp"-->
-        <!--                android:text="@string/date_last_visit_title"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="14.7sp"-->
-        <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                app:layout_constraintStart_toStartOf="@+id/tvSysName"-->
-        <!--                app:layout_constraintTop_toTopOf="parent"-->
-        <!--                app:layout_constraintVertical_bias="0.487" />-->
-
-        <!--        <androidx.appcompat.widget.AppCompatTextView-->
-        <!--                android:id="@+id/tvLastVisitValue"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="0dp"-->
-        <!--                android:background="@drawable/edit_text_border"-->
-        <!--                android:hint="ddmmyyyy"-->
-        <!--                android:maxLines="1"-->
-        <!--                android:textSize="14.7sp"-->
-        <!--                android:clickable="true"-->
-        <!--                app:layout_constraintBottom_toBottomOf="@+id/tvLastVisit"-->
-        <!--                app:layout_constraintHeight_default="percent"-->
-        <!--                app:layout_constraintHeight_percent="0.052"-->
-        <!--                app:layout_constraintStart_toStartOf="@+id/etSysName"-->
-        <!--                app:layout_constraintTop_toTopOf="@+id/tvLastVisit"-->
-        <!--                app:layout_constraintWidth_default="percent"-->
-        <!--                app:layout_constraintWidth_percent="0.37"-->
-        <!--                android:focusable="true" />-->
-
-        <!--        <androidx.appcompat.widget.AppCompatImageButton-->
-        <!--                android:id="@+id/ibOpenDatePicker"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginStart="8dp"-->
-        <!--                android:background="@android:color/transparent"-->
-        <!--                app:layout_constraintBottom_toBottomOf="@+id/tvLastVisitValue"-->
-        <!--                app:layout_constraintStart_toEndOf="@+id/tvLastVisitValue"-->
-        <!--                app:layout_constraintTop_toTopOf="@+id/tvLastVisitValue"-->
-        <!--                app:srcCompat="@drawable/ic_open_date" />-->
-
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSetAdmin"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/set_admin_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
-                app:layout_constraintTop_toBottomOf="@+id/etMailAddress" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGetSnapshot"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ems="10"
-                android:text="@string/get_snapshot"
-                app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
-                app:layout_constraintTop_toBottomOf="@+id/btnSetAdmin" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnDeleteAllImages"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ems="10"
-                android:text="@string/delete_all_images"
-                app:layout_constraintStart_toStartOf="@+id/btnGetSnapshot"
-                app:layout_constraintTop_toBottomOf="@+id/btnGetSnapshot" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGetBatteryStatus"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ems="10"
-                android:text="@string/get_battery_status"
-                app:layout_constraintStart_toStartOf="@+id/btnDeleteAllImages"
-                app:layout_constraintTop_toBottomOf="@+id/btnDeleteAllImages" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGetParameters"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ems="10"
-                android:text="@string/get_parameters"
-                app:layout_constraintStart_toStartOf="@+id/btnGetBatteryStatus"
-                app:layout_constraintTop_toBottomOf="@+id/btnGetBatteryStatus" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnArmCamera"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ems="8"
-                android:text="@string/arm_camera"
-                app:layout_constraintBottom_toBottomOf="@+id/btnGetSnapshot"
-                app:layout_constraintStart_toEndOf="@+id/btnGetSnapshot" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnDisarmCamera"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ems="8"
-                android:text="@string/disarm_camera"
-                app:layout_constraintBottom_toBottomOf="@+id/btnDeleteAllImages"
-                app:layout_constraintStart_toEndOf="@+id/btnDeleteAllImages" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSetEmailRecipients"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ems="8"
-                android:text="@string/set_email_recipient"
-                app:layout_constraintBottom_toBottomOf="@+id/btnGetBatteryStatus"
-                app:layout_constraintStart_toEndOf="@+id/btnGetBatteryStatus" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSetMmsRecipients"
-                style="@style/commands_buttons"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ems="8"
-                android:text="@string/set_mms_recipients"
-                app:layout_constraintBottom_toBottomOf="@+id/btnGetParameters"
-                app:layout_constraintStart_toEndOf="@+id/btnGetParameters" />
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSave"

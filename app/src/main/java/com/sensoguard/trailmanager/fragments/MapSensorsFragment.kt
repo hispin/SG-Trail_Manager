@@ -394,7 +394,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         showCurrentLocationMarker()
 
         //get sensors from locally
-        val sensorsArr= activity?.let { getSensorsFromLocally(it) }
+        val sensorsArr = activity?.let { getCamerasFromLocally(it) }
 
         //for
         val iteratorList=sensorsArr?.listIterator()
@@ -646,7 +646,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
                 //TODO to separate the adapters
 
 
-                val sensors = activity?.let { getSensorsFromLocally(it) }
+       val sensors = activity?.let { getCamerasFromLocally(it) }
 
                 if(dialog!=null && dialog?.isShowing!!){
                     sensorsDialogAdapter?.setDetects(sensors)
@@ -665,7 +665,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
                 //create dialog
                 dialog = this.context?.let{Dialog(it)}
                 //set layout custom
-                dialog?.setContentView(R.layout.dialog_list_detectors)
+       dialog?.setContentView(R.layout.dialog_list_cameras)
 
                 val width = (resources.displayMetrics.widthPixels*0.90).toInt()
                 val height = (resources.displayMetrics.heightPixels*0.75).toInt()
@@ -752,7 +752,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
             }
 
     private fun saveLatLongDetector(sensor: Camera) {
-                val sensorsArr= activity?.let { getSensorsFromLocally(it) }
+        val sensorsArr = activity?.let { getCamerasFromLocally(it) }
                 if (sensorsArr != null) {
 
                     val iteratorList=sensorsArr.listIterator()
@@ -847,7 +847,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
 
     //rename the sensor name ,from the adapter
     override fun saveNameSensor(detector: Camera) {
-                val detectorsArr= activity?.let { getSensorsFromLocally(it) }
+        val detectorsArr = activity?.let { getCamerasFromLocally(it) }
                 if (detectorsArr != null) {
 
                     val iteratorList=detectorsArr.listIterator()

@@ -14,6 +14,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.CryptoHandler
+import com.sensoguard.trailmanager.classes.GeneralItemMenu
+import com.sensoguard.trailmanager.classes.LanguageManager
 import com.sensoguard.trailmanager.global.*
 import kotlinx.android.synthetic.main.activity_activation.*
 
@@ -97,6 +99,7 @@ class InitAppActivity : AppCompatActivity() {
             PERMISSIONS_REQUEST_READ_PHONE_STATE -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    configurationLanguage()
                     configureActivation()
                 }
             }
@@ -116,12 +119,28 @@ class InitAppActivity : AppCompatActivity() {
                 Manifest.permission.READ_PHONE_STATE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            configurationLanguage()
             configureActivation()
         } else {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_PHONE_STATE), PERMISSIONS_REQUEST_READ_PHONE_STATE
             )
+        }
+    }
+
+    private fun configurationLanguage() {
+        LanguageManager.setLanguageList()
+        val currentLanguage = getStringInPreference(this, CURRENT_LANG_KEY_PREF, "-1")
+        if (currentLanguage != "-1") {
+            GeneralItemMenu.selectedItem = currentLanguage
+            setAppLanguage(this, GeneralItemMenu.selectedItem)
+        } else {
+            //val deviceLang = getAppLanguage()
+            //if (LanguageManager.isExistLang(deviceLang)) {
+            GeneralItemMenu.selectedItem = "iw"
+            setAppLanguage(this, GeneralItemMenu.selectedItem)
+            //}
         }
     }
 }

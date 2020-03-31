@@ -52,8 +52,14 @@
 
     </LinearLayout>
 
+
+    <FrameLayout
+            android:id="@+id/flExtra"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:src="@drawable/ic_action_settings"
+            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -61,16 +67,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/floatAddSensor"
             app:backgroundTint="@color/divider_list"
-            android:tint="@color/design_default_color_primary_dark"
+            android:src="@android:drawable/ic_input_add"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:visibility="invisible"
-    />
-
-    <FrameLayout
-            android:id="@+id/flExtra"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:tint="@color/green" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

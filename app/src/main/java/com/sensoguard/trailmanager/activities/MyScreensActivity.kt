@@ -25,7 +25,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
-import com.sensoguard.trailmanager.classes.LanguageManager
 import com.sensoguard.trailmanager.fragments.AlarmLogFragment
 import com.sensoguard.trailmanager.fragments.ConfigurationFragment
 import com.sensoguard.trailmanager.fragments.MapSensorsFragment
@@ -136,20 +135,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 //        configurationLanguage()
 //    }
 
-    private fun configurationLanguage() {
-        LanguageManager.setLanguageList()
-        val currentLanguage = getStringInPreference(this, CURRENT_LANG_KEY_PREF, "-1")
-        if (currentLanguage != "-1") {
-            GeneralItemMenu.selectedItem = currentLanguage
-            setAppLanguage(this, GeneralItemMenu.selectedItem)
-        } else {
-            val deviceLang = getAppLanguage()
-            if (LanguageManager.isExistLang(deviceLang)) {
-                GeneralItemMenu.selectedItem = deviceLang
-                setAppLanguage(this, GeneralItemMenu.selectedItem)
-            }
-        }
-    }
 
     private fun editActionBar(state: Boolean) {
         //togChangeStatus?.isChecked = state
@@ -355,11 +340,11 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        //start activity for loading new language if it has been changed
-        startActivity(Intent(this,MainActivity::class.java))
-    }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        //start activity for loading new language if it has been changed
+//        startActivity(Intent(this,MainActivity::class.java))
+//    }
 
     //set the language of the app (calling  from activity)
     override fun updateLanguage() {

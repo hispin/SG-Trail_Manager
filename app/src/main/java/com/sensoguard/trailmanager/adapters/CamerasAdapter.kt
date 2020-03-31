@@ -6,11 +6,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
+import com.sensoguard.trailmanager.global.COMMANDS_ACTION_TYPE
+import com.sensoguard.trailmanager.global.DELETE_ACTION_TYPE
+import com.sensoguard.trailmanager.global.EDIT_ACTION_TYPE
 import com.sensoguard.trailmanager.interfaces.OnAdapterListener
 import java.util.*
 
@@ -19,7 +23,7 @@ class CamerasAdapter(
     private var sensors: ArrayList<Camera>,
     val context: Context,
     val onAdapterListener: OnAdapterListener,
-    var itemClick: (Camera) -> Unit
+    var itemClick: (Camera, Int) -> Unit
 ) : RecyclerView.Adapter<CamerasAdapter.ViewHolder>() {
 
 
@@ -44,12 +48,17 @@ class CamerasAdapter(
         //TODO how to define with this
     }
 
-    inner class ViewHolder(private val _itemView: View, private val itemClick: (Camera) -> Unit) :
+    inner class ViewHolder(
+        private val _itemView: View,
+        private val itemClick: (Camera, Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(_itemView) {
         //private var tvId: TextView?=null
         private var tvName: TextView?=null
         private var tvPhoneNum: TextView? = null
         private var ibEditCamera: AppCompatImageButton? = null
+        private var btnDelete: Button? = null
+        private var ibSendCommand: AppCompatImageButton? = null
         //private var togIsActive: ToggleButton?=null
         //private var ibEditName:ImageButton?=null
         //private var tvIsLocate:TextView?=null
@@ -58,11 +67,11 @@ class CamerasAdapter(
         var etName: TextView?=null
 
 
-        init {
-            itemView.setOnClickListener {
-                itemClick.invoke(sensors[adapterPosition])
-            }
-        }
+//        init {
+//            itemView.setOnClickListener {
+//                itemClick.invoke(sensors[adapterPosition])
+//            }
+//        }
 
 
         fun bindReservation(sensor: Camera) {
@@ -70,6 +79,8 @@ class CamerasAdapter(
            tvName = _itemView.findViewById(R.id.tvName)
             tvPhoneNum = _itemView.findViewById(R.id.tvPhoneNum)
             ibEditCamera = _itemView.findViewById(R.id.ibEditCamera)
+            btnDelete = _itemView.findViewById(R.id.btnDelete)
+            ibSendCommand = _itemView.findViewById(R.id.ibSendCommand)
             //togIsActive = _itemView.findViewById(R.id.togIsActive)
             //etName = _itemView.findViewById(R.id.etName)
             //ibEditName = _itemView.findViewById(R.id.ibEditName)
@@ -98,9 +109,21 @@ class CamerasAdapter(
 
 
             ibEditCamera?.setOnClickListener {
-                   itemClick.invoke(sensors[adapterPosition])
-                   return@setOnClickListener
-               }
+                itemClick.invoke(sensors[adapterPosition], EDIT_ACTION_TYPE)
+                return@setOnClickListener
+            }
+
+            btnDelete?.setOnClickListener {
+                itemClick.invoke(sensors[adapterPosition], DELETE_ACTION_TYPE)
+                return@setOnClickListener
+            }
+
+            ibSendCommand?.setOnClickListener {
+                itemClick.invoke(sensors[adapterPosition], COMMANDS_ACTION_TYPE)
+                return@setOnClickListener
+            }
+
+
 
 
 //               tvName?.setOnLongClickListener {

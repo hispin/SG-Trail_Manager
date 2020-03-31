@@ -64,7 +64,7 @@ import static com.sensoguard.trailmanager.global.SysMethodsSharedPrefKt.getBoole
 import static com.sensoguard.trailmanager.global.SysMethodsSharedPrefKt.getLongInPreference;
 import static com.sensoguard.trailmanager.global.SysMethodsSharedPrefKt.setLongInPreference;
 import static com.sensoguard.trailmanager.global.SysMethodsStorageKt.getAlarmsFromLocally;
-import static com.sensoguard.trailmanager.global.SysMethodsStorageKt.getSensorsFromLocally;
+import static com.sensoguard.trailmanager.global.SysMethodsStorageKt.getCamerasFromLocally;
 import static com.sensoguard.trailmanager.global.SysMethodsStorageKt.writeFile;
 
 
@@ -252,7 +252,7 @@ public class EmailsManage {
     //get the camera with the same email from and the same model if exist
     private Camera getAppropriateCamera(Message unReadLastDayMsg, Context context, String[] arrMySubject) {
 
-        ArrayList<Camera> cameras = getSensorsFromLocally(context);
+        ArrayList<Camera> cameras = getCamerasFromLocally(context);
 
         ListIterator<Camera> iteratorList = cameras.listIterator();
         while (iteratorList != null && iteratorList.hasNext()) {

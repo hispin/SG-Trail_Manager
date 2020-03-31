@@ -28,7 +28,7 @@ fun storeSensorsToLocally(sensors: ArrayList<Camera>, context: Context) {
 }
 
 //get the sensors from locally
-fun getSensorsFromLocally(activity: Context): ArrayList<Camera>? {
+fun getCamerasFromLocally(activity: Context): ArrayList<Camera>? {
     val sensors: ArrayList<Camera>?
     val detectorListStr=getStringInPreference(activity,DETECTORS_LIST_KEY_PREF, ERROR_RESP)
 

@@ -84,7 +84,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     private val appStateChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
            DETECTORS_LIST_KEY_PREF -> {
-               refreshSensorsFromPref()
+               refreshCamerasFromPref()
            }
         }
     }
@@ -103,9 +103,28 @@ class SensorsFragment : Fragment(), OnAdapterListener {
 
         sensorsAdapter=activity?.let { adapter ->
             cameras?.let { arr ->
-                CamerasAdapter(arr, adapter, this) { _camera ->
-                    selectedCamera = _camera
-                    selectedCamera?.let { openExtraCameraSettings(it) }
+                CamerasAdapter(arr, adapter, this) { camera: Camera, typeAction: Int ->
+                    selectedCamera = camera
+                    selectedCamera?.let {
+                        if (typeAction == EDIT_ACTION_TYPE) {
+                            floatAddSensor?.visibility = View.INVISIBLE
+                            openExtraCameraSettings(it)
+                        } else if (typeAction == DELETE_ACTION_TYPE) {
+                            deleteCamera()
+                            refreshCamerasFromPref()
+                        } else if (typeAction == COMMANDS_ACTION_TYPE) {
+                            if (selectedCamera?.phoneNum.isNullOrEmpty()) {
+                                Toast.makeText(
+                                    this.context,
+                                    resources.getString(R.string.oredr_cannot_sent),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                floatAddSensor?.visibility = View.INVISIBLE
+                                openExtraCameraCommands(it)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -323,12 +342,11 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         val view = inflater.inflate(R.layout.fragment_sensors, container, false)
         tvShowLogs = view.findViewById(R.id.tvShowLogs)
         rvSensor = view.findViewById(R.id.rvSystemCameras)
-//        floatAddSensor = view.findViewById(R.id.floatAddSensor)
-//        floatAddSensor?.setOnClickListener {
-//
-//            openExtraCameraSettings(_camera)
-//            //showDialog()
-//        }
+        floatAddSensor = view.findViewById(R.id.floatAddSensor)
+        floatAddSensor?.setOnClickListener {
+            addCamera()
+            refreshCamerasFromPref()
+        }
         bs= StringBuilder()
         return view
     }
@@ -342,11 +360,11 @@ class SensorsFragment : Fragment(), OnAdapterListener {
 
         initSensorsAdapter()
 
-        refreshSensorsFromPref()
+        refreshCamerasFromPref()
 
     }
 
-    private fun refreshSensorsFromPref(){
+    private fun refreshCamerasFromPref() {
         cameras = ArrayList()
         //sensors?.add(Camera(resources.getString(R.string.id_title),resources.getString(R.string.name_title)))
         val detectorListStr=getStringInPreference(activity,DETECTORS_LIST_KEY_PREF, ERROR_RESP)
@@ -417,6 +435,24 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     }
 
 
+    //open fragment dialog to make commands
+    private fun openExtraCameraCommands(camera: Camera) {
+
+        val fr = CameraCommandsDialogFragment()
+
+        //deliver selected camera to continue add data
+        val cameraStr = convertToGson(camera)
+        val bdl = Bundle()
+        bdl.putString(CAMERA_KEY, cameraStr)
+        fr.arguments = bdl
+        fr.setTargetFragment(this, TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE)
+        val fm = activity?.supportFragmentManager
+        val fragmentTransaction = fm?.beginTransaction()
+        fragmentTransaction?.add(R.id.flExtra, fr)
+        fragmentTransaction?.commit()
+    }
+
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -438,6 +474,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        floatAddSensor?.visibility = View.VISIBLE
         //response from camera extra settings
         if (resultCode == Activity.RESULT_OK && requestCode == TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE) {
             val cameraStr = intent?.extras?.getString(CAMERA_KEY, null)
@@ -445,5 +482,57 @@ class SensorsFragment : Fragment(), OnAdapterListener {
             selectedCamera?.let { saveCamera(it) }
             Log.d("", "")
         }
+    }
+
+    //add default sensor
+    private fun addCamera() {
+
+        val cameras = activity?.let { getCamerasFromLocally(it) }
+
+
+        val id = cameras?.get(cameras.size - 1)?.getId()
+        try {
+            //get the last number of last camera id
+            val ch = id
+            var idNum = ch?.toInt()
+            if (idNum != null) {
+                idNum++
+                cameras?.add(Camera(idNum))
+                if (activity != null) {
+                    cameras?.let { sen -> storeSensorsToLocally(sen, activity!!) }
+                }
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+//        var sizeCamreas=0
+//        if(cameras?.size != null){
+//            sizeCamreas = cameras.size
+//        }
+
+
+    }
+
+    //delete camera
+    private fun deleteCamera() {
+
+        val cameras = activity?.let { getCamerasFromLocally(it) }
+
+
+        val iteratorList = cameras?.listIterator()
+
+        while (iteratorList != null && iteratorList.hasNext()) {
+            val item = iteratorList.next()
+            if (item.getId() == selectedCamera?.getId()) {
+                iteratorList.remove()
+            }
+        }
+
+
+        if (activity != null) {
+            cameras?.let { cam -> storeSensorsToLocally(cam, activity!!) }
+        }
+
     }
 }

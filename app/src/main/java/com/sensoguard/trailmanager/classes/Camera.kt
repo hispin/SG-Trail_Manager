@@ -37,6 +37,13 @@ class Camera {
         isArmed = true
     }
 
+    constructor(id: Int) {
+        this.id = id.toString()
+        sysName = "id-${this.id}"
+        isArmed = true
+
+    }
+
     fun getId():String{
         return id.toString()
     }

@@ -77,35 +77,35 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
     ): View? {
 
         val view = inflater.inflate(
-            com.sensoguard.trailmanager.R.layout.fragment_configuration,
+            R.layout.fragment_configuration,
             container,
             false
         )
 
-        etSensorValue = view.findViewById(com.sensoguard.trailmanager.R.id.etSensorValue)
+        etSensorValue = view.findViewById(R.id.etSensorValue)
         val currentNumSensors=getCurrentNumSensorsFromLocally()
         if(currentNumSensors!=null) {
             etSensorValue?.setText(currentNumSensors.toString())
         }
 
-        btnSaveSensors = view.findViewById(com.sensoguard.trailmanager.R.id.btnSaveSensors)
+        btnSaveSensors = view.findViewById(R.id.btnSaveSensors)
         btnSaveSensors?.setOnClickListener{
             addSensors()
         }
 
-        togChangeAlarmVibrate = view.findViewById(com.sensoguard.trailmanager.R.id.togChangeAlarmVibrate)
+        togChangeAlarmVibrate = view.findViewById(R.id.togChangeAlarmVibrate)
         togChangeAlarmVibrate?.isChecked=getBooleanInPreference(activity,IS_VIBRATE_WHEN_ALARM_KEY,true)
         togChangeAlarmVibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             //update the status of the alarm vibrate : on/off
             setBooleanInPreference(activity,IS_VIBRATE_WHEN_ALARM_KEY,isChecked)
         }
 
-        ibSatelliteMode = view.findViewById(com.sensoguard.trailmanager.R.id.ibSatelliteMode)
+        ibSatelliteMode = view.findViewById(R.id.ibSatelliteMode)
         ibSatelliteMode?.setOnClickListener{
             setMapSatellite()
         }
 
-        ibNormalMode = view.findViewById(com.sensoguard.trailmanager.R.id.ibNormalMode)
+        ibNormalMode = view.findViewById(R.id.ibNormalMode)
         ibNormalMode?.setOnClickListener{
             setMapNormal()
         }
@@ -116,10 +116,10 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             setMapSatellite()
         }
 
-        etAlarmFlickerValue = view.findViewById(com.sensoguard.trailmanager.R.id.etAlarmFlickerValue)
+        etAlarmFlickerValue = view.findViewById(R.id.etAlarmFlickerValue)
         etAlarmFlickerValue?.setText(getLongInPreference(activity,ALARM_FLICKERING_DURATION_KEY,-1L).toString())
 
-        btnSaveFlicker = view.findViewById(com.sensoguard.trailmanager.R.id.btnSaveFlicker)
+        btnSaveFlicker = view.findViewById(R.id.btnSaveFlicker)
         //update the time flickering
         btnSaveFlicker?.setOnClickListener{
             try {
@@ -134,23 +134,23 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
         }
 
-        constAlarmSound = view.findViewById(com.sensoguard.trailmanager.R.id.constAlarmSound)
+        constAlarmSound = view.findViewById(R.id.constAlarmSound)
         constAlarmSound?.setOnClickListener{
             openSoundsMenu()
         }
-        txtAlarmSoundValue = view.findViewById(com.sensoguard.trailmanager.R.id.txtAlarmSoundValue)
+        txtAlarmSoundValue = view.findViewById(R.id.txtAlarmSoundValue)
 
         var title=getSelectedNotificationSound()
         txtAlarmSoundValue?.text=title
 
-        togChangeAlarmSound = view.findViewById(com.sensoguard.trailmanager.R.id.togChangeAlarmSound)
+        togChangeAlarmSound = view.findViewById(R.id.togChangeAlarmSound)
         togChangeAlarmSound?.isChecked= getBooleanInPreference(activity,IS_NOTIFICATION_SOUND_KEY,true)
         togChangeAlarmSound?.setOnCheckedChangeListener { buttonView, isChecked ->
             //update the status of the alarm vibrate : on/off
             setBooleanInPreference(activity,IS_NOTIFICATION_SOUND_KEY,isChecked)
         }
 
-        btnDefault = view.findViewById(com.sensoguard.trailmanager.R.id.btnDefault)
+        btnDefault = view.findViewById(R.id.btnDefault)
         btnDefault?.setOnClickListener{
             //return the alarm to default sound
             val packageName = "android.resource://${activity?.packageName}/raw/alarm_sound"
@@ -322,7 +322,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
     //get the current size of sensors
     private fun getCurrentNumSensorsFromLocally(): Int? {
-        val sensors= activity?.let { getSensorsFromLocally(it) }
+        val sensors = activity?.let { getCamerasFromLocally(it) }
         return sensors?.size
     }
 
@@ -332,7 +332,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
         var numSensorsRequest:Int?=null
 
-        val sensors= activity?.let { getSensorsFromLocally(it) }
+        val sensors = activity?.let { getCamerasFromLocally(it) }
 
         //check if id is already exist
         fun isIdExist(sensorsArr: ArrayList<Camera>, id: String): Boolean {
@@ -444,7 +444,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
         if (LanguageManager.languagesItems != null && LanguageManager.languagesItems.size > 0) {
             generalItemMenuAdapter = GeneralItemMenuAdapter(
                 activity,
-                com.sensoguard.trailmanager.R.layout.item_general_menu,
+                R.layout.item_general_menu,
                 createLanguagesItemsDeliver(LanguageManager.languagesItems),
                 this
             )

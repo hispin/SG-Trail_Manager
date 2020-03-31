@@ -44,7 +44,7 @@
     </LinearLayout>
 
 
-        <Button
+    <Button
                 android:id="@+id/btnSaveLocateSensor"
                 android:layout_height="25dp"
                   android:layout_width="65.3dp"

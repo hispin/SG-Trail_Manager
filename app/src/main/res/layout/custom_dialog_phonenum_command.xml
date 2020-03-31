@@ -14,7 +14,7 @@
             android:fontFamily="@font/arialmt"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="5.6sp"
-            android:text="@string/phone_num_title"
+            android:text="@string/add_phone_num_title"
             android:textColor="@color/medium_green"
             android:textSize="15.3sp"
             app:layout_constraintEnd_toEndOf="parent"
