@@ -111,7 +111,7 @@
     <string name="arm_camera">Arm camera</string>
     <string name="disarm_camera">Disarm camera</string>
     <string name="set_email_recipient">Set email recipients</string>
-    <string name="set_mms_recipients">Set mms recipients</string>
+    <string name="set_mms_recipients">Set MMS recipients</string>
     <string name="missing_phone_number">Missing phone number</string>
     <string name="emails_title">Add emails</string>
     <string name="send_command">Send command</string>
@@ -136,7 +136,7 @@
     <string name="delete">Delete</string>
     <string name="back">Back</string>
     <string name="commands_camera_title">Command screen</string>
-    <string name="get_snapshot_mms">Get snapshot to mms</string>
+    <string name="get_snapshot_mms">Get snapshot to MMS</string>
     <string name="oredr_cannot_sent">Orders cannot be sent without a phone number</string>
     <string name="invalid_telephone_number">Invalid telephone number</string>
 
@@ -147,7 +147,6 @@
         <item>MG-983G-36M</item>
         <item>BG-668</item>
         <item>ATC</item>
-        <item>HIKVISION</item>
     </string-array>
 
     <!--    <string-array name="camera_type">-->

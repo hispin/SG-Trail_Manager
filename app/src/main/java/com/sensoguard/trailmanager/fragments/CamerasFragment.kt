@@ -11,7 +11,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.*
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,13 +47,13 @@ private const val ARG_PARAM2 = "param2"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [SensorsFragment.OnFragmentInteractionListener] interface
+ * [CamerasFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [SensorsFragment.newInstance] factory method to
+ * Use the [CamerasFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class SensorsFragment : Fragment(), OnAdapterListener {
+class CamerasFragment : Fragment(), OnAdapterListener {
 
 
 
@@ -64,7 +63,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     //private var listener: OnAdapterListener? = null
     var tvShowLogs:TextView?=null
     var bs: StringBuilder?=null
-    private var floatAddSensor: FloatingActionButton?=null
+    private var floatAddCamera: FloatingActionButton? = null
     private var cameras: ArrayList<Camera>? = null
     private var rvSensor: RecyclerView?=null
     private var sensorsAdapter: CamerasAdapter? = null
@@ -107,7 +106,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
                     selectedCamera = camera
                     selectedCamera?.let {
                         if (typeAction == EDIT_ACTION_TYPE) {
-                            floatAddSensor?.visibility = View.INVISIBLE
+                            floatAddCamera?.visibility = View.INVISIBLE
                             openExtraCameraSettings(it)
                         } else if (typeAction == DELETE_ACTION_TYPE) {
                             deleteCamera()
@@ -120,7 +119,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
                                     Toast.LENGTH_LONG
                                 ).show()
                             } else {
-                                floatAddSensor?.visibility = View.INVISIBLE
+                                floatAddCamera?.visibility = View.INVISIBLE
                                 openExtraCameraCommands(it)
                             }
                         }
@@ -342,14 +341,15 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         val view = inflater.inflate(R.layout.fragment_sensors, container, false)
         tvShowLogs = view.findViewById(R.id.tvShowLogs)
         rvSensor = view.findViewById(R.id.rvSystemCameras)
-        floatAddSensor = view.findViewById(R.id.floatAddSensor)
-        floatAddSensor?.setOnClickListener {
+        floatAddCamera = view.findViewById(R.id.floatAddSensor)
+        floatAddCamera?.setOnClickListener {
             addCamera()
             refreshCamerasFromPref()
         }
         bs= StringBuilder()
         return view
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -370,8 +370,8 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         val detectorListStr=getStringInPreference(activity,DETECTORS_LIST_KEY_PREF, ERROR_RESP)
 
         if(detectorListStr.equals(ERROR_RESP)){
-            cameras?.add(Camera("1"))
-            cameras?.let { storeSensorsToLocally(it, activity!!) }
+            //cameras?.add(Camera("1"))
+            //cameras?.let { storeSensorsToLocally(it, activity!!) }
         }else {
 
             detectorListStr?.let {
@@ -390,10 +390,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)?.unregisterOnSharedPreferenceChangeListener(appStateChangeListener)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        //listener?.onFragmentInteraction(uri)
-    }
+
 
     private fun setFilter() {
         val filter = IntentFilter("handle.read.data")
@@ -429,9 +426,20 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         fr.arguments = bdl
         fr.setTargetFragment(this, TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE)
         val fm = activity?.supportFragmentManager
+        fm?.addOnBackStackChangedListener {
+            //if the dialog is close then the add button is visible
+            if (fm.backStackEntryCount == 0) {
+                floatAddCamera?.visibility = View.VISIBLE
+            } else {
+                floatAddCamera?.visibility = View.INVISIBLE
+            }
+        }
         val fragmentTransaction = fm?.beginTransaction()
+
+        fragmentTransaction?.addToBackStack(fr.tag)
         fragmentTransaction?.add(R.id.flExtra, fr)
         fragmentTransaction?.commit()
+
     }
 
 
@@ -447,7 +455,16 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         fr.arguments = bdl
         fr.setTargetFragment(this, TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE)
         val fm = activity?.supportFragmentManager
+        fm?.addOnBackStackChangedListener {
+            //if the dialog is close then the add button is visible
+            if (fm.backStackEntryCount == 0) {
+                floatAddCamera?.visibility = View.VISIBLE
+            } else {
+                floatAddCamera?.visibility = View.INVISIBLE
+            }
+        }
         val fragmentTransaction = fm?.beginTransaction()
+        fragmentTransaction?.addToBackStack(fr.tag)
         fragmentTransaction?.add(R.id.flExtra, fr)
         fragmentTransaction?.commit()
     }
@@ -465,7 +482,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            SensorsFragment().apply {
+            CamerasFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -474,7 +491,7 @@ class SensorsFragment : Fragment(), OnAdapterListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        floatAddSensor?.visibility = View.VISIBLE
+        floatAddCamera?.visibility = View.VISIBLE
         //response from camera extra settings
         if (resultCode == Activity.RESULT_OK && requestCode == TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE) {
             val cameraStr = intent?.extras?.getString(CAMERA_KEY, null)
@@ -490,11 +507,15 @@ class SensorsFragment : Fragment(), OnAdapterListener {
         val cameras = activity?.let { getCamerasFromLocally(it) }
 
 
-        val id = cameras?.get(cameras.size - 1)?.getId()
+        val id: String?
+        id = if (cameras != null && cameras.size > 0) {
+            cameras[cameras.size - 1].getId()
+        } else {
+            "0"
+        }
         try {
             //get the last number of last camera id
-            val ch = id
-            var idNum = ch?.toInt()
+            var idNum = id.toInt()
             if (idNum != null) {
                 idNum++
                 cameras?.add(Camera(idNum))

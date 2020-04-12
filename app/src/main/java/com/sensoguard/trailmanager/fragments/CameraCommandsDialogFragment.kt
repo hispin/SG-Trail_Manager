@@ -21,6 +21,7 @@ import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.global.CAMERA_KEY
 import com.sensoguard.trailmanager.global.convertJsonToSensor
 
+
 class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
 
     private var btnGetSnapshot: Button? = null
@@ -105,6 +106,7 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
         tvPhoneNum = view?.findViewById(R.id.tvPhoneNum)
 
     }
+
 
     override fun onClick(v: View?) {
         if (myCamera == null || myCamera?.phoneNum == null) {

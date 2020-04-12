@@ -134,7 +134,7 @@
     <string name="delete">מחק</string>
     <string name="back">חזור</string>
     <string name="commands_camera_title">מסך פקודות</string>
-    <string name="get_snapshot_mms">צילום תמונה יזומה ב mms</string>
+    <string name="get_snapshot_mms">צילום תמונה יזומה ב MMS</string>
     <string name="oredr_cannot_sent">לא ניתן לשלוח פקודות ללא מספר טלפון</string>
     <string name="invalid_telephone_number">מספר טלפון לא תקין</string>
 
@@ -146,6 +146,5 @@
         <item>MG-983G-36M</item>
         <item>BG–668</item>
         <item>ATC</item>
-        <item>HIKVISION</item>
     </string-array>
 </resources>
