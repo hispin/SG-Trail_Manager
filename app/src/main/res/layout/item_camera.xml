@@ -4,83 +4,85 @@
 <com.daimajia.swipe.SwipeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        xmlns:tool="http://schemas.android.com/tools"
         android:id="@+id/swipe"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
+        android:background="@color/white"
         swipe:drag_edge="right"
         swipe:leftEdgeSwipeOffset="0dp"
         swipe:rightEdgeSwipeOffset="0dp">
 
 
     <RelativeLayout
-            android:id="@+id/bottom_wrapper"
+            android:id="@+id/rlDelete"
             style="@android:style/Widget.Button"
             android:layout_width="90dp"
+            android:background="@color/white"
             android:layout_height="match_parent"
-            android:background="@color/gray1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-        <Button
-                android:id="@+id/btnDelete"
+        <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibDelete"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="2dp"
                 android:background="@color/transparent"
-                android:drawableTop="@drawable/btn_delete"
+                android:src="@drawable/trash"
                 android:gravity="center_horizontal"
-                android:text="@string/delete"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/my_app_color" />
     </RelativeLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_height="70dp"
-            xmlns:tool="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
 
 
         <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tool:text="name"
-                android:textSize="13.3sp"
-                android:textColor="@color/dark1"
+                android:layout_marginStart="16.3dp"
                 android:fontFamily="@font/arialmt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="30dp" />
+                android:text="name"
+                android:textColor="@color/dark3"
+                android:textSize="16sp"
+
+                swipe:layout_constraintBottom_toTopOf="@+id/tvPhoneNum"
+                swipe:layout_constraintStart_toStartOf="parent"
+                swipe:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
                 android:id="@+id/tvPhoneNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="110dp"
-                android:textSize="13.3sp"
-                android:textColor="@color/dark1"
-                android:fontFamily="@font/arialmt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:drawablePadding="7.3dp"
-                android:gravity="center"
-                tool:text="phone" />
+                android:fontFamily="@font/arialmt"
+                android:hint="@string/phone_num_title"
+                android:textColor="@color/dark3"
 
+                android:textSize="16sp"
+                swipe:layout_constraintBottom_toBottomOf="parent"
+                swipe:layout_constraintStart_toStartOf="@+id/tvName"
+                swipe:layout_constraintTop_toBottomOf="@+id/tvName"
+                tool:text="phone" />
 
         <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ibEditCamera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="210dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/cam_settings"
+                swipe:layout_constraintBottom_toBottomOf="parent"
+                swipe:layout_constraintEnd_toEndOf="parent"
+                swipe:layout_constraintHorizontal_bias="0.781"
+                swipe:layout_constraintStart_toStartOf="parent"
+                swipe:layout_constraintTop_toTopOf="parent"
+                swipe:srcCompat="@drawable/cam_settings"
 
                 />
 
@@ -88,13 +90,14 @@
                 android:id="@+id/ibSendCommand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="280dp"
                 android:autoMirrored="true"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_play_green" />
+                swipe:layout_constraintBottom_toBottomOf="parent"
+                swipe:layout_constraintEnd_toEndOf="parent"
+                swipe:layout_constraintHorizontal_bias="0.935"
+                swipe:layout_constraintStart_toStartOf="parent"
+                swipe:layout_constraintTop_toTopOf="parent"
+                swipe:srcCompat="@drawable/send_command" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

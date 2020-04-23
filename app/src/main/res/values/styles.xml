@@ -87,7 +87,7 @@
     </style>
 
     <style name="commands_emails_fields">
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_height">25dp</item>
         <item name="android:textSize">14.7sp</item>
         <item name="android:background">@drawable/edit_text_border</item>
         <item name="android:inputType">textEmailAddress</item>

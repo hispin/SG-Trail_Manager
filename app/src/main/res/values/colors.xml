@@ -40,4 +40,10 @@
     <color name="gray13">#999999</color>
     <color name="green2">#4b9c55</color>
     <color name="blue">#0000FF</color>
+    <color name="dark3">#060606</color>
+    <color name="gray10">#5f5f5f</color>
+    <color name="red4">#b40909</color>
+    <color name="white2">#f8f8f8</color>
+    <color name="dark4">#070707</color>
+    <color name="gray14">#737272</color>
 </resources>

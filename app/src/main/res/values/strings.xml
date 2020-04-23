@@ -25,7 +25,7 @@
     <string name="csv_alarm_type_title">Alarm Type</string>
     <string name="csv_latitude_title">latitude</string>
     <string name="csv_longitude_title">longitude</string>
-    <string name="camera_title">Cameras</string>
+    <string name="cameras_title">Cameras</string>
     <string name="map_title">Map</string>
     <string name="config_title">Configuration</string>
     <string name="alarm_log_title">Alarm</string>
@@ -114,7 +114,7 @@
     <string name="set_mms_recipients">Set MMS recipients</string>
     <string name="missing_phone_number">Missing phone number</string>
     <string name="emails_title">Add emails</string>
-    <string name="send_command">Send command</string>
+    <string name="send">Send</string>
     <string name="email1">Email 1</string>
     <string name="email2">Email 2</string>
     <string name="email3">Email 3</string>
@@ -135,17 +135,49 @@
     <string name="commands">Commands</string>
     <string name="delete">Delete</string>
     <string name="back">Back</string>
-    <string name="commands_camera_title">Command screen</string>
+    <string name="commands_camera_title">Command</string>
     <string name="get_snapshot_mms">Get snapshot to MMS</string>
     <string name="oredr_cannot_sent">Orders cannot be sent without a phone number</string>
     <string name="invalid_telephone_number">Invalid telephone number</string>
+    <string name="camera_title">Camera</string>
+    <string name="camera_settings">Camera settings</string>
+    <string name="more_orders">More orders</string>
+    <string name="take_a_proactive_picture">Take a picture</string>
+    <string name="add_recipient_to_mms">Add recipient to MMS</string>
+    <string name="set_up_email_recipients">Set up email recipients</string>
+    <string name="send_via_mms">Send via MMS</string>
+    <string name="send_over_the_internet">Send over the Internet</string>
+    <string name="receipt_only_in_mms">Receipt only in MMS</string>
+    <string name="reception_only_by_email">Reception only by email</string>
+    <string name="parameter_testing">Parameter Testing</string>
+    <string name="signal_testing">Signal Testing</string>
+    <string name="battery_test">Battery test</string>
+    <string name="delete_recipients_for_MMS">Delete recipients for MMS</string>
+    <string name="delete_recipients_by_email">Delete recipients by email</string>
+    <string name="receive_email_and_MMS">Receive email and MMS</string>
+    <string name="sending_mode_operational">Sending Mode - Operational</string>
+    <string name="sending_mode_daily_report">Sending Mode - Daily Report</string>
+    <string name="sending_mode_off">Sending Mode - Off</string>
+    <string name="photo_mode_photo">Photo mode - Photo</string>
+    <string name="photo_mode_video">Photo mode - Video</string>
+    <string name="photo_mode_photo_video">Photo Mode - Photo + Video</string>
+    <string name="image_quality_low">Image quality - low</string>
+    <string name="image_quality_medium">Image Quality - Medium</string>
+    <string name="image_quality_high">Image quality - high</string>
+    <string name="sensor_approaches_off">Sensor Approaches - Off</string>
+    <string name="sensor_sensitivity_high">Sensor Sensitivity - High</string>
+    <string name="sensor_sensitivity_medium">Sensor Sensitivity - Medium</string>
+    <string name="sensor_sensitivity_low">Sensor Sensitivity - Low</string>
+    <string name="enable_remote_control">Enable remote control</string>
+    <string name="turn_off_remote_control">Turn off remote control</string>
+    <string name="update_time_and_date">Update time and date</string>
+    <string name="selecting_quantity_of_pictures_unlimited">Selecting Quantity of Pictures - Unlimited</string>
+    <string name="image_quantity_selection_manual">Image Quantity Selection - Manual</string>
+    <string name="image_quantity_selection_zero_counter">Image Quantity Selection - Zero Counter</string>
 
     <string-array name="camera_model">
-        <item>MG-983G-30M</item>
-        <item>MG-984G-36M</item>
-        <item>MG-984G-30M</item>
-        <item>MG-983G-36M</item>
-        <item>BG-668</item>
+        <item>BG668-E36WG</item>
+        <item>MG983G/984G-30M</item>
         <item>ATC</item>
     </string-array>
 

@@ -101,3 +101,6 @@ const val EDIT_ACTION_TYPE = 1
 const val DELETE_ACTION_TYPE = 2
 const val COMMANDS_ACTION_TYPE = 3
 
+const val MAIN_COMMANDS_LIST_TYPE = 0
+const val MORE_COMMANDS_LIST_TYPE = 1
+

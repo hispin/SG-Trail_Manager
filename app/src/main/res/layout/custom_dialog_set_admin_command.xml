@@ -94,7 +94,7 @@
             android:lineSpacingExtra="-9.9sp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="@string/send_command"
+            android:text="@string/send"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="14.7sp"

@@ -1,6 +1,5 @@
 package com.sensoguard.trailmanager.fragments
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -16,28 +14,27 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
+import com.sensoguard.trailmanager.adapters.CommandAdapter
 import com.sensoguard.trailmanager.classes.Camera
-import com.sensoguard.trailmanager.global.CAMERA_KEY
-import com.sensoguard.trailmanager.global.convertJsonToSensor
+import com.sensoguard.trailmanager.classes.Command
+import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.interfaces.OnBackPressed
+import java.util.*
+import kotlin.collections.ArrayList
 
+class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
-class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
-
-    private var btnGetSnapshot: Button? = null
-    private var btnDeleteAllImages: Button? = null
-    private var btnGetBatteryStatus: Button? = null
-    private var btnGetParameters: Button? = null
-    private var btnArmCamera: Button? = null
-    private var btnDisarmCamera: Button? = null
-    private var btnSetEmailRecipients: Button? = null
-    private var btnSetMmsRecipients: Button? = null
-    private var btnSetAdmin: AppCompatButton? = null
-    private var btnGetSnapshotMms: AppCompatButton? = null
-    private var btnCancel: AppCompatButton? = null
     private var myCamera: Camera? = null
     private var tvCameraName: TextView? = null
     private var tvPhoneNum: TextView? = null
+    private var mainCommands: ArrayList<Command>? = null
+    private var moreCommands: ArrayList<Command>? = null
+    private var rvCommands: RecyclerView? = null
+    private var commandsAdapter: CommandAdapter? = null
+    private var typeCommandList: Int = MAIN_COMMANDS_LIST_TYPE
 
 
     override fun onCreateView(
@@ -52,9 +49,7 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
         )
 
 
-
         initViews(view)
-
 
         val bundle = arguments
         val cameraStr = bundle?.getString(CAMERA_KEY, null)
@@ -70,100 +65,383 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
     }
 
     private fun initViews(view: View?) {
-
-
-        btnCancel = view?.findViewById(R.id.btnCancel)
-        btnCancel?.setOnClickListener {
-            sendResult()
-            //dismiss()
-        }
-
-
-
-        btnGetSnapshot = view?.findViewById(R.id.btnGetSnapshot)
-        btnGetSnapshot?.setOnClickListener(this)
-        btnDeleteAllImages = view?.findViewById(R.id.btnDeleteAllImages)
-        btnDeleteAllImages?.setOnClickListener(this)
-        btnGetBatteryStatus = view?.findViewById(R.id.btnGetBatteryStatus)
-        btnGetBatteryStatus?.setOnClickListener(this)
-        btnGetParameters = view?.findViewById(R.id.btnGetParameters)
-        btnGetParameters?.setOnClickListener(this)
-        btnArmCamera = view?.findViewById(R.id.btnArmCamera)
-        btnArmCamera?.setOnClickListener(this)
-        btnDisarmCamera = view?.findViewById(R.id.btnDisarmCamera)
-        btnDisarmCamera?.setOnClickListener(this)
-        btnSetEmailRecipients = view?.findViewById(R.id.btnSetEmailRecipients)
-        btnSetEmailRecipients?.setOnClickListener(this)
-        btnSetMmsRecipients = view?.findViewById(R.id.btnSetMmsRecipients)
-        btnSetMmsRecipients?.setOnClickListener(this)
-        btnSetAdmin = view?.findViewById(R.id.btnSetAdmin)
-        btnSetAdmin?.setOnClickListener(this)
-        btnGetSnapshotMms = view?.findViewById(R.id.btnGetSnapshotMms)
-        btnGetSnapshotMms?.setOnClickListener(this)
-
-
         tvCameraName = view?.findViewById(R.id.tvCameraName)
         tvPhoneNum = view?.findViewById(R.id.tvPhoneNum)
+        rvCommands = view?.findViewById(R.id.rvCommands)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        refreshCommandsAdapter()
+    }
+
+    private fun populateCommandsByModel() {
+        if (myCamera?.cameraModel.equals("MG983G/984G")) {
+            mainCommands = ArrayList()
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.arm_camera),
+                    "#A#",
+                    R.drawable.arm_camera
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.disarm_camera),
+                    "#D#",
+                    R.drawable.disarm_camera
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.get_snapshot_email),
+                    "#T#E#",
+                    R.drawable.get_snapshot_email
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.get_snapshot_mms),
+                    "#T#",
+                    R.drawable.get_snapshot_mms
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.get_parameters),
+                    "#L#",
+                    R.drawable.parameters
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.get_battery_status),
+                    "#C#",
+                    R.drawable.get_battery_status
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.set_email_recipient),
+                    null,
+                    R.drawable.set_email_recipient
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.set_mms_recipients),
+                    null,
+                    R.drawable.set_mms_recipients
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.set_admin_title),
+                    null,
+                    R.drawable.manager
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.delete_all_images),
+                    "#F#",
+                    R.drawable.delete_all_images
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.more_orders),
+                    null,
+                    R.drawable.more
+                )
+            )
+        } else if (myCamera?.cameraModel.equals("ATC")) {
+            mainCommands = ArrayList()
+            mainCommands?.add(Command(resources.getString(R.string.arm_camera), "*202#1#", -1))
+            mainCommands?.add(Command(resources.getString(R.string.disarm_camera), "*202#3#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.take_a_proactive_picture),
+                    "*500#",
+                    -1
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.add_recipient_to_mms),
+                    "*100#" + myCamera?.phoneNum + "#",
+                    -1
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.set_up_email_recipients),
+                    "*110#" + myCamera?.emailAddress + "#",
+                    -1
+                )
+            )
+            mainCommands?.add(Command(resources.getString(R.string.send_via_mms), "*120#0#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.send_over_the_internet),
+                    "*120#1#",
+                    -1
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.receipt_only_in_mms),
+                    "*130#0#",
+                    -1
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.reception_only_by_email),
+                    "*130#1#",
+                    -1
+                )
+            )
+            mainCommands?.add(Command(resources.getString(R.string.parameter_testing), "*160#", -1))
+            mainCommands?.add(Command(resources.getString(R.string.signal_testing), "*150#", -1))
+            mainCommands?.add(Command(resources.getString(R.string.battery_test), "*201#", -1))
+            mainCommands?.add(Command(resources.getString(R.string.delete_all_images), "*204#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.more_orders),
+                    null,
+                    R.drawable.more
+                )
+            )
+        }
     }
 
 
-    override fun onClick(v: View?) {
-        if (myCamera == null || myCamera?.phoneNum == null) {
-            Toast.makeText(
-                activity,
-                resources.getString(R.string.missing_phone_number),
-                Toast.LENGTH_LONG
-            ).show()
-            return
+    private fun populateMoreCommandsByModel() {
+        if (myCamera?.cameraModel.equals("MG983G/984G")) {
+            moreCommands = ArrayList()
+        } else if (myCamera?.cameraModel.equals("ATC")) {
+            moreCommands = ArrayList()
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.delete_recipients_for_MMS),
+                    "*101#" + myCamera?.phoneNum + "#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.delete_recipients_by_email),
+                    "*111#" + myCamera?.emailAddress + "#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.receive_email_and_MMS),
+                    "*130#2#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sending_mode_operational),
+                    "*140#0#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sending_mode_daily_report),
+                    "*140#1#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sending_mode_off),
+                    "*140#2#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.photo_mode_photo),
+                    "*200#0#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.photo_mode_video),
+                    "*200#1#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.photo_mode_photo_video),
+                    "*200#2#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.image_quality_low),
+                    "*190#0#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.image_quality_medium),
+                    "*190#2#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.image_quality_high),
+                    "*190#3#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sensor_approaches_off),
+                    "*202#3#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sensor_sensitivity_high),
+                    "*202#0#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sensor_sensitivity_medium),
+                    "*202#1#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.sensor_sensitivity_low),
+                    "*202#2#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.enable_remote_control),
+                    "*209#1#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.turn_off_remote_control),
+                    "*209#0#",
+                    -1
+                )
+            )
+            moreCommands?.add(Command(resources.getString(R.string.update_time_and_date), null, -1))
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.selecting_quantity_of_pictures_unlimited),
+                    "*180#999#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.image_quantity_selection_manual),
+                    "*180#Up to 100#",
+                    -1
+                )
+            )
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.image_quantity_selection_zero_counter),
+                    "*180#",
+                    -1
+                )
+            )
+        }
+    }
+
+    private fun refreshCommandsAdapter() {
+
+        var commands: ArrayList<Command>? = null
+        if (typeCommandList == MAIN_COMMANDS_LIST_TYPE) {
+            populateCommandsByModel()
+            commands = mainCommands
+        } else if (typeCommandList == MORE_COMMANDS_LIST_TYPE) {
+            populateMoreCommandsByModel()
+            commands = moreCommands
         }
 
-        if (myCamera?.cameraModel.equals("MG-983G-30M") ||
-            myCamera?.cameraModel.equals("MG-984G-36M") ||
-            myCamera?.cameraModel.equals("MG-984G-30M") ||
-            myCamera?.cameraModel.equals("MG-983G-36M")
-        ) {
-
-            var command: String? = ""
-            if (v?.id == R.id.btnGetSnapshot) {
-                command = "#T#E#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnDeleteAllImages) {
-                command = "#F#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnGetBatteryStatus) {
-                command = "#C#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnGetParameters) {
-                command = "#L#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnArmCamera) {
-                command = "#A#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnDisarmCamera) {
-                command = "#D#"
-                sendSMS(command)
-            } else if (v?.id == R.id.btnSetEmailRecipients) {
-                showEmailsDialog()
-            } else if (v?.id == R.id.btnSetMmsRecipients) {
-                showPhoneNumDialog()
-            } else if (v?.id == R.id.btnSetAdmin) {
-                showSetAdminDialog()
-            } else if (v?.id == R.id.btnGetSnapshotMms) {
-                command = "#T#"
-                sendSMS(command)
+        commandsAdapter = activity?.let { adapter ->
+            commands?.let { arr ->
+                CommandAdapter(arr, adapter) { command: Command ->
+                    if (myCamera?.cameraModel.equals("MG983G/984G")) {
+                        when (command.commandName) {
+                            resources.getString(R.string.set_email_recipient) -> {
+                                showEmailsDialog()
+                            }
+                            resources.getString(R.string.set_mms_recipients) -> {
+                                showPhoneNumDialog()
+                            }
+                            resources.getString(R.string.set_admin_title) -> {
+                                showSetAdminDialog()
+                            }
+                            resources.getString(R.string.more_orders) -> {
+                                typeCommandList = MORE_COMMANDS_LIST_TYPE
+                                refreshCommandsAdapter()
+                            }
+                            else -> {
+                                sendSMS(command.commandContent)
+                            }
+                        }
+                    } else if (myCamera?.cameraModel.equals("ATC")) {
+                        when (command.commandName) {
+                            resources.getString(R.string.more_orders) -> {
+                                typeCommandList = MORE_COMMANDS_LIST_TYPE
+                                refreshCommandsAdapter()
+                            }
+                            resources.getString(R.string.update_time_and_date) -> {
+                                var now: Calendar = Calendar.getInstance()
+                                var dateStr = this@CameraCommandsDialogFragment.context?.let {
+                                    getStringFromCalendar(
+                                        now,
+                                        "yyyyMMddHHmmss",
+                                        it
+                                    )
+                                }
+                                val cmd = "*205#$dateStr#"
+                                sendSMS(cmd)
+                            }
+                            else -> {
+                                sendSMS(command.commandContent)
+                            }
+                        }
+                    }
+                }
             }
 
-
         }
+        rvCommands?.adapter = commandsAdapter
+        val layoutManager = LinearLayoutManager(activity)
+        rvCommands?.layoutManager = layoutManager
+
+        commandsAdapter?.notifyDataSetChanged()
+
+
     }
 
-    private fun sendSMS(command: String?) {
-        val uri = Uri.parse("smsto:" + myCamera?.phoneNum)
-        val intent = Intent(Intent.ACTION_SENDTO, uri)
-        intent.putExtra("sms_body", command)
-        startActivity(intent)
-    }
 
     //show dialog with emails fields
     private fun showEmailsDialog() {
@@ -187,20 +465,8 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
                 command += etField2.text?.toString() + "#"
                 command += etField3.text?.toString() + "#"
                 command += etField4.text?.toString() + "#"
-//                command = addEmailToCommand(command, etField1)
-//                command = addEmailToCommand(command, etField2)
-//                command = addEmailToCommand(command, etField3)
-//                command = addEmailToCommand(command, etField4)
-//                if (command == "#R#") {
-//                    Toast.makeText(
-//                        activity,
-//                        resources.getString(R.string.you_need_at_least_one_email),
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                } else {
                 sendSMS(command)
                 dialog.dismiss()
-//                }
 
             }
             val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
@@ -210,32 +476,6 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
 
             dialog.show()
         }
-
-
-    }
-
-    //add phone number to command if it is not empty
-    private fun addPhoneNumToCommand(
-        command: String,
-        etField: AppCompatEditText
-    ): String {
-
-        var myCommand = command
-        if (etField.text.toString().startsWith("000")) {
-            myCommand += "#"
-        } else {
-            //delete "-"
-            var phnum = etField.text?.toString()
-            phnum = phnum?.replace("-", "")
-            myCommand += "$phnum#"
-        }
-//        if (etField.text != null
-//            && etField.text.toString().isNotEmpty()
-//            && !etField.text.toString().startsWith("000")
-//        ) {
-//            myCommand += etField.text?.toString() + "#"
-//        }
-        return myCommand
     }
 
     //show dialog with phone numbers fields
@@ -270,6 +510,24 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
 
             dialog.show()
         }
+    }
+
+    //add phone number to command if it is not empty
+    private fun addPhoneNumToCommand(
+        command: String,
+        etField: AppCompatEditText
+    ): String {
+
+        var myCommand = command
+        if (etField.text.toString().startsWith("000")) {
+            myCommand += "#"
+        } else {
+            //delete "-"
+            var phnum = etField.text?.toString()
+            phnum = phnum?.replace("-", "")
+            myCommand += "$phnum#"
+        }
+        return myCommand
     }
 
     //show dialog to set admin
@@ -326,15 +584,24 @@ class CameraCommandsDialogFragment : DialogFragment(), View.OnClickListener {
         return isValid
     }
 
-    private fun sendResult() {
-        if (targetFragment == null) {
-            return
-        }
-        val intent = Intent()
+    private fun sendSMS(command: String?) {
+        val uri = Uri.parse("smsto:" + myCamera?.phoneNum)
+        val intent = Intent(Intent.ACTION_SENDTO, uri)
+        intent.putExtra("sms_body", command)
+        startActivity(intent)
+    }
 
-        targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, intent)
-        dismiss()
+    override fun onBackPressed(): Boolean {
+        if (typeCommandList == MAIN_COMMANDS_LIST_TYPE) {
+            return true
+        }
+        typeCommandList = MAIN_COMMANDS_LIST_TYPE
+        refreshCommandsAdapter()
+        return false
     }
 
 
+//    interface BackHandlerInterface {
+//        fun setSelectedFragment(cameraCommandsDialogFragment: CameraCommandsDialogFragment?)
+//    }
 }

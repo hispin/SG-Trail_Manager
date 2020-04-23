@@ -1,223 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/white2"
         android:clickable="true"
         android:focusable="true">
 
-    <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvCommandsCameraTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/arialmt"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="5.6sp"
-            android:text="@string/commands_camera_title"
-            android:textColor="@color/medium_green"
-            android:textSize="15.3sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.026" />
-
-    <View
-            android:id="@+id/view2"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consTitle"
             android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:background="@color/gray6"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.073" />
-
-    <TextView
-            android:id="@+id/tvCameraName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:textColor="@color/black"
-            android:textSize="14.7sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view2"
-            tools:text="@string/name_title" />
-
-    <TextView
-            android:id="@+id/tvPhoneNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:textColor="@color/black"
-            android:textSize="18.7sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCameraName"
-            tools:text="@string/phone_num_title" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnArmCamera"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="50dp"
-            android:text="@string/arm_camera"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPhoneNum"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDisarmCamera"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/disarm_camera"
-            app:layout_constraintBottom_toBottomOf="@+id/btnArmCamera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnArmCamera"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGetSnapshot"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/get_snapshot_email"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnArmCamera"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGetSnapshotMms"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/get_snapshot_mms"
-            app:layout_constraintBottom_toBottomOf="@+id/btnGetSnapshot"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnGetSnapshot"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGetParameters"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/get_parameters"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGetSnapshot"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGetBatteryStatus"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/get_battery_status"
-            app:layout_constraintBottom_toBottomOf="@+id/btnGetParameters"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnGetParameters"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSetEmailRecipients"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/set_email_recipient"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGetParameters"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSetMmsRecipients"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/set_mms_recipients"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSetEmailRecipients"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnSetEmailRecipients"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSetAdmin"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/set_admin_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSetEmailRecipients"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDeleteAllImages"
-            style="@style/commands_buttons"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:ems="10"
-            android:text="@string/delete_all_images"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSetAdmin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnSetAdmin"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.48" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCancel"
-            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/orange"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:text="@string/back"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="14.7sp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/transparent"
             app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.057"
+            app:layout_constraintHeight_percent="0.088"
+            app:layout_constraintTop_toTopOf="parent">
 
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.971"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.21"
+        <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:contentDescription="@string/description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.067"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/send_command" />
 
-            />
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCommandTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:text="@string/commands_camera_title"
+                android:textColor="@color/medium_green"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.594" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consSubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/medium_green"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.088"
+            app:layout_constraintTop_toBottomOf="@+id/consTitle">
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCameraName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="17dp"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:textColor="@color/white2"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                tools:text="@string/name_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPhoneNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="21dp"
+                android:fontFamily="@font/arialmt"
+                android:lineSpacingExtra="-9.9sp"
+                android:textColor="@color/white2"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                tools:text="@string/phone_num_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consCommands"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.824"
+            app:layout_constraintTop_toBottomOf="@+id/consSubTitle">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <!--<ScrollView android:layout_width="wrap_content" android:layout_height="wrap_content">-->
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCommands"
+                    android:name="com.app.simplehostdev.viewLayer.fragments.NewReservationFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:context=".fragments.CameraCommandsDialogFragment"
+                    tools:listitem="@layout/item_command" />
+
+
+            <!--</ScrollView>-->
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-

@@ -66,7 +66,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
     private var floatAddCamera: FloatingActionButton? = null
     private var cameras: ArrayList<Camera>? = null
     private var rvSensor: RecyclerView?=null
-    private var sensorsAdapter: CamerasAdapter? = null
+    private var camerasAdapter: CamerasAdapter? = null
     private val listenerPref: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private var selectedCamera: Camera? = null
 
@@ -89,8 +89,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
     }
 
 
-
-    private fun initSensorsAdapter() {
+    private fun initCamerasAdapter() {
 
         cameras = ArrayList()
 
@@ -100,7 +99,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
         itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider)!!)
         rvSensor?.addItemDecoration(itemDecorator)
 
-        sensorsAdapter=activity?.let { adapter ->
+        camerasAdapter = activity?.let { adapter ->
             cameras?.let { arr ->
                 CamerasAdapter(arr, adapter, this) { camera: Camera, typeAction: Int ->
                     selectedCamera = camera
@@ -127,11 +126,11 @@ class CamerasFragment : Fragment(), OnAdapterListener {
                 }
             }
         }
-        rvSensor?.adapter=sensorsAdapter
+        rvSensor?.adapter = camerasAdapter
         val layoutManager= LinearLayoutManager(activity)
         rvSensor?.layoutManager=layoutManager
 
-        sensorsAdapter?.notifyDataSetChanged()
+        camerasAdapter?.notifyDataSetChanged()
 
 
 
@@ -338,7 +337,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_sensors, container, false)
+        val view = inflater.inflate(R.layout.fragment_cameras, container, false)
         tvShowLogs = view.findViewById(R.id.tvShowLogs)
         rvSensor = view.findViewById(R.id.rvSystemCameras)
         floatAddCamera = view.findViewById(R.id.floatAddSensor)
@@ -358,7 +357,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
 
         setFilter()
 
-        initSensorsAdapter()
+        initCamerasAdapter()
 
         refreshCamerasFromPref()
 
@@ -380,8 +379,8 @@ class CamerasFragment : Fragment(), OnAdapterListener {
             }
         }
 
-        sensorsAdapter?.setDetects(cameras)
-        sensorsAdapter?.notifyDataSetChanged()
+        camerasAdapter?.setDetects(cameras)
+        camerasAdapter?.notifyDataSetChanged()
     }
 
     override fun onStop() {
@@ -447,7 +446,6 @@ class CamerasFragment : Fragment(), OnAdapterListener {
     private fun openExtraCameraCommands(camera: Camera) {
 
         val fr = CameraCommandsDialogFragment()
-
         //deliver selected camera to continue add data
         val cameraStr = convertToGson(camera)
         val bdl = Bundle()
@@ -465,7 +463,7 @@ class CamerasFragment : Fragment(), OnAdapterListener {
         }
         val fragmentTransaction = fm?.beginTransaction()
         fragmentTransaction?.addToBackStack(fr.tag)
-        fragmentTransaction?.add(R.id.flExtra, fr)
+        fragmentTransaction?.add(R.id.flExtra, fr, "CameraCommandsDialogFragment")
         fragmentTransaction?.commit()
     }
 

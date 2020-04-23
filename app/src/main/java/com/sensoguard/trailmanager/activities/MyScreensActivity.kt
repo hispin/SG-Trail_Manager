@@ -25,10 +25,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
-import com.sensoguard.trailmanager.fragments.AlarmLogFragment
-import com.sensoguard.trailmanager.fragments.CamerasFragment
-import com.sensoguard.trailmanager.fragments.ConfigurationFragment
-import com.sensoguard.trailmanager.fragments.MapSensorsFragment
+import com.sensoguard.trailmanager.fragments.*
 import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 import com.sensoguard.trailmanager.services.ServiceHandleAlarms
@@ -51,6 +48,17 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     val TAG = "MyScreensActivity"
 
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        val fragment = supportFragmentManager.findFragmentByTag("CameraCommandsDialogFragment")
+        if (fragment != null && fragment.isVisible) {
+            val res = (fragment as CameraCommandsDialogFragment).onBackPressed()
+            if (!res) {
+                return
+            }
+        }
+        super.onBackPressed()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -329,7 +337,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
             //set the title text of top menu
             return when (position) {
-                0 -> resources.getString(R.string.camera_title)
+                0 -> resources.getString(R.string.cameras_title)
                 1 -> resources.getString(R.string.map_title)
                 2 -> resources.getString(R.string.config_title)
                 3 -> resources.getString(R.string.alarm_log_title)
@@ -352,6 +360,10 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         this.finish()
         this.startActivity(intent)
     }
+
+//    override fun setSelectedFragment(cameraCommandsDialogFragment: CameraCommandsDialogFragment?) {
+//        TODO("Not yet implemented")
+//    }
 }
 
 //save the custom alarm file in alarms system

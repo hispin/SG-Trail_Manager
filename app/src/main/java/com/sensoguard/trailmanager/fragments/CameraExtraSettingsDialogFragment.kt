@@ -13,9 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.FEATURE_NO_TITLE
+import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
@@ -38,6 +40,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     private var spCameraType: AppCompatSpinner? = null
     private var pbValidationEmail: ProgressBar? = null
+    private var ivModelImg: AppCompatImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,8 +108,50 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         etTelNum = view?.findViewById(R.id.etTelNum)
 
 
-
+        ivModelImg = view?.findViewById(R.id.ivModelImg)
         spCameraType = view?.findViewById(R.id.spCameraType)
+
+
+        spCameraType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (parent?.getItemAtPosition(position).toString()) {
+                    "BG668-E36WG" -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.bg_668_img
+                            )
+                        })
+                    }
+                    "MG983G/984G-30M" -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.mg_983_img
+                            )
+                        })
+                    }
+                    "ATC" -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.atc_img
+                            )
+                        })
+                    }
+                }
+                ivModelImg
+            }
+
+        }
+
+
         pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
 
     }

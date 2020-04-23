@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:context=".fragment.MainUartFragment"
-            tools:listitem="@layout/item_sensor"
+            tools:listitem="@layout/item_camera"
             android:scrollbars="vertical"
     />
 

@@ -6,10 +6,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.daimajia.swipe.SwipeLayout
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.global.COMMANDS_ACTION_TYPE
@@ -20,7 +23,7 @@ import java.util.*
 
 
 class CamerasAdapter(
-    private var sensors: ArrayList<Camera>,
+    private var cameras: ArrayList<Camera>,
     val context: Context,
     val onAdapterListener: OnAdapterListener,
     var itemClick: (Camera, Int) -> Unit
@@ -28,23 +31,23 @@ class CamerasAdapter(
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindReservation((sensors[position]))
+        holder.bindReservation((cameras[position]))
         holder.setIsRecyclable(false)
     }
 
     override fun getItemCount(): Int {
-        return this.sensors.size
+        return this.cameras.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_sensor, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_camera, parent, false)
 
 
         return ViewHolder(view, itemClick)
     }
 
     fun setDetects(_detectors: ArrayList<Camera>?) {
-        _detectors?.let{sensors= it}
+        _detectors?.let { cameras = it }
         //TODO how to define with this
     }
 
@@ -57,8 +60,10 @@ class CamerasAdapter(
         private var tvName: TextView?=null
         private var tvPhoneNum: TextView? = null
         private var ibEditCamera: AppCompatImageButton? = null
-        private var btnDelete: Button? = null
+        private var ibDelete: ImageButton? = null
         private var ibSendCommand: AppCompatImageButton? = null
+        private var swipe: SwipeLayout? = null
+        private var rlDelete: RelativeLayout? = null
         //private var togIsActive: ToggleButton?=null
         //private var ibEditName:ImageButton?=null
         //private var tvIsLocate:TextView?=null
@@ -79,8 +84,19 @@ class CamerasAdapter(
            tvName = _itemView.findViewById(R.id.tvName)
             tvPhoneNum = _itemView.findViewById(R.id.tvPhoneNum)
             ibEditCamera = _itemView.findViewById(R.id.ibEditCamera)
-            btnDelete = _itemView.findViewById(R.id.btnDelete)
+            ibDelete = _itemView.findViewById(R.id.ibDelete)
             ibSendCommand = _itemView.findViewById(R.id.ibSendCommand)
+            swipe = _itemView.findViewById(R.id.swipe)
+            rlDelete = _itemView.findViewById(R.id.rlDelete)
+            swipe?.setOnClickListener {
+                if (swipe?.openStatus == SwipeLayout.Status.Close) {
+                    swipe?.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                    rlDelete?.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                } else {
+                    swipe?.setBackgroundColor(ContextCompat.getColor(context, R.color.gray4))
+                    rlDelete?.setBackgroundColor(ContextCompat.getColor(context, R.color.gray4))
+                }
+            }
             //togIsActive = _itemView.findViewById(R.id.togIsActive)
             //etName = _itemView.findViewById(R.id.etName)
             //ibEditName = _itemView.findViewById(R.id.ibEditName)
@@ -109,17 +125,17 @@ class CamerasAdapter(
 
 
             ibEditCamera?.setOnClickListener {
-                itemClick.invoke(sensors[adapterPosition], EDIT_ACTION_TYPE)
+                itemClick.invoke(cameras[adapterPosition], EDIT_ACTION_TYPE)
                 return@setOnClickListener
             }
 
-            btnDelete?.setOnClickListener {
-                itemClick.invoke(sensors[adapterPosition], DELETE_ACTION_TYPE)
+            ibDelete?.setOnClickListener {
+                itemClick.invoke(cameras[adapterPosition], DELETE_ACTION_TYPE)
                 return@setOnClickListener
             }
 
             ibSendCommand?.setOnClickListener {
-                itemClick.invoke(sensors[adapterPosition], COMMANDS_ACTION_TYPE)
+                itemClick.invoke(cameras[adapterPosition], COMMANDS_ACTION_TYPE)
                 return@setOnClickListener
             }
 
