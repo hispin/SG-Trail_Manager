@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="306.7dp"
-        android:layout_height="400dp"
+        android:layout_height="180dp"
         android:orientation="vertical">
 
 
@@ -12,14 +12,14 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/arialmt"
             android:gravity="center_horizontal"
-            android:text="@string/emails_title"
+            android:text="@string/email_title"
             android:textColor="@color/medium_green"
             android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.046" />
+            app:layout_constraintVertical_bias="0.060" />
 
     <View
             android:layout_width="match_parent"
@@ -29,52 +29,19 @@
             android:background="@color/gray14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.143" />
+            app:layout_constraintVertical_bias="0.200" />
 
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etField1"
             style="@style/commands_emails_fields"
             android:layout_width="160.7dp"
-            android:ems="10"
             android:layout_marginStart="17.3dp"
+            android:ems="10"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@+id/tvEmail1"
             app:layout_constraintStart_toEndOf="@+id/tvEmail1"
             app:layout_constraintTop_toTopOf="@+id/tvEmail1" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField2"
-            style="@style/commands_emails_fields"
-            android:layout_width="160.7dp"
-            android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
-            android:ems="10"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail2"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail2"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail2" />
-
-    <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField3"
-            style="@style/commands_emails_fields"
-            android:layout_width="160.7dp"
-            android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
-            android:ems="10"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail3"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail3"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail3" />
-
-
-    <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField4"
-            style="@style/commands_emails_fields"
-            android:layout_width="160.7dp"
-            android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
-            android:ems="10"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail4"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail4"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail4" />
 
     <TextView
             android:id="@+id/tvEmail1"
@@ -88,50 +55,12 @@
             android:textColor="@color/black"
             android:textSize="14.7sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.151"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.150" />
 
-    <TextView
-            android:id="@+id/tvEmail2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email2"
-            android:textColor="@color/black"
-            android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail1"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail1" />
-
-    <TextView
-            android:id="@+id/tvEmail3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email3"
-            android:textColor="@color/black"
-            android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail2"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail2" />
-
-    <TextView
-            android:id="@+id/tvEmail4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/arialmt"
-            android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email4"
-            android:textColor="@color/black"
-            android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail3"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail3" />
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSendCommand"
@@ -144,7 +73,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18.7sp"
-            app:layout_constraintEnd_toEndOf="@+id/etField4"
+            app:layout_constraintEnd_toEndOf="@+id/etField1"
             app:layout_constraintTop_toTopOf="@+id/btnCancel" />
 
     <Button

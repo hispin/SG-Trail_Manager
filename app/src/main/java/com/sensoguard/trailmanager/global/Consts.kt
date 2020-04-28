@@ -104,3 +104,8 @@ const val COMMANDS_ACTION_TYPE = 3
 const val MAIN_COMMANDS_LIST_TYPE = 0
 const val MORE_COMMANDS_LIST_TYPE = 1
 
+//camera models
+const val MG_MODEL = 0
+const val BG_MODEL = 1
+const val ATC_MODEL = 2
+

@@ -123,22 +123,23 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 position: Int,
                 id: Long
             ) {
+                val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
                 when (parent?.getItemAtPosition(position).toString()) {
-                    "BG668-E36WG" -> {
+                    myModels[MG_MODEL] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.bg_668_img
                             )
                         })
                     }
-                    "MG983G/984G-30M" -> {
+                    myModels[BG_MODEL] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.mg_983_img
                             )
                         })
                     }
-                    "ATC" -> {
+                    myModels[ATC_MODEL] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.atc_img

@@ -28,7 +28,6 @@ import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.fragments.*
 import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
-import com.sensoguard.trailmanager.services.ServiceHandleAlarms
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -129,11 +128,11 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         configureActionBar()
 
         //start listener to alarm
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, ServiceHandleAlarms::class.java))
-        } else {
-            startService(Intent(this, ServiceHandleAlarms::class.java))
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(Intent(this, ServiceHandleAlarms::class.java))
+//        } else {
+//            startService(Intent(this, ServiceHandleAlarms::class.java))
+//        }
         configTabs()
 
     }

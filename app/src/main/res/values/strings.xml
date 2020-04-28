@@ -119,7 +119,7 @@
     <string name="email2">Email 2</string>
     <string name="email3">Email 3</string>
     <string name="email4">Email 4</string>
-    <string name="add_phone_num_title">Add phone numbers</string>
+    <string name="add_phone_numbers_title">Add phone numbers</string>
     <string name="phone_num_1">Phone number 1</string>
     <string name="phone_num_2">Phone number 2</string>
     <string name="phone_num_3">Phone number 3</string>
@@ -144,7 +144,7 @@
     <string name="more_orders">More orders</string>
     <string name="take_a_proactive_picture">Take a picture</string>
     <string name="add_recipient_to_mms">Add recipient to MMS</string>
-    <string name="set_up_email_recipients">Set up email recipients</string>
+    <string name="add_recipient_to_email">Add recipient to email</string>
     <string name="send_via_mms">Send via MMS</string>
     <string name="send_over_the_internet">Send over the Internet</string>
     <string name="receipt_only_in_mms">Receipt only in MMS</string>
@@ -174,10 +174,13 @@
     <string name="selecting_quantity_of_pictures_unlimited">Selecting Quantity of Pictures - Unlimited</string>
     <string name="image_quantity_selection_manual">Image Quantity Selection - Manual</string>
     <string name="image_quantity_selection_zero_counter">Image Quantity Selection - Zero Counter</string>
+    <string name="main_commands">Main commands</string>
+    <string name="email_title">Add email</string>
+    <string name="add_phone_number_title">Add a phone number</string>
 
     <string-array name="camera_model">
+        <item>MG983G/984G</item>
         <item>BG668-E36WG</item>
-        <item>MG983G/984G-30M</item>
         <item>ATC</item>
     </string-array>
 

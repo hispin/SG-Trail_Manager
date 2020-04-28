@@ -117,7 +117,7 @@
     <string name="email2">אימייל 2</string>
     <string name="email3">אימייל 3</string>
     <string name="email4">אימייל 4</string>
-    <string name="add_phone_num_title">הוסף מספרי טלפון</string>
+    <string name="add_phone_numbers_title">הוסף מספרי טלפון</string>
     <string name="phone_num_1">מספר טלפון 1</string>
     <string name="phone_num_2">מספר טלפון 2</string>
     <string name="phone_num_3">מספר טלפון 3</string>
@@ -127,7 +127,7 @@
     <string name="invalid_email">אימייל שגוי</string>
     <string name="set_admin_title">הגדר מנהל</string>
     <string name="incorrect_phone_number_or_password">מספר טלפון או סיסמה שגויים</string>
-    <string name="phone_num">:מספר טלפון</string>
+    <string name="phone_num">מספר טלפון:</string>
     <string name="settings">הגדרות</string>
     <string name="phone_num_title">מספר טלפון</string>
     <string name="commands">פקודות</string>
@@ -142,7 +142,7 @@
     <string name="more_orders">פקודות נוספות</string>
     <string name="take_a_proactive_picture">צילום תמונה יזומה</string>
     <string name="add_recipient_to_mms">הוספת נמען ל MMS</string>
-    <string name="set_up_email_recipients">הגדרת נמענים באימייל</string>
+    <string name="add_recipient_to_email">הוספת נמען לאימייל</string>
     <string name="send_via_mms">שלח דרך MMS</string>
     <string name="send_over_the_internet">שלח דרך Internet</string>
     <string name="receipt_only_in_mms">קבלה רק ב MMS</string>
@@ -172,11 +172,15 @@
     <string name="selecting_quantity_of_pictures_unlimited">בחירת כמות תמונות - ללא הגבלה</string>
     <string name="image_quantity_selection_manual">בחירת כמות תמונות - ידני</string>
     <string name="image_quantity_selection_zero_counter">בחירת כמות תמונות - אפס מונה</string>
+    <string name="main_commands">פקודות ראשיות</string>
+    <string name="email_title">הוסף אימייל</string>
+    <string name="add_phone_number_title">הוסף מספר טלפון</string>
 
 
     <string-array name="camera_model">
-        <item>BG668-E36WG</item>
         <item>MG983G/984G</item>
+        <item>BG668-E36WG</item>
         <item>ATC</item>
     </string-array>
+
 </resources>

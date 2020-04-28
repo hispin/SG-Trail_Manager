@@ -76,7 +76,10 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
     }
 
     private fun populateCommandsByModel() {
-        if (myCamera?.cameraModel.equals("MG983G/984G")) {
+        val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
+        if (myCamera?.cameraModel.equals(myModels[MG_MODEL]) ||
+            myCamera?.cameraModel.equals(myModels[BG_MODEL])
+        ) {
             mainCommands = ArrayList()
             mainCommands?.add(
                 Command(
@@ -148,14 +151,14 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                     R.drawable.delete_all_images
                 )
             )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.more_orders),
-                    null,
-                    R.drawable.more
-                )
-            )
-        } else if (myCamera?.cameraModel.equals("ATC")) {
+//            mainCommands?.add(
+//                Command(
+//                    resources.getString(R.string.more_orders),
+//                    null,
+//                    R.drawable.more
+//                )
+//            )
+        } else if (myCamera?.cameraModel.equals(myModels[ATC_MODEL])) {
             mainCommands = ArrayList()
             mainCommands?.add(Command(resources.getString(R.string.arm_camera), "*202#1#", -1))
             mainCommands?.add(Command(resources.getString(R.string.disarm_camera), "*202#3#", -1))
@@ -175,7 +178,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             )
             mainCommands?.add(
                 Command(
-                    resources.getString(R.string.set_up_email_recipients),
+                    resources.getString(R.string.add_recipient_to_email),
                     "*110#" + myCamera?.emailAddress + "#",
                     -1
                 )
@@ -218,10 +221,18 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
 
     private fun populateMoreCommandsByModel() {
-        if (myCamera?.cameraModel.equals("MG983G/984G")) {
+        val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
+        if (myCamera?.cameraModel.equals(myModels[MG_MODEL])) {
             moreCommands = ArrayList()
-        } else if (myCamera?.cameraModel.equals("ATC")) {
+        } else if (myCamera?.cameraModel.equals(myModels[ATC_MODEL])) {
             moreCommands = ArrayList()
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.main_commands),
+                    null,
+                    -1
+                )
+            )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.delete_recipients_for_MMS),
@@ -373,6 +384,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
         }
     }
 
+
     private fun refreshCommandsAdapter() {
 
         var commands: ArrayList<Command>? = null
@@ -385,15 +397,18 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
         }
 
         commandsAdapter = activity?.let { adapter ->
+            val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
             commands?.let { arr ->
                 CommandAdapter(arr, adapter) { command: Command ->
-                    if (myCamera?.cameraModel.equals("MG983G/984G")) {
+                    if (myCamera?.cameraModel.equals(myModels[MG_MODEL]) ||
+                        myCamera?.cameraModel.equals(myModels[BG_MODEL])
+                    ) {
                         when (command.commandName) {
                             resources.getString(R.string.set_email_recipient) -> {
                                 showEmailsDialog()
                             }
                             resources.getString(R.string.set_mms_recipients) -> {
-                                showPhoneNumDialog()
+                                showPhoneNumbersDialog()
                             }
                             resources.getString(R.string.set_admin_title) -> {
                                 showSetAdminDialog()
@@ -406,15 +421,15 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                                 sendSMS(command.commandContent)
                             }
                         }
-                    } else if (myCamera?.cameraModel.equals("ATC")) {
+                    } else if (myCamera?.cameraModel.equals(myModels[ATC_MODEL])) {
                         when (command.commandName) {
                             resources.getString(R.string.more_orders) -> {
                                 typeCommandList = MORE_COMMANDS_LIST_TYPE
                                 refreshCommandsAdapter()
                             }
                             resources.getString(R.string.update_time_and_date) -> {
-                                var now: Calendar = Calendar.getInstance()
-                                var dateStr = this@CameraCommandsDialogFragment.context?.let {
+                                val now: Calendar = Calendar.getInstance()
+                                val dateStr = this@CameraCommandsDialogFragment.context?.let {
                                     getStringFromCalendar(
                                         now,
                                         "yyyyMMddHHmmss",
@@ -423,6 +438,17 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                                 }
                                 val cmd = "*205#$dateStr#"
                                 sendSMS(cmd)
+                            }
+                            resources.getString(R.string.add_recipient_to_email) -> {
+                                showEmailDialog()
+                            }
+                            resources.getString(R.string.add_recipient_to_mms) -> {
+                                showPhoneNumberDialog()
+                            }
+
+                            resources.getString(R.string.main_commands) -> {
+                                typeCommandList = MAIN_COMMANDS_LIST_TYPE
+                                refreshCommandsAdapter()
                             }
                             else -> {
                                 sendSMS(command.commandContent)
@@ -478,8 +504,42 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
         }
     }
 
+    //show dialog with email fields
+    private fun showEmailDialog() {
+
+        if (this@CameraCommandsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_add_recipient_to_email)
+
+            dialog.setCancelable(true)
+
+            val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
+
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = "*110#"
+                //insert "#" also if the there is no email
+                //delete "-"
+                command += etField1.text?.toString() + "#"
+
+
+                sendSMS(command)
+                dialog.dismiss()
+
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+
+    }
+
     //show dialog with phone numbers fields
-    private fun showPhoneNumDialog() {
+    private fun showPhoneNumbersDialog() {
 
         if (this@CameraCommandsDialogFragment.context != null) {
             val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
@@ -488,7 +548,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             dialog.setCancelable(true)
 
             val tvCommandTitle = dialog.findViewById<AppCompatTextView>(R.id.tvCommandTitle)
-            tvCommandTitle.text = resources.getString(R.string.add_phone_num_title)
+            tvCommandTitle.text = resources.getString(R.string.add_phone_numbers_title)
             val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
             val etField2 = dialog.findViewById<AppCompatEditText>(R.id.etField2)
             val etField3 = dialog.findViewById<AppCompatEditText>(R.id.etField3)
@@ -499,6 +559,36 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 command = addPhoneNumToCommand(command, etField2)
                 command = addPhoneNumToCommand(command, etField3)
 
+
+                sendSMS(command)
+                dialog.dismiss()
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+    }
+
+    //show dialog with phone number fields
+    private fun showPhoneNumberDialog() {
+
+        if (this@CameraCommandsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_add_recipient_to_mms)
+
+            dialog.setCancelable(true)
+
+            val tvCommandTitle = dialog.findViewById<AppCompatTextView>(R.id.tvCommandTitle)
+            tvCommandTitle.text = resources.getString(R.string.add_phone_numbers_title)
+            val etField1 = dialog.findViewById<AppCompatEditText>(R.id.etField1)
+
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = "*100#"
+                command = addPhoneNumToCommand(command, etField1)
 
                 sendSMS(command)
                 dialog.dismiss()
