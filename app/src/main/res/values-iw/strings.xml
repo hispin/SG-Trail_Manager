@@ -150,7 +150,7 @@
     <string name="parameter_testing">בדיקת פרמטרים</string>
     <string name="signal_testing">בדיקת סיגנל</string>
     <string name="battery_test">בדיקת סוללה</string>
-    <string name="delete_recipients_for_MMS">מחק נמענים ל MMS</string>
+    <string name="delete_recipients_for_mms">מחק נמענים ל MMS</string>
     <string name="delete_recipients_by_email">מחק נמענים באימייל</string>
     <string name="receive_email_and_MMS">קבלה אימייל ו MMS</string>
     <string name="sending_mode_operational">מצב שליחה - מבצעי</string>
@@ -162,7 +162,7 @@
     <string name="image_quality_low">איכות תמונה - נמוכה</string>
     <string name="image_quality_medium">איכות תמונה - בינונית</string>
     <string name="image_quality_high">איכות תמונה - גבוהה</string>
-    <string name="sensor_approaches_off">גישות חיישן - כבוי</string>
+    <string name="sensor_approaches_off">רגישות חיישן - כבוי</string>
     <string name="sensor_sensitivity_high">רגישות חיישן - גבוהה</string>
     <string name="sensor_sensitivity_medium">רגישות חיישן - בינוני</string>
     <string name="sensor_sensitivity_low">רגישות חיישן - נמוך</string>
@@ -175,11 +175,12 @@
     <string name="main_commands">פקודות ראשיות</string>
     <string name="email_title">הוסף אימייל</string>
     <string name="add_phone_number_title">הוסף מספר טלפון</string>
+    <string name="email_must_contain">האימייל חייב להכיל @</string>
 
 
     <string-array name="camera_model">
         <item>MG983G/984G</item>
-        <item>BG668-E36WG</item>
+        <item>BG668</item>
         <item>ATC</item>
     </string-array>
 

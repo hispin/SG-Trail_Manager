@@ -109,3 +109,6 @@ const val MG_MODEL = 0
 const val BG_MODEL = 1
 const val ATC_MODEL = 2
 
+const val REMOVE_ACTION_TYPE = 0
+const val ADD_ACTION_TYPE = 1
+

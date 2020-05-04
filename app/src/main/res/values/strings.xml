@@ -152,7 +152,7 @@
     <string name="parameter_testing">Parameter Testing</string>
     <string name="signal_testing">Signal Testing</string>
     <string name="battery_test">Battery test</string>
-    <string name="delete_recipients_for_MMS">Delete recipients for MMS</string>
+    <string name="delete_recipients_for_mms">Delete recipients for MMS</string>
     <string name="delete_recipients_by_email">Delete recipients by email</string>
     <string name="receive_email_and_MMS">Receive email and MMS</string>
     <string name="sending_mode_operational">Sending Mode - Operational</string>
@@ -177,10 +177,11 @@
     <string name="main_commands">Main commands</string>
     <string name="email_title">Add email</string>
     <string name="add_phone_number_title">Add a phone number</string>
+    <string name="email_must_contain">Email must contain @</string>
 
     <string-array name="camera_model">
         <item>MG983G/984G</item>
-        <item>BG668-E36WG</item>
+        <item>BG668</item>
         <item>ATC</item>
     </string-array>
 

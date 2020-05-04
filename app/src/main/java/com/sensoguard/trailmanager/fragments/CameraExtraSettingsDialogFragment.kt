@@ -79,11 +79,12 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 removePreference(activity, LAST_DATE_ALARM)
                 sendResult()
             } else {
-                Toast.makeText(
-                    activity,
-                    resources.getString(R.string.invalid_telephone_number),
-                    Toast.LENGTH_LONG
-                ).show()
+                etTelNum?.error = resources.getString(R.string.invalid_telephone_number)
+//                Toast.makeText(
+//                    activity,
+//                    resources.getString(R.string.invalid_telephone_number),
+//                    Toast.LENGTH_LONG
+//                ).show()
             }
 
         }
@@ -128,14 +129,14 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     myModels[MG_MODEL] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
-                                it, R.drawable.bg_668_img
+                                it, R.drawable.mg_983_img
                             )
                         })
                     }
                     myModels[BG_MODEL] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
-                                it, R.drawable.mg_983_img
+                                it, R.drawable.bg_668_img
                             )
                         })
                     }
@@ -186,7 +187,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     //phone number validation
     private fun isValidMobile(phone: String): Boolean {
         return if (!Pattern.matches("[a-zA-Z]+", phone)) {
-            phone.length in 10..16
+            phone.length in 9..16
         } else false
     }
 

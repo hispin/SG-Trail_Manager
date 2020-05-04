@@ -23,6 +23,7 @@ import com.sensoguard.trailmanager.classes.Command
 import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.interfaces.OnBackPressed
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
 class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
@@ -235,7 +236,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             )
             moreCommands?.add(
                 Command(
-                    resources.getString(R.string.delete_recipients_for_MMS),
+                    resources.getString(R.string.delete_recipients_for_mms),
                     "*101#" + myCamera?.phoneNum + "#",
                     -1
                 )
@@ -440,10 +441,17 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                                 sendSMS(cmd)
                             }
                             resources.getString(R.string.add_recipient_to_email) -> {
-                                showEmailDialog()
+                                showEmailDialog(ADD_ACTION_TYPE)
                             }
+                            resources.getString(R.string.delete_recipients_by_email) -> {
+                                showEmailDialog(REMOVE_ACTION_TYPE)
+                            }
+
                             resources.getString(R.string.add_recipient_to_mms) -> {
-                                showPhoneNumberDialog()
+                                showPhoneNumberDialog(ADD_ACTION_TYPE)
+                            }
+                            resources.getString(R.string.delete_recipients_for_mms) -> {
+                                showPhoneNumberDialog(REMOVE_ACTION_TYPE)
                             }
 
                             resources.getString(R.string.main_commands) -> {
@@ -487,10 +495,23 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 var command = "#R#"
                 //insert "#" also if the there is no email
                 //delete "-"
-                command += etField1.text?.toString() + "#"
-                command += etField2.text?.toString() + "#"
-                command += etField3.text?.toString() + "#"
-                command += etField4.text?.toString() + "#"
+                var email = addEmailToCommand(etField1)
+                if (email.equals("-1"))
+                    return@setOnClickListener
+                command += "$email#"
+                email = addEmailToCommand(etField2)
+                if (email.equals("-1"))
+                    return@setOnClickListener
+                command += "$email#"
+                email = addEmailToCommand(etField3)
+                if (email.equals("-1"))
+                    return@setOnClickListener
+                command += "$email#"
+                email = addEmailToCommand(etField4)
+                if (email.equals("-1"))
+                    return@setOnClickListener
+                command += "$email#"
+
                 sendSMS(command)
                 dialog.dismiss()
 
@@ -505,7 +526,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
     }
 
     //show dialog with email fields
-    private fun showEmailDialog() {
+    private fun showEmailDialog(actionType: Int) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
             val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
@@ -518,9 +539,15 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
                 var command = "*110#"
+                if (actionType == REMOVE_ACTION_TYPE) {
+                    command = "*111#"
+                }
                 //insert "#" also if the there is no email
                 //delete "-"
-                command += etField1.text?.toString() + "#"
+                val email = addEmailToCommand(etField1)
+                if (email.equals("-1"))
+                    return@setOnClickListener
+                command += "$email#"
 
 
                 sendSMS(command)
@@ -556,8 +583,17 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             btnSendCommand.setOnClickListener {
                 var command = "#N#"
                 command = addPhoneNumToCommand(command, etField1)
+                if (command == "-1") {
+                    return@setOnClickListener
+                }
                 command = addPhoneNumToCommand(command, etField2)
+                if (command == "-1") {
+                    return@setOnClickListener
+                }
                 command = addPhoneNumToCommand(command, etField3)
+                if (command == "-1") {
+                    return@setOnClickListener
+                }
 
 
                 sendSMS(command)
@@ -573,7 +609,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
     }
 
     //show dialog with phone number fields
-    private fun showPhoneNumberDialog() {
+    private fun showPhoneNumberDialog(actionType: Int) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
             val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
@@ -588,7 +624,13 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
                 var command = "*100#"
+                if (actionType == REMOVE_ACTION_TYPE) {
+                    command = "*101#"
+                }
                 command = addPhoneNumToCommand(command, etField1)
+                if (command == "-1") {
+                    return@setOnClickListener
+                }
 
                 sendSMS(command)
                 dialog.dismiss()
@@ -615,9 +657,37 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             //delete "-"
             var phnum = etField.text?.toString()
             phnum = phnum?.replace("-", "")
-            myCommand += "$phnum#"
+
+            if (phnum != null && isValidMobile(phnum)) {
+                myCommand += "$phnum#"
+            } else if (phnum.equals("")) {
+                myCommand += "#"
+            } else {
+                etField.error = resources.getString(R.string.invalid_telephone_number)
+                return "-1"
+            }
+
+
         }
         return myCommand
+    }
+
+    //validate email,if it is not empty the it must contain @
+    private fun addEmailToCommand(etField: AppCompatEditText): String? {
+        val email = etField.text?.toString()
+        if (email.equals("")) return email
+        else if (email != null && email.contains("@")) return email
+        else {
+            etField.error = resources.getString(R.string.email_must_contain)
+            return "-1"
+        }
+    }
+
+    //phone number validation
+    private fun isValidMobile(phone: String): Boolean {
+        return if (!Pattern.matches("[a-zA-Z]+", phone)) {
+            phone.length in 9..16
+        } else false
     }
 
     //show dialog to set admin
@@ -637,7 +707,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 if (!etAdminPhone.text.toString().startsWith("000")
                     && validIsEmpty(etPassword)
                 ) {
-                    val model = myCamera?.cameraModel?.replaceFirst("-", "")
+                    var model = myCamera?.cameraModel?.replaceFirst("-", "")
+                    val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
+                    if (model.equals(myModels[MG_MODEL])) {
+                        model = "MG984-36M"
+                    }
                     var command = "#$model#"
                     command += etPassword.text.toString() + "#"
                     var phAdmin = etAdminPhone.text.toString()

@@ -91,6 +91,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 tools:text="test"
+                android:textAlignment="center"
                 app:layout_constraintHeight_percent="0.042"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSysName"
                 app:layout_constraintEnd_toEndOf="parent"
