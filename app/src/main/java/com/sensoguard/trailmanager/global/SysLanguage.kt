@@ -13,7 +13,10 @@ fun getAppLanguage(): String {
 
 //set language for the application
 fun setAppLanguage(c: Context, lang: String) {
-    val localeNew = Locale(lang)
+
+    //set always language in hebrew
+    //TODO :  if i will enable selecting language then change here
+    val localeNew = Locale("iw")
     Locale.setDefault(localeNew)
 
     val res = c.resources

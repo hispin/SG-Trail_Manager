@@ -46,9 +46,9 @@
             android:textAlignment="center"
             android:textDirection="ltr"
             android:textSize="14.7sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvAdminPhone"
-            app:layout_constraintStart_toEndOf="@+id/tvAdminPhone"
-            app:layout_constraintTop_toTopOf="@+id/tvAdminPhone" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvAddPhone"
+            app:layout_constraintStart_toEndOf="@+id/tvAddPhone"
+            app:layout_constraintTop_toTopOf="@+id/tvAddPhone" />
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -79,12 +79,12 @@
             android:textColor="@color/white"
             android:textSize="18.7sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvAdminPhone"
+            app:layout_constraintStart_toStartOf="@+id/tvAddPhone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.905" />
 
     <TextView
-            android:id="@+id/tvAdminPhone"
+            android:id="@+id/tvAddPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

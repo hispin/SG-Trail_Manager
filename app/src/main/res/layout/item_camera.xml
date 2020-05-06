@@ -11,14 +11,16 @@
         android:background="@color/white"
         swipe:drag_edge="right"
         swipe:leftEdgeSwipeOffset="0dp"
-        swipe:rightEdgeSwipeOffset="0dp">
+        swipe:rightEdgeSwipeOffset="0dp"
+
+        >
 
 
     <RelativeLayout
             android:id="@+id/rlDelete"
             style="@android:style/Widget.Button"
             android:layout_width="90dp"
-            android:background="@color/white"
+            android:background="@color/gray4"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="vertical">

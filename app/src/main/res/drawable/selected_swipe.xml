@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_hovered="false">
+        <shape>
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:state_hovered="true">
+        <shape>
+            <solid android:color="@color/gray4" />
+        </shape>
+    </item>
+    <!--    <item android:drawable="@color/green" />-->
+
+    <!--    <item android:color="@color/white"  android:state_hovered="false"/>-->
+    <!--    <item android:color="@color/gray4" android:state_hovered="true"/>-->
+</selector>

@@ -136,11 +136,11 @@ class InitAppActivity : AppCompatActivity() {
             GeneralItemMenu.selectedItem = currentLanguage
             setAppLanguage(this, GeneralItemMenu.selectedItem)
         } else {
-            //val deviceLang = getAppLanguage()
-            //if (LanguageManager.isExistLang(deviceLang)) {
-            GeneralItemMenu.selectedItem = "iw"
-            setAppLanguage(this, GeneralItemMenu.selectedItem)
-            //}
+            val deviceLang = getAppLanguage()
+            if (LanguageManager.isExistLang(deviceLang)) {
+                //GeneralItemMenu.selectedItem = "iw"
+                setAppLanguage(this, GeneralItemMenu.selectedItem)
+            }
         }
     }
 }

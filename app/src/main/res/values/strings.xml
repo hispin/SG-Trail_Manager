@@ -178,6 +178,8 @@
     <string name="email_title">Add email</string>
     <string name="add_phone_number_title">Add a phone number</string>
     <string name="email_must_contain">Email must contain @</string>
+    <string name="select_multiple_photos">Select multiple photos</string>
+    <string name="one_to_ninety_nine">1–99</string>
 
     <string-array name="camera_model">
         <item>MG983G/984G</item>

@@ -247,7 +247,12 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             intent.putExtras(bdl)
         }
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+
         dismiss()
+        //remove fragment from stack
+        fragmentManager?.popBackStack()
+
+
     }
 
     private fun sendCancelResult() {
@@ -257,6 +262,8 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         val intent = Intent()
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, intent)
         dismiss()
+        //remove fragment from stack
+        fragmentManager?.popBackStack()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

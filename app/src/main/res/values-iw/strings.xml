@@ -176,6 +176,8 @@
     <string name="email_title">הוסף אימייל</string>
     <string name="add_phone_number_title">הוסף מספר טלפון</string>
     <string name="email_must_contain">האימייל חייב להכיל @</string>
+    <string name="select_multiple_photos">בחר מספר תמונות</string>
+    <string name="one_to_ninety_nine">1–99</string>
 
 
     <string-array name="camera_model">

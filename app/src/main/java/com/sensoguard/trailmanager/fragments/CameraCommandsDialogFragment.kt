@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.NumberPicker
+import android.widget.NumberPicker.OnValueChangeListener
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -161,55 +163,97 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 //            )
         } else if (myCamera?.cameraModel.equals(myModels[ATC_MODEL])) {
             mainCommands = ArrayList()
-            mainCommands?.add(Command(resources.getString(R.string.arm_camera), "*202#1#", -1))
-            mainCommands?.add(Command(resources.getString(R.string.disarm_camera), "*202#3#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.arm_camera),
+                    "*202#1#",
+                    R.drawable.arm_camera
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.disarm_camera),
+                    "*202#3#",
+                    R.drawable.disarm_camera
+                )
+            )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.take_a_proactive_picture),
                     "*500#",
-                    -1
+                    R.drawable.get_snapshot_email
                 )
             )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.add_recipient_to_mms),
                     "*100#" + myCamera?.phoneNum + "#",
-                    -1
+                    R.drawable.set_mms_recipients
                 )
             )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.add_recipient_to_email),
                     "*110#" + myCamera?.emailAddress + "#",
-                    -1
+                    R.drawable.set_email_recipient
                 )
             )
-            mainCommands?.add(Command(resources.getString(R.string.send_via_mms), "*120#0#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.send_via_mms),
+                    "*120#0#",
+                    R.drawable.get_snapshot_mms
+                )
+            )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.send_over_the_internet),
                     "*120#1#",
-                    -1
+                    R.drawable.get_snapshot_email
                 )
             )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.receipt_only_in_mms),
                     "*130#0#",
-                    -1
+                    R.drawable.get_snapshot_mms
                 )
             )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.reception_only_by_email),
                     "*130#1#",
-                    -1
+                    R.drawable.get_snapshot_email
                 )
             )
-            mainCommands?.add(Command(resources.getString(R.string.parameter_testing), "*160#", -1))
-            mainCommands?.add(Command(resources.getString(R.string.signal_testing), "*150#", -1))
-            mainCommands?.add(Command(resources.getString(R.string.battery_test), "*201#", -1))
-            mainCommands?.add(Command(resources.getString(R.string.delete_all_images), "*204#", -1))
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.parameter_testing),
+                    "*160#",
+                    R.drawable.parameters
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.signal_testing),
+                    "*150#",
+                    R.drawable.parameters
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.battery_test),
+                    "*201#",
+                    R.drawable.get_battery_status
+                )
+            )
+            mainCommands?.add(
+                Command(
+                    resources.getString(R.string.delete_all_images),
+                    "*204#",
+                    R.drawable.delete_all_images
+                )
+            )
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.more_orders),
@@ -231,155 +275,161 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 Command(
                     resources.getString(R.string.main_commands),
                     null,
-                    -1
+                    R.drawable.more
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.delete_recipients_for_mms),
                     "*101#" + myCamera?.phoneNum + "#",
-                    -1
+                    R.drawable.set_mms_recipients
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.delete_recipients_by_email),
                     "*111#" + myCamera?.emailAddress + "#",
-                    -1
+                    R.drawable.set_email_recipient
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.receive_email_and_MMS),
                     "*130#2#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sending_mode_operational),
                     "*140#0#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sending_mode_daily_report),
                     "*140#1#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sending_mode_off),
                     "*140#2#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.photo_mode_photo),
                     "*200#0#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.photo_mode_video),
                     "*200#1#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.photo_mode_photo_video),
                     "*200#2#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.image_quality_low),
                     "*190#0#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.image_quality_medium),
                     "*190#2#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.image_quality_high),
                     "*190#3#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sensor_approaches_off),
                     "*202#3#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sensor_sensitivity_high),
                     "*202#0#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sensor_sensitivity_medium),
                     "*202#1#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.sensor_sensitivity_low),
                     "*202#2#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.enable_remote_control),
                     "*209#1#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.turn_off_remote_control),
                     "*209#0#",
-                    -1
+                    R.drawable.parameters
                 )
             )
-            moreCommands?.add(Command(resources.getString(R.string.update_time_and_date), null, -1))
+            moreCommands?.add(
+                Command(
+                    resources.getString(R.string.update_time_and_date),
+                    null,
+                    R.drawable.parameters
+                )
+            )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.selecting_quantity_of_pictures_unlimited),
                     "*180#999#",
-                    -1
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.image_quantity_selection_manual),
-                    "*180#Up to 100#",
-                    -1
+                    "*180#",
+                    R.drawable.parameters
                 )
             )
             moreCommands?.add(
                 Command(
                     resources.getString(R.string.image_quantity_selection_zero_counter),
                     "*180#",
-                    -1
+                    R.drawable.parameters
                 )
             )
         }
@@ -457,6 +507,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                             resources.getString(R.string.main_commands) -> {
                                 typeCommandList = MAIN_COMMANDS_LIST_TYPE
                                 refreshCommandsAdapter()
+                            }
+                            resources.getString(R.string.image_quantity_selection_manual) -> {
+                                showSelectMultiImgManual()
                             }
                             else -> {
                                 sendSMS(command.commandContent)
@@ -548,6 +601,63 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 if (email.equals("-1"))
                     return@setOnClickListener
                 command += "$email#"
+
+
+                sendSMS(command)
+                dialog.dismiss()
+
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+
+    }
+
+    //show dialog with number selecting
+    private fun showSelectMultiImgManual() {
+
+        if (this@CameraCommandsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            dialog.setContentView(R.layout.custom_image_quantity_selection_manual)
+
+            dialog.setCancelable(true)
+
+            val numMultiSelectManual = dialog.findViewById<NumberPicker>(R.id.numMultiSelectManual)
+
+            numMultiSelectManual.minValue = 1
+            //Specify the maximum value/number of NumberPicker
+            //Specify the maximum value/number of NumberPicker
+            numMultiSelectManual.maxValue = 99
+
+            //Gets whether the selector wheel wraps when reaching the min/max value.
+
+            //Gets whether the selector wheel wraps when reaching the min/max value.
+            numMultiSelectManual.wrapSelectorWheel = true
+
+            //Set a value change listener for NumberPicker
+            var myNum = 1
+
+            //Set a value change listener for NumberPicker
+            numMultiSelectManual.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected number from picker
+                myNum = newVal
+                //tv.setText("Selected Number : $newVal")
+            })
+
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = "*180#"
+
+                //insert "#" also if the there is no email
+                //delete "-"
+//                val email = addEmailToCommand(etField1)
+//                if (email.equals("-1"))
+//                    return@setOnClickListener
+                command += "$myNum#"
 
 
                 sendSMS(command)

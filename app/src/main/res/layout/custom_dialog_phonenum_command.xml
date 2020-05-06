@@ -46,9 +46,9 @@
             android:textSize="14.7sp"
             android:textDirection="ltr"
             android:layout_marginStart="17.3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvAdminPhone"
-            app:layout_constraintStart_toEndOf="@+id/tvAdminPhone"
-            app:layout_constraintTop_toTopOf="@+id/tvAdminPhone" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvSelectMultiImg"
+            app:layout_constraintStart_toEndOf="@+id/tvSelectMultiImg"
+            app:layout_constraintTop_toTopOf="@+id/tvSelectMultiImg" />
 
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -115,12 +115,12 @@
             android:textColor="@color/white"
             android:textSize="18.7sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvAdminPhone"
+            app:layout_constraintStart_toStartOf="@+id/tvSelectMultiImg"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.905" />
 
     <TextView
-            android:id="@+id/tvAdminPhone"
+            android:id="@+id/tvSelectMultiImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -147,8 +147,8 @@
             android:textColor="@color/black"
             android:textSize="14.7sp"
             android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvAdminPhone"
-            app:layout_constraintTop_toBottomOf="@+id/tvAdminPhone" />
+            app:layout_constraintStart_toStartOf="@+id/tvSelectMultiImg"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectMultiImg" />
 
     <TextView
             android:id="@+id/tvPhone3"

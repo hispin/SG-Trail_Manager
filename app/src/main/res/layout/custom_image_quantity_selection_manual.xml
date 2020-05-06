@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="310dp"
+        android:layout_height="220dp"
+        android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCommandTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialmt"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5.6sp"
+            android:text="@string/select_multiple_photos"
+            android:textColor="@color/medium_green"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.060" />
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/gray14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.200" />
+
+    <NumberPicker
+            android:id="@+id/numMultiSelectManual"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="140dp"
+            android:background="@drawable/edit_text_border"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+
+            android:textDirection="ltr"
+            android:textSize="14.7sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSelectMultiImg"
+            app:layout_constraintStart_toEndOf="@+id/tvSelectMultiImg"
+            app:layout_constraintTop_toTopOf="@+id/tvSelectMultiImg" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSendCommand"
+            android:layout_width="90dp"
+            android:layout_height="31.7dp"
+            android:background="@color/green1"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/send"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18.7sp"
+            app:layout_constraintEnd_toEndOf="@+id/numMultiSelectManual"
+            app:layout_constraintTop_toTopOf="@+id/btnCancel" />
+
+    <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="90dp"
+            android:layout_height="31.7dp"
+            android:background="@color/red4"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18.7sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvSelectMultiImg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.905" />
+
+    <TextView
+            android:id="@+id/tvSelectMultiImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/one_to_ninety_nine"
+            android:textColor="@color/black"
+            android:textDirection="ltr"
+            android:textSize="14.7sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.090"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.320" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
