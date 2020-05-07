@@ -75,7 +75,8 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         currentItemTopMenu = intent.getIntExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setLocationPermission()
+            setExternalPermission()
+            //setLocationPermission()
         } else {
             init()
         }

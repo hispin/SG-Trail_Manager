@@ -68,7 +68,7 @@
     <string name="activate">Activate</string>
     <string name="error">Error</string>
     <string name="general_desc">description</string>
-    <string name="email_subject">My Code for SG-Patrol App</string>
+    <string name="email_subject">My Code for SG-Trail Manager App</string>
     <string name="camera_system_title">Cameras and systems</string>
     <string name="system_camera_configuration">System / Camera Settings</string>
     <string name="system_camera_name">System Name:</string>

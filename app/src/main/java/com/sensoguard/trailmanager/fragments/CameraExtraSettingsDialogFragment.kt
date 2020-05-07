@@ -37,6 +37,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private var ibShowPicture: AppCompatImageButton? = null
     private var etSysName: AppCompatEditText? = null
     private var etTelNum: AppCompatEditText? = null
+    private var tvShowVer: AppCompatTextView? = null
 
     private var spCameraType: AppCompatSpinner? = null
     private var pbValidationEmail: ProgressBar? = null
@@ -108,6 +109,12 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         etSysName = view?.findViewById(R.id.etSysName)
         etTelNum = view?.findViewById(R.id.etTelNum)
 
+        tvShowVer = view?.findViewById(R.id.tvShowVer)
+
+        val verName =
+            activity?.packageManager?.getPackageInfo(activity?.packageName, 0)?.versionName
+        val verTitle = "version:$verName"
+        tvShowVer?.text = verTitle
 
         ivModelImg = view?.findViewById(R.id.ivModelImg)
         spCameraType = view?.findViewById(R.id.spCameraType)

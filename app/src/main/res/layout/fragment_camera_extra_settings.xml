@@ -91,6 +91,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 tools:text="test"
+                android:maxLength="16"
                 android:textAlignment="center"
                 app:layout_constraintHeight_percent="0.042"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSysName"
@@ -286,35 +287,19 @@
 
             />
 
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvShowVer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ibTakePic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <!--    <androidx.appcompat.widget.AppCompatImageButton-->
-        <!--            android:id="@+id/ibShowPicture"-->
-        <!--            android:layout_width="64.3dp"-->
-        <!--            android:layout_height="64.3dp"-->
-        <!--            android:layout_marginStart="8dp"-->
-        <!--            android:background="#00000000"-->
-        <!--            android:scaleType="centerCrop"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@+id/ibTakePic"-->
-        <!--            app:layout_constraintStart_toEndOf="@+id/ibTakePic"-->
-        <!--    app:layout_constraintTop_toTopOf="@+id/ibTakePic" />-->
 
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--            android:id="@+id/fbTakePic"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_gravity="bottom|end"-->
-    <!--            app:backgroundTint="@color/green1"-->
-    <!--            android:src="@drawable/ic_take_a_picture"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintVertical_bias="0.920"-->
-    <!--            app:layout_constraintHorizontal_bias="0.115"-->
-    <!--            app:fabSize="normal"-->
-    <!--            />-->
 
