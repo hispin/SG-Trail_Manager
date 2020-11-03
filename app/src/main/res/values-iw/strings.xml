@@ -105,7 +105,7 @@
     <string name="get_snapshot_email">צילום תמונה יזומה באימייל</string>
     <string name="delete_all_images">מחיקת כל התמונות בזיכרון</string>
     <string name="get_battery_status">בדיקת מצב סוללה</string>
-    <string name="get_parameters">בירור פרמטרים</string>
+    <string name="get_parameters">בדיקת הגדרות</string>
     <string name="arm_camera">דריכת מצלמה</string>
     <string name="disarm_camera">ניטרול מצלמה</string>
     <string name="set_email_recipient">הגדרת נמענים באימייל</string>
@@ -178,12 +178,134 @@
     <string name="email_must_contain">האימייל חייב להכיל @</string>
     <string name="select_multiple_photos">בחר מספר תמונות</string>
     <string name="one_to_ninety_nine">1–99</string>
+    <string name="time_synchronization">סנכרון שעון</string>
+    <string name="get_parameters_mms">בירור פרמטרים MMS</string>
+    <string name="get_parameters_internet">בירור פרמטרים Internet</string>
+    <string name="help">עזרה</string>
+    <string name="setting_the_camera_mode">הגדרת מצב מצלמה</string>
+    <string name="picture">תמונה</string>
+    <string name="video">וידאו</string>
+    <string name="picture_video"><![CDATA[תמונה&וידאו]]></string>
+    <string name="picture_quality">איכות תמונה</string>
+    <string name="continuous_photo_taking">צילום תמונה רצוף</string>
+    <string name="photos_1">1 תמונה</string>
+    <string name="photos_2">2 תמונות</string>
+    <string name="photos_3">3 תמונות</string>
+    <string name="photos_4">4 תמונות</string>
+    <string name="photos_5">5 תמונות</string>
+    <string name="video_quality">איכות וידאו</string>
+    <string name="video_length">אורך וידאו</string>
+    <string name="motion_sensor_sensitivity">רגישות חיישן תנועה</string>
+    <string name="turned_off">כבוי</string>
+    <string name="high">גבוה</string>
+    <string name="normal">רגיל</string>
+    <string name="low">נמוך</string>
+    <string name="file_sending_quality">איכות שליחת תמונה</string>
+    <string name="frequency_of_sending_alert">התראה בזמן אמת</string>
+    <string name="daily_report">דוח יומי</string>
+    <string name="real_time_alert">זמני שליחה התרעה</string>
+    <string name="work_hour">שעות עבודה</string>
+    <string name="turned_on">דלוק</string>
+    <string name="from_time">משעה</string>
+    <string name="until">עד שעה</string>
+    <string name="select_an_hour">בחר שעה</string>
+    <string name="business_days">ימי עבודה</string>
+    <string name="sunday">ראשון</string>
+    <string name="monday">שני</string>
+    <string name="tuesday">שלישי</string>
+    <string name="wednesday">רביעי</string>
+    <string name="thursday">חמישי</string>
+    <string name="friday">שישי</string>
+    <string name="saturday">שבת</string>
+    <string name="remote_control">שליטה מרחוק</string>
+    <string name="gps">GPS</string>
+    <string name="recycling_bin">סל מחזור</string>
+    <string name="photography_at_regular_intervals">צילום במרווחים קבועים</string>
+    <string name="minutes">דקות</string>
+    <string name="hr">שעות</string>
+    <string name="setting_up_new_camera">הגדרת מצלמה חדשה</string>
+    <string name="through_receiving_alerts">דרך קבלת התרעות</string>
+    <string name="configure_send">הגדרת תצורת שליחה</string>
+    <string name="cellcom">סלקום</string>
+    <string name="golan_telecom">golan telecom</string>
+    <string name="partner">פרטנר</string>
+    <string name="cell_phone">פלאפון</string>
+    <string name="hot_mobile">הוט מובייל</string>
+    <string name="rami_levi">רמי לוי</string>
+    <string name="config_mms">הגדרות תצורה ידנית  MMS</string>
+    <string name="config_email">הגדרות תצורה ידנית  אימייל</string>
+    <string name="no_commands">אין פקודות</string>
 
 
     <string-array name="camera_model">
         <item>MG983G/984G</item>
         <item>BG668</item>
         <item>ATC</item>
+        <item>310</item>
+        <item>584</item>
+        <item>636</item>
     </string-array>
 
+    <string-array name="time_180_seconds">
+        <item>5 sec</item>
+        <item>10 sec</item>
+        <item>20 sec</item>
+        <item>30 sec</item>
+        <item>40 sec</item>
+        <item>50 sec</item>
+        <item>60 sec</item>
+        <item>70 sec</item>
+        <item>80 sec</item>
+        <item>90 sec</item>
+        <item>100 sec</item>
+        <item>110 sec</item>
+        <item>120 sec</item>
+        <item>130 sec</item>
+        <item>140 sec</item>
+        <item>150 sec</item>
+        <item>160 sec</item>
+        <item>170 sec</item>
+        <item>180 sec</item>
+    </string-array>
+
+    <string-array name="time_120_seconds">
+        <item>5 sec</item>
+        <item>10 sec</item>
+        <item>20 sec</item>
+        <item>30 sec</item>
+        <item>40 sec</item>
+        <item>50 sec</item>
+        <item>60 sec</item>
+        <item>70 sec</item>
+        <item>80 sec</item>
+        <item>90 sec</item>
+        <item>100 sec</item>
+        <item>110 sec</item>
+        <item>120 sec</item>
+    </string-array>
+
+    <string-array name="time_55_minutes">
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>20 min</item>
+        <item>25 min</item>
+        <item>30 min</item>
+        <item>35 min</item>
+        <item>40 min</item>
+        <item>45 min</item>
+        <item>50 min</item>
+        <item>55 min</item>
+    </string-array>
+
+    <string-array name="time_8_hours">
+        <item>1 hr</item>
+        <item>2 hr</item>
+        <item>3 hr</item>
+        <item>4 hr</item>
+        <item>5 hr</item>
+        <item>6 hr</item>
+        <item>7 hr</item>
+        <item>8 hr</item>
+    </string-array>
 </resources>

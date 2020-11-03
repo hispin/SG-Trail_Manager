@@ -133,24 +133,45 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
             ) {
                 val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
                 when (parent?.getItemAtPosition(position).toString()) {
-                    myModels[MG_MODEL] -> {
+                    myModels[MODEL_984] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.mg_983_img
                             )
                         })
                     }
-                    myModels[BG_MODEL] -> {
+                    myModels[MODEL_668] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.bg_668_img
                             )
                         })
                     }
-                    myModels[ATC_MODEL] -> {
+                    myModels[MODEL_ATC] -> {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.atc_img
+                            )
+                        })
+                    }
+                    myModels[MODEL_310] -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.ic_camera310
+                            )
+                        })
+                    }
+                    myModels[MODEL_584] -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.ic_camera584
+                            )
+                        })
+                    }
+                    myModels[MODEL_636] -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.ic_camera636
                             )
                         })
                     }

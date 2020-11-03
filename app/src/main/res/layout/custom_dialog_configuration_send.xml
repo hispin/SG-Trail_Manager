@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCommandTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialmt"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5.6sp"
+            android:text="title"
+            android:textColor="@color/medium_green"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.016" />
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/gray14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.070" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSendCommand"
+            android:layout_width="90dp"
+            android:layout_height="31.7dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/green1"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/send"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18.7sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rgSelects" />
+
+    <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="90dp"
+            android:layout_height="31.7dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/red4"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18.7sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSendCommand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnSendCommand" />
+
+
+    <RadioGroup
+            android:id="@+id/rgConfigSelects"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.100"
+
+            >
+
+        <RadioButton
+                android:id="@+id/rbConfigMms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/config_mms"
+                android:textAlignment="center"
+                android:textSize="14.7sp" />
+
+        <RadioButton
+                android:id="@+id/rbConfigEmail"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/config_email"
+                android:textAlignment="center"
+                android:textSize="14.7sp" />
+    </RadioGroup>
+
+    <RadioGroup
+            android:id="@+id/rgSelects"
+            style="@style/configOperators"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rgConfigSelects"
+            app:layout_constraintVertical_bias="0.440"
+
+            >
+
+        <RadioButton
+                android:id="@+id/rbCellcom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cellcom"
+                android:textAlignment="center"
+                android:textSize="14.7sp" />
+
+        <RadioButton
+                android:id="@+id/rbGolanTelecom"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/golan_telecom"
+                android:textAlignment="center"
+                android:textSize="14.7sp" />
+
+
+        <RadioButton
+                android:id="@+id/rbPartner"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/partner"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rbCellPhone"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cell_phone"
+                android:textAlignment="center"
+                android:textSize="14.7sp" />
+
+        <RadioButton
+                android:id="@+id/rbHotMobile"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hot_mobile"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rb019"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="019"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rbRamiLevi"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rami_levi"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rbYouPhone"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YouPhone"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rb012"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="012"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+        <RadioButton
+                android:id="@+id/rbHotWe4g"
+                style="@style/configOperators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="we4G"
+                android:textAlignment="center"
+                android:textSize="14.7sp"
+
+                />
+
+    </RadioGroup>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

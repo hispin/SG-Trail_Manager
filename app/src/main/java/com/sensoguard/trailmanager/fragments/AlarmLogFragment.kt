@@ -232,7 +232,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
             openSortByType(SORT_BY_DATETIME_KEY, SORT_PICK_DATE_TIME_REQUEST_CODE)
         }
 
-        cbIsSelected = view.findViewById(R.id.cbIsSelected)
+        cbIsSelected = view.findViewById(R.id.cbSelectAll)
         cbIsSelected?.setOnCheckedChangeListener { _, isChecked ->
             if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) {
                 mySortedAlarms?.let { toggleItemSelected(it, isChecked) }

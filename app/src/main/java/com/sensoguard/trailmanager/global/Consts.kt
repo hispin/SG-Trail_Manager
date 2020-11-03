@@ -103,11 +103,15 @@ const val COMMANDS_ACTION_TYPE = 3
 
 const val MAIN_COMMANDS_LIST_TYPE = 0
 const val MORE_COMMANDS_LIST_TYPE = 1
+const val NEW_CAMERA_LIST_TYPE = 2
 
 //camera models
-const val MG_MODEL = 0
-const val BG_MODEL = 1
-const val ATC_MODEL = 2
+const val MODEL_984 = 0
+const val MODEL_668 = 1
+const val MODEL_ATC = 2
+const val MODEL_310 = 3
+const val MODEL_584 = 4
+const val MODEL_636 = 5
 
 const val REMOVE_ACTION_TYPE = 0
 const val ADD_ACTION_TYPE = 1

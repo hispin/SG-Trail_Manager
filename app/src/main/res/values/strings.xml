@@ -180,11 +180,134 @@
     <string name="email_must_contain">Email must contain @</string>
     <string name="select_multiple_photos">Select multiple photos</string>
     <string name="one_to_ninety_nine">1–99</string>
+    <string name="time_synchronization">Time synchronization</string>
+    <string name="get_parameters_mms">Get parameters MMS</string>
+    <string name="get_parameters_internet">Get parameters internet</string>
+    <string name="help">Help</string>
+    <string name="setting_the_camera_mode">Setting the camera mode</string>
+    <string name="picture">picture</string>
+    <string name="video">video</string>
+    <string name="picture_video"><![CDATA[picture&video]]></string>
+    <string name="picture_quality">picture quality</string>
+    <string name="continuous_photo_taking">Continuous photo taking</string>
+    <string name="photos_1">1 photos</string>
+    <string name="photos_2">2 photos</string>
+    <string name="photos_3">3 photos</string>
+    <string name="photos_4">4 photos</string>
+    <string name="photos_5">5 photos</string>
+    <string name="video_quality">video quality</string>
+    <string name="video_length">video length</string>
+    <string name="motion_sensor_sensitivity">Motion sensor sensitivity</string>
+    <string name="turned_off">turned off</string>
+    <string name="high">high</string>
+    <string name="normal">normal</string>
+    <string name="low">low</string>
+    <string name="file_sending_quality">file sending quality</string>
+    <string name="frequency_of_sending_alert">frequency of sending alert</string>
+    <string name="daily_report">daily report</string>
+    <string name="real_time_alert">Alert sending times</string>
+    <string name="work_hour">work hour</string>
+    <string name="turned_on">turned on</string>
+    <string name="from_time">from</string>
+    <string name="until">until</string>
+    <string name="select_an_hour">select an hour</string>
+    <string name="business_days">business days</string>
+    <string name="sunday">sunday</string>
+    <string name="monday">monday</string>
+    <string name="tuesday">tuesday</string>
+    <string name="wednesday">wednesday</string>
+    <string name="thursday">thursday</string>
+    <string name="friday">friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="remote_control">remote control</string>
+    <string name="gps">GPS</string>
+    <string name="recycling_bin">Recycling bin</string>
+    <string name="photography_at_regular_intervals">Photography at regular intervals</string>
+    <string name="minutes">minutes</string>
+    <string name="hr">hours</string>
+    <string name="setting_up_new_camera">setting up a new camera</string>
+    <string name="through_receiving_alerts">through receiving alerts</string>
+    <string name="configure_send">configure send</string>
+    <string name="cellcom">cellcom</string>
+    <string name="golan_telecom">golan telecom</string>
+    <string name="partner">partner</string>
+    <string name="cell_phone">cell phone</string>
+    <string name="hot_mobile">hot mobile</string>
+    <string name="rami_levi">rami levi</string>
+    <string name="config_mms">Manual configuration settings MMS</string>
+    <string name="config_email">manual email configuration settings</string>
+    <string name="no_commands">no commands</string>
 
     <string-array name="camera_model">
         <item>MG983G/984G</item>
         <item>BG668</item>
         <item>ATC</item>
+        <item>310</item>
+        <item>584</item>
+        <item>636</item>
+    </string-array>
+
+    <string-array name="time_180_seconds">
+        <item>5 sec</item>
+        <item>10 sec</item>
+        <item>20 sec</item>
+        <item>30 sec</item>
+        <item>40 sec</item>
+        <item>50 sec</item>
+        <item>60 sec</item>
+        <item>70 sec</item>
+        <item>80 sec</item>
+        <item>90 sec</item>
+        <item>100 sec</item>
+        <item>110 sec</item>
+        <item>120 sec</item>
+        <item>130 sec</item>
+        <item>140 sec</item>
+        <item>150 sec</item>
+        <item>160 sec</item>
+        <item>170 sec</item>
+        <item>180 sec</item>
+    </string-array>
+
+    <string-array name="time_120_seconds">
+        <item>5 sec</item>
+        <item>10 sec</item>
+        <item>20 sec</item>
+        <item>30 sec</item>
+        <item>40 sec</item>
+        <item>50 sec</item>
+        <item>60 sec</item>
+        <item>70 sec</item>
+        <item>80 sec</item>
+        <item>90 sec</item>
+        <item>100 sec</item>
+        <item>110 sec</item>
+        <item>120 sec</item>
+    </string-array>
+
+    <string-array name="time_55_minutes">
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>20 min</item>
+        <item>25 min</item>
+        <item>30 min</item>
+        <item>35 min</item>
+        <item>40 min</item>
+        <item>45 min</item>
+        <item>50 min</item>
+        <item>55 min</item>
+    </string-array>
+
+    <string-array name="time_8_hours">
+        <item>1 hr</item>
+        <item>2 hr</item>
+        <item>3 hr</item>
+        <item>4 hr</item>
+        <item>5 hr</item>
+        <item>6 hr</item>
+        <item>7 hr</item>
+        <item>8 hr</item>
     </string-array>
 
     <!--    <string-array name="camera_type">-->

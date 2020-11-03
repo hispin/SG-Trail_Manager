@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_height="380dp"
         android:orientation="vertical">
 
 
@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="@+id/tvPassword" />
 
     <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField3"
+            android:id="@+id/etMailServer"
             android:layout_width="160.7dp"
             android:layout_height="25dp"
             android:layout_marginStart="17.3dp"
@@ -87,6 +87,24 @@
             app:layout_constraintStart_toEndOf="@+id/tvPhone3"
             app:layout_constraintTop_toTopOf="@+id/tvPhone3" />
 
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etMailServerPort"
+            android:layout_width="160.7dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="17.3dp"
+            android:background="@drawable/edit_text_border"
+            android:digits="0123456789+-"
+            android:ems="12"
+            android:imeOptions="actionDone"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:textAlignment="center"
+            android:textDirection="ltr"
+            android:textSize="14.7sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPhone4"
+            app:layout_constraintStart_toEndOf="@+id/tvPhone4"
+            app:layout_constraintTop_toTopOf="@+id/tvPhone4" />
+
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSendCommand"
             android:layout_width="90dp"
@@ -100,7 +118,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18.7sp"
-            app:layout_constraintEnd_toEndOf="@+id/etField3"
+            app:layout_constraintEnd_toEndOf="@+id/etMailServer"
             app:layout_constraintTop_toTopOf="@+id/btnCancel" />
 
     <Button
@@ -146,7 +164,7 @@
             android:text="@string/phone_num_2"
             android:textColor="@color/black"
             android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
+            android:layout_marginTop="32.3dp"
             app:layout_constraintStart_toStartOf="@+id/tvSelectMultiImg"
             app:layout_constraintTop_toBottomOf="@+id/tvSelectMultiImg" />
 
@@ -159,9 +177,22 @@
             android:text="@string/phone_num_3"
             android:textColor="@color/black"
             android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
+            android:layout_marginTop="32.3dp"
             app:layout_constraintStart_toStartOf="@+id/tvPassword"
             app:layout_constraintTop_toBottomOf="@+id/tvPassword" />
+
+    <TextView
+            android:id="@+id/tvPhone4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32.3dp"
+            android:fontFamily="@font/arialmt"
+            android:lineSpacingExtra="-9.9sp"
+            android:text="@string/phone_num_4"
+            android:textColor="@color/black"
+            android:textSize="14.7sp"
+            app:layout_constraintStart_toStartOf="@+id/tvPhone3"
+            app:layout_constraintTop_toBottomOf="@+id/tvPhone3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

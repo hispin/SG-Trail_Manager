@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="306.7dp"
+        android:layout_width="wrap_content"
         android:layout_height="400dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -12,12 +13,12 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/arialmt"
             android:gravity="center_horizontal"
-            android:text="@string/emails_title"
+            android:text="@string/config_email"
             android:textColor="@color/medium_green"
             android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.046" />
 
@@ -32,37 +33,38 @@
             app:layout_constraintVertical_bias="0.143" />
 
     <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField1"
+            android:id="@+id/etMailAddress"
             style="@style/commands_emails_fields"
             android:layout_width="160.7dp"
-            android:ems="10"
             android:layout_marginStart="17.3dp"
+            android:ems="10"
             android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail1"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail1"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail1" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvMailAddress"
+            app:layout_constraintStart_toEndOf="@+id/tvMailAddress"
+            app:layout_constraintTop_toTopOf="@+id/tvMailAddress" />
 
     <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etField2"
+            android:id="@+id/etPassword"
             style="@style/commands_emails_fields"
             android:layout_width="160.7dp"
             android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
             android:ems="10"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail2"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail2"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail2" />
+            android:inputType="textPassword"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPassword"
+            app:layout_constraintStart_toEndOf="@+id/tvPassword"
+            app:layout_constraintTop_toTopOf="@+id/tvPassword" />
 
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etMailServer"
             style="@style/commands_emails_fields"
             android:layout_width="160.7dp"
             android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
             android:ems="10"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmail3"
-            app:layout_constraintStart_toEndOf="@+id/tvEmail3"
-            app:layout_constraintTop_toTopOf="@+id/tvEmail3" />
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/tvMailServer"
+            app:layout_constraintStart_toEndOf="@+id/tvMailServer"
+            app:layout_constraintTop_toTopOf="@+id/tvMailServer" />
 
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -70,68 +72,68 @@
             style="@style/commands_emails_fields"
             android:layout_width="160.7dp"
             android:layout_marginStart="17.3dp"
-            android:textAlignment="center"
             android:ems="10"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@+id/tvMailServerPort"
             app:layout_constraintStart_toEndOf="@+id/tvMailServerPort"
             app:layout_constraintTop_toTopOf="@+id/tvMailServerPort" />
 
     <TextView
-            android:id="@+id/tvEmail1"
+            android:id="@+id/tvMailAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="48dp"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email1"
+            android:text="@string/mail_address_title"
             android:textColor="@color/black"
             android:textSize="14.7sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.151"
+            app:layout_constraintHorizontal_bias="0.040"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.150" />
 
     <TextView
-            android:id="@+id/tvEmail2"
+            android:id="@+id/tvPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="42.3dp"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email2"
+            android:text="@string/password_title"
             android:textColor="@color/black"
             android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail1"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail1" />
+            app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
+            app:layout_constraintTop_toBottomOf="@+id/tvMailAddress" />
 
     <TextView
-            android:id="@+id/tvEmail3"
+            android:id="@+id/tvMailServer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="42.3dp"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email3"
+            android:text="@string/incoming_email_server_title"
             android:textColor="@color/black"
             android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail2"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail2" />
+            app:layout_constraintStart_toStartOf="@+id/tvPassword"
+            app:layout_constraintTop_toBottomOf="@+id/tvPassword" />
 
     <TextView
             android:id="@+id/tvMailServerPort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="42.3dp"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
-            android:text="@string/email4"
+            android:text="@string/incoming_email_server_port_title"
             android:textColor="@color/black"
             android:textSize="14.7sp"
-            android:layout_marginTop="42.3dp"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail3"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmail3" />
+            app:layout_constraintStart_toStartOf="@+id/tvMailServer"
+            app:layout_constraintTop_toBottomOf="@+id/tvMailServer" />
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSendCommand"
@@ -159,7 +161,6 @@
             android:textColor="@color/white"
             android:textSize="18.7sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvEmail1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.905" />
+            app:layout_constraintStart_toStartOf="@+id/tvMailAddress"
+            app:layout_constraintTop_toBottomOf="@+id/tvMailServerPort" />
 </androidx.constraintlayout.widget.ConstraintLayout>
