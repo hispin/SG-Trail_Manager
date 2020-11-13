@@ -72,7 +72,7 @@
     <string name="system_camera_name">שם מערכת:</string>
     <string name="tel_num_title">מס’ טלפון:</string>
     <string name="camera_type_title">דגם מצלמה:</string>
-    <string name="mail_address_title">כתובת אימייל:</string>
+    <string name="mail_address_title">אימייל שולח:</string>
     <string name="password_title">סיסמה:</string>
     <string name="incoming_email_server_title">שרת אימייל נכנס:</string>
     <string name="incoming_email_server_port_title">פורט אימייל נכנס:</string>
@@ -201,11 +201,11 @@
     <string name="normal">רגיל</string>
     <string name="low">נמוך</string>
     <string name="file_sending_quality">איכות שליחת תמונה</string>
-    <string name="frequency_of_sending_alert">התראה בזמן אמת</string>
+    <string name="frequency_of_sending_alert">זמני שליחת התרעה</string>
     <string name="daily_report">דוח יומי</string>
-    <string name="real_time_alert">זמני שליחה התרעה</string>
+    <string name="real_time_alert">התראה בזמן אמת</string>
     <string name="work_hour">שעות עבודה</string>
-    <string name="turned_on">דלוק</string>
+    <string name="turned_on">פועל</string>
     <string name="from_time">משעה</string>
     <string name="until">עד שעה</string>
     <string name="select_an_hour">בחר שעה</string>
@@ -219,7 +219,7 @@
     <string name="saturday">שבת</string>
     <string name="remote_control">שליטה מרחוק</string>
     <string name="gps">GPS</string>
-    <string name="recycling_bin">סל מחזור</string>
+    <string name="recycling_bin">דריסת זיכרון</string>
     <string name="photography_at_regular_intervals">צילום במרווחים קבועים</string>
     <string name="minutes">דקות</string>
     <string name="hr">שעות</string>
@@ -233,7 +233,7 @@
     <string name="hot_mobile">הוט מובייל</string>
     <string name="rami_levi">רמי לוי</string>
     <string name="config_mms">הגדרות תצורה ידנית  MMS</string>
-    <string name="config_email">הגדרות תצורה ידנית  אימייל</string>
+    <string name="config_email">הגדרות תצורה ידנית אימייל</string>
     <string name="no_commands">אין פקודות</string>
 
 
@@ -247,65 +247,65 @@
     </string-array>
 
     <string-array name="time_180_seconds">
-        <item>5 sec</item>
-        <item>10 sec</item>
-        <item>20 sec</item>
-        <item>30 sec</item>
-        <item>40 sec</item>
-        <item>50 sec</item>
-        <item>60 sec</item>
-        <item>70 sec</item>
-        <item>80 sec</item>
-        <item>90 sec</item>
-        <item>100 sec</item>
-        <item>110 sec</item>
-        <item>120 sec</item>
-        <item>130 sec</item>
-        <item>140 sec</item>
-        <item>150 sec</item>
-        <item>160 sec</item>
-        <item>170 sec</item>
-        <item>180 sec</item>
+        <item>5 שניות</item>
+        <item>10 שניות</item>
+        <item>20 שניות</item>
+        <item>30 שניות</item>
+        <item>40 שניות</item>
+        <item>50 שניות</item>
+        <item>60 שניות</item>
+        <item>70 שניות</item>
+        <item>80 שניות</item>
+        <item>90 שניות</item>
+        <item>100 שניות</item>
+        <item>110 שניות</item>
+        <item>120 שניות</item>
+        <item>130 שניות</item>
+        <item>140 שניות</item>
+        <item>150 שניות</item>
+        <item>160 שניות</item>
+        <item>170 שניות</item>
+        <item>180 שניות</item>
     </string-array>
 
     <string-array name="time_120_seconds">
-        <item>5 sec</item>
-        <item>10 sec</item>
-        <item>20 sec</item>
-        <item>30 sec</item>
-        <item>40 sec</item>
-        <item>50 sec</item>
-        <item>60 sec</item>
-        <item>70 sec</item>
-        <item>80 sec</item>
-        <item>90 sec</item>
-        <item>100 sec</item>
-        <item>110 sec</item>
-        <item>120 sec</item>
+        <item>5 שניות</item>
+        <item>10 שניות</item>
+        <item>20 שניות</item>
+        <item>30 שניות</item>
+        <item>40 שניות</item>
+        <item>50 שניות</item>
+        <item>60 שניות</item>
+        <item>70 שניות</item>
+        <item>80 שניות</item>
+        <item>90 שניות</item>
+        <item>100 שניות</item>
+        <item>110 שניות</item>
+        <item>120 שניות</item>
     </string-array>
 
     <string-array name="time_55_minutes">
-        <item>5 min</item>
-        <item>10 min</item>
-        <item>15 min</item>
-        <item>20 min</item>
-        <item>25 min</item>
-        <item>30 min</item>
-        <item>35 min</item>
-        <item>40 min</item>
-        <item>45 min</item>
-        <item>50 min</item>
-        <item>55 min</item>
+        <item>5 דקות</item>
+        <item>10 דקות</item>
+        <item>15 דקות</item>
+        <item>20 דקות</item>
+        <item>25 דקות</item>
+        <item>30 דקות</item>
+        <item>35 דקות</item>
+        <item>40 דקות</item>
+        <item>45 דקות</item>
+        <item>50 דקות</item>
+        <item>55 דקות</item>
     </string-array>
 
     <string-array name="time_8_hours">
-        <item>1 hr</item>
-        <item>2 hr</item>
-        <item>3 hr</item>
-        <item>4 hr</item>
-        <item>5 hr</item>
-        <item>6 hr</item>
-        <item>7 hr</item>
-        <item>8 hr</item>
+        <item>1 שעות</item>
+        <item>2 שעות</item>
+        <item>3 שעות</item>
+        <item>4 שעות</item>
+        <item>5 שעות</item>
+        <item>6 שעות</item>
+        <item>7 שעות</item>
+        <item>8 שעות</item>
     </string-array>
 </resources>

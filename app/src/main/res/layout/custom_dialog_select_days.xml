@@ -49,8 +49,6 @@
             android:id="@+id/btnSendCommand"
             android:layout_width="90dp"
             android:layout_height="31.7dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
             android:background="@color/green1"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
@@ -60,15 +58,15 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18.7sp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
             android:id="@+id/btnCancel"
             android:layout_width="90dp"
             android:layout_height="31.7dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             android:background="@color/red4"
             android:fontFamily="@font/arialmt"
             android:lineSpacingExtra="-9.9sp"
@@ -76,23 +74,13 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18.7sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
-    <!--    <RadioGroup-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintVertical_bias="0.440"-->
-    <!--            android:id="@+id/rgSelects"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:textAlignment="center"-->
-    <!--            android:orientation="vertical"-->
 
-    <!--            >-->
 
     <CheckBox
             android:id="@+id/cbSunday"

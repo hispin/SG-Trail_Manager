@@ -16,14 +16,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.classes.LanguageManager
 import com.sensoguard.trailmanager.classes.MyExceptionHandler
 import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.services.JobServiceRepeat
 import com.sensoguard.trailmanager.services.ServiceRepeat
-import io.fabric.sdk.android.Fabric
+
+//import io.fabric.sdk.android.Fabric
 
 //import net.danlew.android.joda.JodaTimeAndroid
 
@@ -31,9 +32,9 @@ import io.fabric.sdk.android.Fabric
 class MainActivity : AppCompatActivity() {
 
     private var clickConsCamerasTable: ConstraintLayout? = null
-    private var clickConsMap:ConstraintLayout?=null
-    private var clickConsConfiguration:ConstraintLayout?=null
-    private var clickAlarmLog:ConstraintLayout?=null
+    private var clickConsMap: ConstraintLayout? = null
+    private var clickConsConfiguration: ConstraintLayout? = null
+    private var clickAlarmLog: ConstraintLayout? = null
     private var tvShowVer: TextView? = null
 
 //    @Override
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         var d: MonthDisplayHelper
 
         configureGeneralCatch()
-        Fabric.with(this, Crashlytics())
+        //Fabric.with(this, Crashlytics())
 
         super.onCreate(savedInstanceState)
 

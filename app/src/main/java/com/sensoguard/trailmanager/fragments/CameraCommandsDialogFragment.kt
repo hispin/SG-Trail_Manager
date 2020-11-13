@@ -30,7 +30,8 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
+class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
+    CompoundButton.OnCheckedChangeListener {
 
     private var myCamera: Camera? = null
     private var tvCameraName: TextView? = null
@@ -411,26 +412,26 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_984])
             ) {
-                command.selectionsTitles.add("14mp")
-                command.selectionsTitles.add("25mp")
-                command.selectionsTitles.add("36mp")
+                command.selectionsTitles.add("14MP")
+                command.selectionsTitles.add("25MP")
+                command.selectionsTitles.add("36MP")
                 command.selectionsCommands.add("#e#s14#")
                 command.selectionsCommands.add("#e#s25#")
                 command.selectionsCommands.add("#e#s36#")
             } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])
             ) {
-                command.selectionsTitles.add("5mp")
-                command.selectionsTitles.add("12mp")
-                command.selectionsTitles.add("18mp")
+                command.selectionsTitles.add("5MP")
+                command.selectionsTitles.add("12MP")
+                command.selectionsTitles.add("18MP")
                 command.selectionsCommands.add("#e#s5#")
                 command.selectionsCommands.add("#e#s12#")
                 command.selectionsCommands.add("#e#s18#")
 
             } else if (myCamera?.cameraModel.equals(myModels[MODEL_584])
             ) {
-                command.selectionsTitles.add("10mp")
-                command.selectionsTitles.add("16mp")
-                command.selectionsTitles.add("24mp")
+                command.selectionsTitles.add("10MP")
+                command.selectionsTitles.add("16MP")
+                command.selectionsTitles.add("24MP")
                 command.selectionsCommands.add("#e#s10#")
                 command.selectionsCommands.add("#e#s16#")
                 command.selectionsCommands.add("#e#s24#")
@@ -483,7 +484,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 command.selectionsCommands.add("#E#FF#")
                 command.selectionsCommands.add("#E#F2#")
                 command.selectionsCommands.add("#E#F4#")
-
+                command.defaultSelected = 1
             } else if (
                 myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
@@ -495,11 +496,13 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                 command.selectionsCommands.add("#E#FL#")
                 command.selectionsCommands.add("#E#FH#")
                 command.selectionsCommands.add("#E#FF#")
+                command.defaultSelected = 2
             } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])) {
                 command.selectionsTitles.add("VGA")
                 command.selectionsTitles.add("720P")
                 command.selectionsCommands.add("#E#FL#")
                 command.selectionsCommands.add("#E#FH#")
+                command.defaultSelected = 2
             }
             moreCommands?.add(command)
 
@@ -576,19 +579,21 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
             moreCommands?.add(command)
 
-            //business days
-            command = Command(
-                resources.getString(R.string.business_days),
-                null,
-                R.drawable.parameters
-            )
-            command.defaultSelected = 2
-            command.selectionsTitles.add(resources.getString(R.string.turned_on))
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsCommands.add("#e#HON")
-            command.selectionsCommands.add("#e#HOFF#")
+            if (!myCamera?.cameraModel.equals(myModels[MODEL_584])) {
+                //business days
+                command = Command(
+                    resources.getString(R.string.business_days),
+                    null,
+                    R.drawable.parameters
+                )
+                command.defaultSelected = 2
+                command.selectionsTitles.add(resources.getString(R.string.turned_on))
+                command.selectionsTitles.add(resources.getString(R.string.turned_off))
+                command.selectionsCommands.add("#e#HON")
+                command.selectionsCommands.add("#e#HOFF#")
 
-            moreCommands?.add(command)
+                moreCommands?.add(command)
+            }
 
 
             //remote control
@@ -869,10 +874,16 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
                                 }
                             }
                             resources.getString(R.string.video_quality) -> {
-                                if (command.selectionsCommands.size == 3) {
-                                    showRadio3SelectedDialog(command)
-                                } else if (command.selectionsCommands.size == 4) {
-                                    showRadio4SelectedDialog(command)
+                                when (command.selectionsCommands.size) {
+                                    3 -> {
+                                        showRadio3SelectedDialog(command)
+                                    }
+                                    4 -> {
+                                        showRadio4SelectedDialog(command)
+                                    }
+                                    2 -> {
+                                        showRadio2SelectedDialog(command)
+                                    }
                                 }
                             }
                             resources.getString(R.string.video_length) -> {
@@ -990,6 +1001,10 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
     }
 
+    //to disable when one of the checkboxes are unchecked
+    var cbSelectAll: CheckBox? = null
+    var isOneDisable = false
+
     //show dialog with days selection
     private fun showSelectDaysDialog(myCommand: Command) {
 
@@ -1002,16 +1017,23 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
             dialog.setCancelable(true)
 
-            val cbSelectAll = dialog.findViewById<CheckBox>(R.id.cbSelectAll)
+            cbSelectAll = dialog.findViewById(R.id.cbSelectAll)
 
 
             val cbSunday = dialog.findViewById<CheckBox>(R.id.cbSunday)
+            cbSunday.setOnCheckedChangeListener(this)
             val cbMonday = dialog.findViewById<CheckBox>(R.id.cbMonday)
+            cbMonday.setOnCheckedChangeListener(this)
             val cbTuesday = dialog.findViewById<CheckBox>(R.id.cbTuesday)
+            cbTuesday.setOnCheckedChangeListener(this)
             val cbWednesday = dialog.findViewById<CheckBox>(R.id.cbWednesday)
+            cbWednesday.setOnCheckedChangeListener(this)
             val cbThursday = dialog.findViewById<CheckBox>(R.id.cbThursday)
+            cbThursday.setOnCheckedChangeListener(this)
             val cbFriday = dialog.findViewById<CheckBox>(R.id.cbFriday)
+            cbFriday.setOnCheckedChangeListener(this)
             val cbSaturday = dialog.findViewById<CheckBox>(R.id.cbSaturday)
+            cbSaturday.setOnCheckedChangeListener(this)
 
             val cbDays = ArrayList<CheckBox>()
             cbDays.add(cbSunday)
@@ -1024,14 +1046,17 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
 
             //by default select all days
             toggleAllDays(cbDays, true)
-            cbSelectAll.isChecked = true
+            cbSelectAll?.isChecked = true
 
             //implements select all days
-            cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked)
-                    toggleAllDays(cbDays, true)
-                else
-                    toggleAllDays(cbDays, false)
+            cbSelectAll?.setOnCheckedChangeListener { cb, isChecked ->
+                //check if the checkbox is pressed or the trigger is programmatically
+                if (cb.isPressed) {
+                    if (isChecked)
+                        toggleAllDays(cbDays, true)
+                    else
+                        toggleAllDays(cbDays, false)
+                }
             }
 
 
@@ -2099,6 +2124,12 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed {
             8,
             "#M#http://192.168.220.15/servlets/mms#172.31.29.38#8080#MMS###"
         )
+    }
+
+    //handler just for business days
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        if (!isChecked)
+            cbSelectAll?.isChecked = false
     }
 
 

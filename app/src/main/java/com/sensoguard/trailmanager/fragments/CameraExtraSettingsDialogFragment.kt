@@ -112,7 +112,12 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         tvShowVer = view?.findViewById(R.id.tvShowVer)
 
         val verName =
-            activity?.packageManager?.getPackageInfo(activity?.packageName, 0)?.versionName
+            activity?.packageName?.let {
+                activity?.packageManager?.getPackageInfo(
+                    it,
+                    0
+                )?.versionName
+            }
         val verTitle = "version:$verName"
         tvShowVer?.text = verTitle
 

@@ -777,7 +777,15 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
                         val type = inn.getStringExtra(CREATE_ALARM_TYPE_KEY)
 
                         //add alarm process to queue
-                        UserSession.instance.alarmSensors?.add(alarmSensorId.let { AlarmSensor(it, Calendar.getInstance(),type) })
+                        alarmSensorId.let {
+                            it?.let { it1 ->
+                                type?.let { it2 ->
+                                    AlarmSensor(
+                                        it1, Calendar.getInstance(), it2
+                                    )
+                                }
+                            }
+                        }?.let { UserSession.instance.alarmSensors?.add(it) }
 
                         playAlarmSound()
 

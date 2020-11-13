@@ -448,7 +448,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 createLanguagesItemsDeliver(LanguageManager.languagesItems),
                 this
             )
-            listPopupWindow = ListPopupWindow(context)
+            listPopupWindow = context?.let { ListPopupWindow(it) }
             listPopupWindow?.isModal = true
             listPopupWindow?.animationStyle = com.sensoguard.trailmanager.R.style.winPopupAnimation
             listPopupWindow?.setAdapter(generalItemMenuAdapter)

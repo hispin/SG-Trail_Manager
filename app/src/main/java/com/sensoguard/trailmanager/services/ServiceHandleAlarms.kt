@@ -60,28 +60,37 @@ class ServiceHandleAlarms : Service(){
             Log.d(TAG,"accept alarm")
             //accept alarm
             if (intent.action == READ_DATA_KEY) {
-                val bit=intent.getIntegerArrayListExtra("data")
+                val bit = intent.getIntegerArrayListExtra("data")
 
                 val stateTypes = resources?.getStringArray(R.array.state_types)
 
-                val idx = bit[5].toUByte().toInt()-1
+                val idx = bit?.get(5)?.toUByte()?.toInt()?.minus(1)
 
-                if (stateTypes != null && idx >= stateTypes.size) {
-                    return
+                if (idx != null) {
+                    if (stateTypes != null && idx >= stateTypes.size) {
+                        return
+                    }
                 }
 
-                val type=stateTypes?.get(bit[5].toUByte().toInt()-1)
-                val alarmSensorId = bit[1].toUByte().toString()
+                val type = stateTypes?.get(bit?.get(5)?.toUByte()!!.toInt() - 1)
+                val alarmSensorId = bit!![1].toUByte().toString()
 
                 //get locally sensor that match to sensor of alarm
-                val currentSensorLocally=getLocallySensorAlarm(alarmSensorId)
+                val currentSensorLocally = getLocallySensorAlarm(alarmSensorId)
 
                 //add alarm to history and send alarm if active
-                if(currentSensorLocally==null){
-                     sendBroadcast(Intent(RESET_MARKERS_KEY))
-                     Toast.makeText(context, "Alarm from Unit $alarmSensorId", Toast.LENGTH_LONG).show()
-                     addAlarmToHistory(false,"undefined", isArmed = false, alarmSensorId = alarmSensorId, type = type)
-                }else if(!currentSensorLocally.isArmed()){
+                if (currentSensorLocally == null) {
+                    sendBroadcast(Intent(RESET_MARKERS_KEY))
+                    Toast.makeText(context, "Alarm from Unit $alarmSensorId", Toast.LENGTH_LONG)
+                        .show()
+                    addAlarmToHistory(
+                        false,
+                        "undefined",
+                        isArmed = false,
+                        alarmSensorId = alarmSensorId,
+                        type = type
+                    )
+                } else if (!currentSensorLocally.isArmed()) {
                      sendBroadcast(Intent(RESET_MARKERS_KEY))
                      Toast.makeText(context, "Alarm from Unit $alarmSensorId", Toast.LENGTH_LONG).show()
                     currentSensorLocally.getName()?.let {

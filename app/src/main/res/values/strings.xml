@@ -74,7 +74,7 @@
     <string name="system_camera_name">System Name:</string>
     <string name="tel_num_title">Phone Number:</string>
     <string name="camera_type_title">Camera Model:</string>
-    <string name="mail_address_title">Email Address:</string>
+    <string name="mail_address_title">Sending email:</string>
     <string name="password_title">Password:</string>
     <string name="incoming_email_server_title">Incoming Email server:</string>
     <string name="incoming_email_server_port_title">Incoming Email Port:</string>
@@ -203,9 +203,9 @@
     <string name="normal">normal</string>
     <string name="low">low</string>
     <string name="file_sending_quality">file sending quality</string>
-    <string name="frequency_of_sending_alert">frequency of sending alert</string>
+    <string name="frequency_of_sending_alert">alert sending times</string>
     <string name="daily_report">daily report</string>
-    <string name="real_time_alert">Alert sending times</string>
+    <string name="real_time_alert">Real time alert</string>
     <string name="work_hour">work hour</string>
     <string name="turned_on">turned on</string>
     <string name="from_time">from</string>
@@ -221,7 +221,7 @@
     <string name="saturday">Saturday</string>
     <string name="remote_control">remote control</string>
     <string name="gps">GPS</string>
-    <string name="recycling_bin">Recycling bin</string>
+    <string name="recycling_bin">Overwriting memory</string>
     <string name="photography_at_regular_intervals">Photography at regular intervals</string>
     <string name="minutes">minutes</string>
     <string name="hr">hours</string>
