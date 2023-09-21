@@ -61,7 +61,6 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/arialmt"
                 android:text="@string/filter_by"
                 android:textColor="@color/gray9"
                 android:textSize="14.7sp"

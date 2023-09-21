@@ -16,24 +16,30 @@ import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.CryptoHandler
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.classes.LanguageManager
-import com.sensoguard.trailmanager.global.*
-import kotlinx.android.synthetic.main.activity_activation.*
+import com.sensoguard.trailmanager.global.ACTIVATION_CODE_KEY
+import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
+import com.sensoguard.trailmanager.global.CURRENT_LANG_KEY_PREF
+import com.sensoguard.trailmanager.global.IMEI_KEY
+import com.sensoguard.trailmanager.global.NO_DATA
+import com.sensoguard.trailmanager.global.PERMISSIONS_REQUEST_READ_PHONE_STATE
+import com.sensoguard.trailmanager.global.getAppLanguage
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.setAppLanguage
 
 class InitAppActivity : AppCompatActivity() {
 
     private var myImei: String?=null
 
    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_init_app)
-        setReadPhoneStatePermission()
-    }
+       super.onCreate(savedInstanceState)
+       setContentView(R.layout.activity_init_app)
+       setReadPhoneStatePermission()
+   }
 
     //get the IMEI of the device and check it with the locally
     private fun configureActivation(){
 
         myImei=getDeviceIMEI()
-        tvImei?.text = myImei
 
         val localActivateCode= getStringInPreference(this, ACTIVATION_CODE_KEY, NO_DATA)
         if(!localActivateCode.equals(NO_DATA)){
@@ -95,6 +101,7 @@ class InitAppActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSIONS_REQUEST_READ_PHONE_STATE -> {
                 // If request is cancelled, the result arrays are empty.

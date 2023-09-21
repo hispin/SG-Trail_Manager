@@ -35,7 +35,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="71dp"
-                    android:fontFamily="@font/arialmt"
                     android:text="@string/id_title"
 
                     android:textColor="@color/gray13"
@@ -50,7 +49,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
-                    android:fontFamily="@font/arialmt"
                     android:text="@string/name_title"
 
                     android:textColor="@color/gray13"

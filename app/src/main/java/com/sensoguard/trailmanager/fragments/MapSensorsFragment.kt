@@ -9,6 +9,7 @@ package com.sensoguard.trailmanager.fragments
 //import android.support.v7.widget.DividerItemDecoration
 //import android.support.v7.widget.LinearLayoutManager
 //import android.support.v7.widget.RecyclerView
+//import androidx.lifecycle.ViewModelProviders
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -32,7 +33,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -54,7 +55,6 @@ import com.sensoguard.trailmanager.interfaces.OnAdapterListener
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 import com.sensoguard.trailmanager.services.ServiceFindLocation
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -114,21 +114,30 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
     //start listener to timer
     private fun startTimerListener() {
         activity?.let {
-            ViewModelProviders.of(it).get(ViewModelListener::class.java).startCurrentCalendarListener()?.observe(this,androidx.lifecycle.Observer {calendar->
+            ViewModelProvider(
+                this,
+                ViewModelProvider.NewInstanceFactory()
+            ).get(ViewModelListener::class.java).startCurrentCalendarListener()
+                ?.observe(this, androidx.lifecycle.Observer { calendar ->
 
-                //Log.d("testTimer","tick in MapSensorsFragment")
-                //if there is no alarm in process then shut down the timer
-                if(UserSession.instance.alarmSensors==null ||  UserSession.instance.alarmSensors?.isEmpty()!!) {
-                    activity?.let {act-> ViewModelProviders.of(act).get(ViewModelListener::class.java).shutDownTimer() }
-                    stopPlayingAlarm()
-                    //refresh markers
-                    showMarkers()
-                }else{
-                    //remove all the time out sensors alarm and show them with regular sensor marker
-                    replaceSensorAlarmTimeOutToSensorMarker()
-                }
+                    //Log.d("testTimer","tick in MapSensorsFragment")
+                    //if there is no alarm in process then shut down the timer
+                    if (UserSession.instance.alarmSensors == null || UserSession.instance.alarmSensors?.isEmpty()!!) {
+                        activity?.let { act ->
+                            ViewModelProvider(
+                                this,
+                                ViewModelProvider.NewInstanceFactory()
+                            ).get(ViewModelListener::class.java).shutDownTimer()
+                        }
+                        stopPlayingAlarm()
+                        //refresh markers
+                        showMarkers()
+                    } else {
+                        //remove all the time out sensors alarm and show them with regular sensor marker
+                        replaceSensorAlarmTimeOutToSensorMarker()
+                    }
 
-            })
+                })
 
         }
     }
@@ -204,9 +213,14 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
 
     override fun onPause() {
         super.onPause()
-        activity?.let { ViewModelProviders.of(it).get(ViewModelListener::class.java).shutDownTimer() }
+        activity?.let {
+
+            ViewModelProvider(
+                this,
+                ViewModelProvider.NewInstanceFactory()
+            ).get(ViewModelListener::class.java).shutDownTimer()
+        }
         stopPlayingAlarm()
-        //setSensorsDefaultIcon()
     }
 
     private fun stopPlayingAlarm() {
@@ -254,7 +268,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         mMap?.clear()
@@ -326,7 +340,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         }
         //add marker at the focus of the ic_map_main
         myLocate?.let{
-            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocate, 15.0f))
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocate!!, 15.0f))
             showMarkers()
             //fillSensorsMarkers()
         }
@@ -379,7 +393,10 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         Log.d("testTimer","start timer")
 
         activity?.let {
-            ViewModelProviders.of(it).get(ViewModelListener::class.java).startTimer()
+            ViewModelProvider(
+                this,
+                ViewModelProvider.NewInstanceFactory()
+            ).get(ViewModelListener::class.java).startTimer()
         }
 
     }
@@ -475,7 +492,7 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
            }
 
 
-       val loc:LatLng? = LatLng(sensorItem.getLatitude()!!, sensorItem.getLongtitude()!!)
+       val loc: LatLng = LatLng(sensorItem.getLatitude()!!, sensorItem.getLongtitude()!!)
        if(loc!=null) {
            val marker = mMap?.addMarker(
                MarkerOptions()
@@ -490,26 +507,33 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
        return null
    }
 
-   //show marker of current location
-   private fun showCurrentLocationMarker(){
+    //show marker of current location
+    private fun showCurrentLocationMarker() {
 
-           if(mMap==null){
-               return
-           }
+        if (mMap == null) {
+            return
+        }
 
-       if (myLocate == null) {
-           return
-       }
+        if (myLocate == null) {
+            return
+        }
 
+        myLocate?.let {
+            MarkerOptions()
+                .position(it)
+                .draggable(true)
+                .icon(context?.let { con ->
+                    convertBitmapToBitmapDiscriptor(
+                        con,
+                        R.drawable.ic_my_locate
+                    )
+                })
+        }?.let {
             mMap?.addMarker(
-                myLocate?.let {
-                    MarkerOptions()
-                        .position(it)
-                        .draggable(true)
-                        .icon(context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_my_locate) })
-                }
+                it
             )
         }
+    }
 
     //show marker of sensor
     private fun showSensorMarker(sensorItem: Camera) {
@@ -685,71 +709,33 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
                     //fillSensorsMarkers()
                 }
 
-                val itemDecorator= DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
-                itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider)!!)
-                rvDetector?.addItemDecoration(itemDecorator)
+       val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+       itemDecorator.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!)
+       rvDetector?.addItemDecoration(itemDecorator)
 
-                sensorsDialogAdapter?.itemClick = { detector ->
+       sensorsDialogAdapter?.itemClick = { detector ->
 
-                }
+       }
 
-                // Add some item here to show the list.
-                rvDetector?.adapter = sensorsDialogAdapter
-                val mLayoutManager = LinearLayoutManager(context)
-                rvDetector?.layoutManager = mLayoutManager
-                dialog?.show()
-            }
-
-   private fun showTestEventDialog() {
+       // Add some item here to show the list.
+       rvDetector?.adapter = sensorsDialogAdapter
+       val mLayoutManager = LinearLayoutManager(context)
+       rvDetector?.layoutManager = mLayoutManager
+       dialog?.show()
+   }
 
 
-                //create dialog
-                val dialog = MapDetectsFragment@this.context?.let{Dialog(it)}
-                //set layout custom
-                dialog?.setContentView(R.layout.test_dialog)
+    private fun validIsEmpty(editText: EditText): Boolean {
+        var isValid = true
 
-                val etid=dialog?.findViewById<EditText>(R.id.etId)
-                val etType=dialog?.findViewById<EditText>(R.id.etType)
-                val btnOk=dialog?.findViewById<Button>(R.id.btnOk)
+        if (editText.text.isNullOrBlank()) {
+            editText.error =
+                resources.getString(R.string.empty_field_error)
+            isValid = false
+        }
 
-                //Bug fixed:Fatal Exception: java.lang.NumberFormatException
-                //Invalid int: "1 "
-                btnOk?.setOnClickListener{
-
-
-                    if( etid!=null &&  validIsEmpty(etid)
-                        && etType!=null &&  validIsEmpty(etType)) {
-                        val arr = ArrayList<Int>()
-                        arr.add(0, 0)
-                        arr.add(1, 0)
-                        arr.add(2, 0)
-                        arr.add(3, 0)
-                        arr.add(4, 0)
-                        arr.add(5, 0)
-                        arr.add(6, 0)
-                        arr.add(1, etid.text.toString().toInt())
-                        arr.add(5, etType.text.toString().toInt())
-                        val inn = Intent(READ_DATA_KEY)
-                        inn.putExtra("data", arr)
-                        context?.sendBroadcast(Intent(inn))
-                        dialog.dismiss()
-                    }
-                }
-
-                dialog?.show()
-            }
-
-   private fun validIsEmpty(editText: EditText): Boolean {
-                var isValid=true
-
-                if (editText.text.isNullOrBlank()) {
-                    editText.error =
-                        resources.getString(com.sensoguard.trailmanager.R.string.empty_field_error)
-                    isValid=false
-                }
-
-                return isValid
-            }
+        return isValid
+    }
 
     private fun saveLatLongDetector(sensor: Camera) {
         val sensorsArr = activity?.let { getCamerasFromLocally(it) }

@@ -1,10 +1,9 @@
 package com.sensoguard.trailmanager.controler
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -12,19 +11,19 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 
-class ViewModelListener(application: Application) : AndroidViewModel(application) {
+class ViewModelListener : ViewModel() {
 
-    private var t: ScheduledFuture<*>?=null
-    private var scheduleTaskExecutor: ScheduledExecutorService?=null
+    private var t: ScheduledFuture<*>? = null
+    private var scheduleTaskExecutor: ScheduledExecutorService? = null
 
 
     //listener to changes when the timer interval is time out
-    private var currentCalendar: MutableLiveData<Calendar>?=null
+    private var currentCalendar: MutableLiveData<Calendar>? = null
 
     fun startCurrentCalendarListener(): LiveData<Calendar>? {
 
         if (currentCalendar == null) {
-            currentCalendar=MutableLiveData()
+            currentCalendar = MutableLiveData()
         }
 
         return currentCalendar

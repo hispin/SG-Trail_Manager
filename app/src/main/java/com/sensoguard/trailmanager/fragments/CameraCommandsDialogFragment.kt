@@ -10,8 +10,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.EditText
+import android.widget.NumberPicker
 import android.widget.NumberPicker.OnValueChangeListener
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatSpinner
@@ -24,11 +33,23 @@ import com.sensoguard.trailmanager.adapters.CommandAdapter
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.Command
 import com.sensoguard.trailmanager.classes.CommandConfigEmail
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.ADD_ACTION_TYPE
+import com.sensoguard.trailmanager.global.CAMERA_KEY
+import com.sensoguard.trailmanager.global.MAIN_COMMANDS_LIST_TYPE
+import com.sensoguard.trailmanager.global.MODEL_310
+import com.sensoguard.trailmanager.global.MODEL_584
+import com.sensoguard.trailmanager.global.MODEL_636
+import com.sensoguard.trailmanager.global.MODEL_668
+import com.sensoguard.trailmanager.global.MODEL_984
+import com.sensoguard.trailmanager.global.MODEL_ATC
+import com.sensoguard.trailmanager.global.MORE_COMMANDS_LIST_TYPE
+import com.sensoguard.trailmanager.global.NEW_CAMERA_LIST_TYPE
+import com.sensoguard.trailmanager.global.REMOVE_ACTION_TYPE
+import com.sensoguard.trailmanager.global.convertJsonToSensor
+import com.sensoguard.trailmanager.global.getStringFromCalendar
 import com.sensoguard.trailmanager.interfaces.OnBackPressed
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     CompoundButton.OnCheckedChangeListener {
@@ -101,8 +122,27 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 )
             )
 
-            //int model 584 hide those commands
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_584])) {
+            //int model 584,310 difference of those commands
+            if (myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
+                myCamera?.cameraModel.equals(myModels[MODEL_310])
+            ) {
+
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.arm_camera),
+                        "#e#HOFF#",
+                        R.drawable.arm_camera
+                    )
+                )
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.disarm_camera),
+                        "e#HON2:0-2:1##",
+                        R.drawable.disarm_camera
+                    )
+                )
+
+            } else {
                 mainCommands?.add(
                     Command(
                         resources.getString(R.string.arm_camera),
@@ -1009,7 +1049,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showSelectDaysDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_select_days)
 
             val tvCommandTitle = dialog.findViewById<AppCompatTextView>(R.id.tvCommandTitle)
@@ -1095,7 +1135,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showEmailsDialog() {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_emails_commands)
 
             dialog.setCancelable(true)
@@ -1143,7 +1183,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showEmailDialog(actionType: Int) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_add_recipient_to_email)
 
             dialog.setCancelable(true)
@@ -1183,7 +1223,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showSelectMultiImgManual() {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_image_quantity_selection_manual)
 
             dialog.setCancelable(true)
@@ -1204,7 +1244,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             var myNum = 1
 
             //Set a value change listener for NumberPicker
-            numMultiSelectManual.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected number from picker
+            numMultiSelectManual.setOnValueChangedListener(OnValueChangeListener { _, _, newVal -> //Display the newly selected number from picker
                 myNum = newVal
                 //tv.setText("Selected Number : $newVal")
             })
@@ -1241,7 +1281,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showSpinnerSelectedDialog(myCommand: Command, type: Int) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_spinner_selections)
 
             dialog.setCancelable(true)
@@ -1287,7 +1327,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showRadio2SelectedDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_radio_2_selections)
 
             dialog.setCancelable(true)
@@ -1383,7 +1423,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showRadio3SelectedDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_radio_3_selections)
 
             dialog.setCancelable(true)
@@ -1471,7 +1511,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showRadio3WithSpinnerSelectedDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_radio_3_with_spinner_selections)
 
             dialog.setCancelable(true)
@@ -1564,7 +1604,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showRadio4SelectedDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_radio_4_selections)
 
             dialog.setCancelable(true)
@@ -1637,7 +1677,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
         var commandConfigEmail: CommandConfigEmail? = null
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_configuration_send)
 
             dialog.setCancelable(true)
@@ -1649,12 +1689,13 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
             val rgConfigSelects = dialog.findViewById<RadioGroup>(R.id.rgConfigSelects)
             val rbHotWe4g = dialog.findViewById<RadioButton>(R.id.rbHotWe4g)
-            rgConfigSelects.setOnCheckedChangeListener { group, checkedId ->
+            rgConfigSelects.setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
                     R.id.rbConfigMms -> {
                         rbHotWe4g.isEnabled = false
                         addCommandConfigMMS(myCommand)
                     }
+
                     R.id.rbConfigEmail -> {
                         myCommand.selectionsCommands = ArrayList()
                         rbHotWe4g.isEnabled = true
@@ -1745,7 +1786,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showRadio5SelectedDialog(myCommand: Command) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_radio_5_selections)
 
             dialog.setCancelable(true)
@@ -1820,7 +1861,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showPhoneNumbersDialog() {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_phonenum_command)
 
             dialog.setCancelable(true)
@@ -1868,7 +1909,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showPhoneNumberDialog(actionType: Int) {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_add_recipient_to_mms)
 
             dialog.setCancelable(true)
@@ -1950,7 +1991,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private fun showSetAdminDialog() {
 
         if (this@CameraCommandsDialogFragment.context != null) {
-            val dialog = Dialog(this@CameraCommandsDialogFragment.context!!)
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
             dialog.setContentView(R.layout.custom_dialog_set_admin_command)
 
             dialog.setCancelable(true)

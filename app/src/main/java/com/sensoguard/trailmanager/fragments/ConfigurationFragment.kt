@@ -12,7 +12,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ListPopupWindow
+import android.widget.ProgressBar
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +30,38 @@ import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.classes.LanguageManager
 import com.sensoguard.trailmanager.classes.MyEmailAccount
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.ALARM_DISPLAY_KEY
+import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_KEY
+import com.sensoguard.trailmanager.global.CAMERA_KEY
+import com.sensoguard.trailmanager.global.CURRENT_LANG_KEY_PREF
+import com.sensoguard.trailmanager.global.EMAIL_ACCOUNT_KEY
+import com.sensoguard.trailmanager.global.ERROR_RESULT_VALIDATION_EMAIL_ACTION
+import com.sensoguard.trailmanager.global.ERROR_VALIDATION_EMAIL_MSG_KEY
+import com.sensoguard.trailmanager.global.IS_EMAIL_CONFIG_PREF_KEY
+import com.sensoguard.trailmanager.global.IS_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.IS_VIBRATE_WHEN_ALARM_KEY
+import com.sensoguard.trailmanager.global.LAST_DATE_ALARM
+import com.sensoguard.trailmanager.global.MAP_SHOW_NORMAL_VALUE
+import com.sensoguard.trailmanager.global.MAP_SHOW_SATELLITE_VALUE
+import com.sensoguard.trailmanager.global.MAP_SHOW_VIEW_TYPE_KEY
+import com.sensoguard.trailmanager.global.RESULT_VALIDATION_EMAIL_ACTION
+import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.VALIDATION_EMAIL_RESULT
+import com.sensoguard.trailmanager.global.convertJsonToMyEmailAccount
+import com.sensoguard.trailmanager.global.convertToGson
+import com.sensoguard.trailmanager.global.getBooleanInPreference
+import com.sensoguard.trailmanager.global.getCamerasFromLocally
+import com.sensoguard.trailmanager.global.getIntInPreference
+import com.sensoguard.trailmanager.global.getLongInPreference
+import com.sensoguard.trailmanager.global.getScreenWidth
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.removePreference
+import com.sensoguard.trailmanager.global.setBooleanInPreference
+import com.sensoguard.trailmanager.global.setIntInPreference
+import com.sensoguard.trailmanager.global.setLongInPreference
+import com.sensoguard.trailmanager.global.setStringInPreference
+import com.sensoguard.trailmanager.global.storeMyEmailAccountToLocaly
+import com.sensoguard.trailmanager.global.storeSensorsToLocally
 import com.sensoguard.trailmanager.interfaces.CallToParentInterface
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 import com.sensoguard.trailmanager.services.ServiceEmailValidation
@@ -95,9 +132,9 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
         togChangeAlarmVibrate = view.findViewById(R.id.togChangeAlarmVibrate)
         togChangeAlarmVibrate?.isChecked=getBooleanInPreference(activity,IS_VIBRATE_WHEN_ALARM_KEY,true)
-        togChangeAlarmVibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
+        togChangeAlarmVibrate?.setOnCheckedChangeListener { _, isChecked ->
             //update the status of the alarm vibrate : on/off
-            setBooleanInPreference(activity,IS_VIBRATE_WHEN_ALARM_KEY,isChecked)
+            setBooleanInPreference(activity, IS_VIBRATE_WHEN_ALARM_KEY, isChecked)
         }
 
         ibSatelliteMode = view.findViewById(R.id.ibSatelliteMode)
@@ -127,7 +164,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 setLongInPreference(activity,ALARM_FLICKERING_DURATION_KEY,timeFlicker)
                 Toast.makeText(
                     activity,
-                    resources.getString(com.sensoguard.trailmanager.R.string.time_flickering_save_successfully),
+                    resources.getString(R.string.time_flickering_save_successfully),
                     Toast.LENGTH_SHORT
                 ).show()
             }catch (ex:NumberFormatException){}
@@ -145,9 +182,9 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
         togChangeAlarmSound = view.findViewById(R.id.togChangeAlarmSound)
         togChangeAlarmSound?.isChecked= getBooleanInPreference(activity,IS_NOTIFICATION_SOUND_KEY,true)
-        togChangeAlarmSound?.setOnCheckedChangeListener { buttonView, isChecked ->
+        togChangeAlarmSound?.setOnCheckedChangeListener { _, isChecked ->
             //update the status of the alarm vibrate : on/off
-            setBooleanInPreference(activity,IS_NOTIFICATION_SOUND_KEY,isChecked)
+            setBooleanInPreference(activity, IS_NOTIFICATION_SOUND_KEY, isChecked)
         }
 
         btnDefault = view.findViewById(R.id.btnDefault)
@@ -175,7 +212,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
         rgAlarmDisplay = view.findViewById(R.id.rgAlarmDisplay)
 
-        rgAlarmDisplay?.setOnCheckedChangeListener { group, checkedId ->
+        rgAlarmDisplay?.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.rbListView) {
                 setStringInPreference(this.context, ALARM_DISPLAY_KEY, "list")
             } else if (checkedId == R.id.rbGridView) {
@@ -302,7 +339,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
                 setStringInPreference(activity, SELECTED_NOTIFICATION_SOUND_KEY, uri.toString())
             } else {
                 txtAlarmSoundValue?.text =
-                    resources.getString(com.sensoguard.trailmanager.R.string.no_selected_sound)
+                    resources.getString(R.string.no_selected_sound)
             }
         }
     }
@@ -348,47 +385,47 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
         fun askBeforeDeleteExtraSensor() {
             val dialog= AlertDialog.Builder(activity)
                 //set message, title, and icon
-                .setTitle(activity?.resources?.getString(com.sensoguard.trailmanager.R.string.remove_extra_sensors))
+                .setTitle(activity?.resources?.getString(R.string.remove_extra_sensors))
                 .setMessage(
                     activity?.resources?.getString(
-                        com.sensoguard.trailmanager.R.string.content_delete_extra_sensor
+                        R.string.content_delete_extra_sensor
                     )
                 ).setIcon(
                     android.R.drawable.ic_menu_delete
 
                 )
 
-                .setPositiveButton(activity?.resources?.getString(com.sensoguard.trailmanager.R.string.yes)) { dialog, _ ->
+                .setPositiveButton(activity?.resources?.getString(R.string.yes)) { dialog, _ ->
 
                     //remove extra sensors
-                    if(numSensorsRequest!=null) {
-                        val items=sensors?.listIterator()
+                    if (numSensorsRequest != null) {
+                        val items = sensors?.listIterator()
                         while (items != null && items.hasNext()) {
                             val item = items.next()
 
-                            val id=item.getId()
+                            val id = item.getId()
                             try {
                                 if (id.toInt() > numSensorsRequest!!) {
                                     items.remove()
                                 }
-                            }catch(ex:NumberFormatException){
+                            } catch (ex: NumberFormatException) {
                                 //do nothing
                             }
                         }
                         Toast.makeText(
                             activity,
-                            resources.getString(com.sensoguard.trailmanager.R.string.sensors_save_successfully),
+                            resources.getString(R.string.sensors_save_successfully),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
-                    sensors?.let { sen -> storeSensorsToLocally(sen, activity!!) }
+                    sensors?.let { sen -> storeSensorsToLocally(sen, requireActivity()) }
                     dialog.dismiss()
                 }
 
 
-                .setNegativeButton(activity?.resources?.getString(com.sensoguard.trailmanager.R.string.no)) {
-                        dialog, _ -> dialog.dismiss() }.create()
+                .setNegativeButton(activity?.resources?.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+                .create()
             dialog.show()
 
         }
@@ -405,7 +442,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             && numSensorsRequest >254){
             Toast.makeText(
                 this.context,
-                resources.getString(com.sensoguard.trailmanager.R.string.invalid_mum_sensors),
+                resources.getString(R.string.invalid_mum_sensors),
                 Toast.LENGTH_LONG
             ).show()
             return
@@ -430,10 +467,10 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             && numSensorsRequest < sensors.size){
             askBeforeDeleteExtraSensor()
         }else if(activity!=null) {
-            sensors?.let { sen -> storeSensorsToLocally(sen, activity!!) }
+            sensors?.let { sen -> storeSensorsToLocally(sen, requireActivity()) }
             Toast.makeText(
                 activity,
-                resources.getString(com.sensoguard.trailmanager.R.string.sensors_save_successfully),
+                resources.getString(R.string.sensors_save_successfully),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -450,7 +487,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
             )
             listPopupWindow = context?.let { ListPopupWindow(it) }
             listPopupWindow?.isModal = true
-            listPopupWindow?.animationStyle = com.sensoguard.trailmanager.R.style.winPopupAnimation
+            listPopupWindow?.animationStyle = R.style.winPopupAnimation
             listPopupWindow?.setAdapter(generalItemMenuAdapter)
             listPopupWindow?.anchorView = anchorView
             listPopupWindow?.width = getScreenWidth(activity) * 2 / 3
@@ -458,7 +495,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
         } else {
             Toast.makeText(
                 activity,
-                resources.getString(com.sensoguard.trailmanager.R.string.error),
+                resources.getString(R.string.error),
                 Toast.LENGTH_SHORT
             ).show()
         }

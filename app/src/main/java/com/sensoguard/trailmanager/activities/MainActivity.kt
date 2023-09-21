@@ -10,17 +10,21 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.MonthDisplayHelper
+import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-//import com.crashlytics.android.Crashlytics
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.classes.LanguageManager
 import com.sensoguard.trailmanager.classes.MyExceptionHandler
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
+import com.sensoguard.trailmanager.global.CURRENT_LANG_KEY_PREF
+import com.sensoguard.trailmanager.global.IS_LOAD_APP
+import com.sensoguard.trailmanager.global.getAppLanguage
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.setAppLanguage
 import com.sensoguard.trailmanager.services.JobServiceRepeat
 import com.sensoguard.trailmanager.services.ServiceRepeat
 
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var clickConsMap: ConstraintLayout? = null
     private var clickConsConfiguration: ConstraintLayout? = null
     private var clickAlarmLog: ConstraintLayout? = null
-    private var tvShowVer: TextView? = null
+    private var tvShowVer: AppCompatTextView? = null
 
 //    @Override
 //    protected override fun attachBaseContext(newBase:Context) {
@@ -55,8 +59,6 @@ class MainActivity : AppCompatActivity() {
 
         //var year=Calendar.getInstance().get(Calendar.YEAR)
         //JodaTimeAndroid.init(this)
-
-        var d: MonthDisplayHelper
 
         configureGeneralCatch()
         //Fabric.with(this, Crashlytics())
@@ -82,7 +84,14 @@ class MainActivity : AppCompatActivity() {
         setOnClickAlarmLogTable()
 
         //hide status bar
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
 
         //start repeated timeout to scan alarms from incoming emails
         val isLoadApp = intent.getBooleanExtra(IS_LOAD_APP, false)
@@ -118,8 +127,6 @@ class MainActivity : AppCompatActivity() {
             }
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
-        } else {
-
         }
 
     }

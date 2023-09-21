@@ -1,18 +1,14 @@
 package com.sensoguard.trailmanager.activities
 
 import android.Manifest
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -25,13 +21,30 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
-import com.sensoguard.trailmanager.fragments.*
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.fragments.AlarmLogFragment
+import com.sensoguard.trailmanager.fragments.CameraCommandsDialogFragment
+import com.sensoguard.trailmanager.fragments.ConfigurationFragment
+import com.sensoguard.trailmanager.fragments.MapSensorsFragment
+import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS
+import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_KEY
+import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
+import com.sensoguard.trailmanager.global.IS_MYSCREENACTIVITY_FOREGROUND
+import com.sensoguard.trailmanager.global.MAIN_MENU_NUM_ITEM
+import com.sensoguard.trailmanager.global.MAP_SHOW_SATELLITE_VALUE
+import com.sensoguard.trailmanager.global.MAP_SHOW_VIEW_TYPE_KEY
+import com.sensoguard.trailmanager.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.sensoguard.trailmanager.global.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
+import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.USB_CONNECTION_FAILED
+import com.sensoguard.trailmanager.global.getIntInPreference
+import com.sensoguard.trailmanager.global.getLongInPreference
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.setAppLanguage
+import com.sensoguard.trailmanager.global.setBooleanInPreference
+import com.sensoguard.trailmanager.global.setIntInPreference
+import com.sensoguard.trailmanager.global.setLongInPreference
+import com.sensoguard.trailmanager.global.setStringInPreference
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.lang.ref.WeakReference
 
 
 class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
@@ -249,6 +262,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
                 setExternalPermission()
@@ -300,11 +314,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
             //set event of click ic_on top menu
             when (position) {
                 0 -> {
-                    fragment = CamerasFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
                 }
                 1 -> {
                     fragment = MapSensorsFragment()
@@ -362,66 +371,5 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     }
 
 //    override fun setSelectedFragment(cameraCommandsDialogFragment: CameraCommandsDialogFragment?) {
-//        TODO("Not yet implemented")
-//    }
 }
-
-//save the custom alarm file in alarms system
-    class SaveCustomAlarmSoundAsync() : AsyncTask<Void, Void, Void>() {
-
-        val LOG_TAG: String= "saveCustomAlarm"
-
-        // Weak references will still allow the Activity to be garbage-collected
-        private var weakActivity: WeakReference<Activity>?=null
-
-        constructor(myActivity: Activity) : this() {
-            weakActivity = WeakReference(myActivity)
-        }
-
-
-        override fun doInBackground(vararg params: Void?): Void? {
-            saveCustomAlarmSound()
-            return null
-        }
-
-        private fun saveCustomAlarmSound() {
-            Environment.DIRECTORY_ALARMS
-
-            // Get the directory for the app's private files directory.
-            val dirTarget = File(
-                weakActivity?.get()?.getExternalFilesDir(
-                    Environment.DIRECTORY_ALARMS
-                ), "alarm_sound.mp3"
-            )
-
-            if (!dirTarget.mkdirs()) {
-                Log.e(LOG_TAG, "Directory not created")
-            } else {
-
-                val fileTarget = File(dirTarget.path + File.separator + "alarm_sound.mp3")
-                val inputFileAlarm = weakActivity?.get()?.resources?.openRawResource(R.raw.alarm_sound)
-
-                val byteArray = inputFileAlarm?.readBytes()
-
-
-                try {
-                    if(byteArray!=null) {
-                        val fileOutput = FileOutputStream(fileTarget.absolutePath)
-                        fileOutput.write(byteArray)
-                        fileOutput.close()
-                    }
-                    //display file saved message
-                    Log.e("Exception", "File saved successfully")
-
-                } catch (e: IOException) {
-                    Log.e("Exception", "File write failed: $e")
-                }
-
-            }
-
-        }
-
-    }
-
-
 

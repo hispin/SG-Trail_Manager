@@ -49,7 +49,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16.3dp"
-                android:fontFamily="@font/arialmt"
                 android:text="name"
                 android:textColor="@color/dark3"
                 android:textSize="16sp"
@@ -58,13 +57,11 @@
                 swipe:layout_constraintStart_toStartOf="parent"
                 swipe:layout_constraintTop_toTopOf="parent" />
 
-
         <TextView
                 android:id="@+id/tvPhoneNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="7.3dp"
-                android:fontFamily="@font/arialmt"
                 android:hint="@string/phone_num_title"
                 android:textColor="@color/dark3"
 

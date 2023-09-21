@@ -10,8 +10,6 @@ import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-//import android.support.v4.app.NotificationCompat
-//import android.support.v4.content.ContextCompat
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -19,6 +17,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.global.CURRENT_LOCATION
 import com.sensoguard.trailmanager.global.GET_CURRENT_LOCATION_KEY
@@ -30,11 +29,13 @@ class ServiceFindLocation :Service(){
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             run {
-                Log.d(TAG,"get location")
-                location = locationResult.lastLocation
-                var inn = Intent(GET_CURRENT_LOCATION_KEY)
-                inn.putExtra(CURRENT_LOCATION,location)
-                sendBroadcast(inn)
+                Log.d(TAG, "get location")
+                if (locationResult.lastLocation != null) {
+                    location = locationResult.lastLocation!!
+                    var inn = Intent(GET_CURRENT_LOCATION_KEY)
+                    inn.putExtra(CURRENT_LOCATION, location)
+                    sendBroadcast(inn)
+                }
             }
         }
     }
@@ -42,7 +43,7 @@ class ServiceFindLocation :Service(){
 
 
     override fun onBind(intent: Intent?): IBinder? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
 
@@ -52,9 +53,14 @@ class ServiceFindLocation :Service(){
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //FusedLocationProviderClient is for interacting with the location using fused location provider
-        fusedLocationProviderClient = FusedLocationProviderClient(this)
-        locationRequest = LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(1000).setFastestInterval(1000).setNumUpdates(1)
+
+        startSysForeGround()
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        locationRequest =
+            LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(10000)
+                .setFastestInterval(10000)//.setNumUpdates(1)
         startGetLocation()
 
         return START_NOT_STICKY

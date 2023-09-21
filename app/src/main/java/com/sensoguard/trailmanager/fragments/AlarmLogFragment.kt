@@ -27,7 +27,6 @@ import com.sensoguard.trailmanager.global.*
 import com.sensoguard.trailmanager.interfaces.OnAdapterListener
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -133,10 +132,10 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
 
         myAlarms = ArrayList()
         //alarms?.add(Alarm("ID", "NAME", "TYPE", "TIME", false, -1))
-        val itemDecorator= DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
+        val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(
             ContextCompat.getDrawable(
-                context!!,
+                requireContext(),
                 R.drawable.divider_alarm_log
             )!!
         )
@@ -480,21 +479,6 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
                 .show()
             return
         }
-
-        val fr = LargePictureVideoDialogFragment()
-
-        //deliver selected camera to continue add data
-        //val cameraStr = convertToGson(camera)
-        val bdl = Bundle()
-        bdl.putInt(ACTION_TYPE_KEY, type)
-        bdl.putString(IMAGE_PATH_KEY, imgPath)
-        fr.arguments = bdl
-        fr.setTargetFragment(this, requestCode)
-        val fm = activity?.supportFragmentManager
-        fm?.let { fr.show(it, "LargePictureVideoDialogFragment") }
-//        val fragmentTransaction = fm?.beginTransaction()
-//        fragmentTransaction?.add(R.id.flSortBySystemCamera, fr)
-//        fragmentTransaction?.commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -657,19 +641,19 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     //show dialog before delete alarms
     private fun showDeleteDialog(alarmCounter: Int) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(alarmCounter.toString() + " " + context!!.resources.getString(R.string.selected_alarms))
-        val yes = context!!.resources.getString(R.string.yes)
-        val no = context!!.resources.getString(R.string.no)
-        builder.setMessage(context!!.resources.getString(R.string.do_you_realy_want_delete_selected_alarm))
+        builder.setTitle(alarmCounter.toString() + " " + requireContext().resources.getString(R.string.selected_alarms))
+        val yes = requireContext().resources.getString(R.string.yes)
+        val no = requireContext().resources.getString(R.string.no)
+        builder.setMessage(requireContext().resources.getString(R.string.do_you_realy_want_delete_selected_alarm))
             .setCancelable(false)
-        builder.setPositiveButton(yes) { dialog, which ->
+        builder.setPositiveButton(yes) { dialog, _ ->
 
             //delete from main array and also from sort array
             myAlarms?.let { deleteItemSelected(it) }
             mySortedAlarms?.let { deleteItemSelected(it) }
             //save the changing in shared preference
             if (context != null && myAlarms != null) {
-                myAlarms?.let { storeAlarmsToLocally(it, context!!) }
+                myAlarms?.let { storeAlarmsToLocally(it, requireContext()) }
             }
 
             clearSelection()
@@ -681,7 +665,7 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
 
 
         // Display a negative button on alert dialog
-        builder.setNegativeButton(no) { dialog, which ->
+        builder.setNegativeButton(no) { dialog, _ ->
             dialog.dismiss()
         }
         val alert = builder.create()

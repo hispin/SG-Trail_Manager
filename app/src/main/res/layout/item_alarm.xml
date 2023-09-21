@@ -15,7 +15,6 @@
     <!--            android:layout_width="wrap_content"-->
     <!--            android:layout_height="wrap_content"-->
     <!--            android:layout_marginStart="10dp"-->
-    <!--            android:fontFamily="@font/arialmt"-->
     <!--            android:text="@string/select"-->
     <!--            android:textColor="@color/black"-->
     <!--            android:textSize="14.7sp"-->
@@ -30,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/arialmt"
             android:text="@string/date_title1"
             android:textColor="@color/black"
             android:textSize="14.7sp"
@@ -42,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:fontFamily="@font/arialmt"
             android:textColor="@color/red2"
             android:textSize="13.3sp"
             app:layout_constraintBottom_toBottomOf="@+id/tvDateTitle"
@@ -55,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/arialmt"
             android:text="@string/time_title1"
             android:textColor="@color/black"
             android:textSize="14.7sp"
@@ -67,7 +63,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:fontFamily="@font/arialmt"
             android:text="@string/time_title1"
             android:textColor="@color/red2"
             android:textSize="13.3sp"
@@ -80,7 +75,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/arialmt"
             android:text="@string/name_title1"
             android:textColor="@color/black"
 
@@ -93,7 +87,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:fontFamily="@font/arialmt"
             android:text="@string/name_title1"
             android:textColor="@color/red2"
             android:textSize="13.3sp"

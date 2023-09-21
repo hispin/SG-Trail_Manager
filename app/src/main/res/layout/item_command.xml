@@ -50,7 +50,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="73.3dp"
-                    android:fontFamily="@font/arialmt"
                     android:lineSpacingExtra="-9.9sp"
                     android:text="@string/commands_camera_title"
                     android:textColor="@color/dark4"

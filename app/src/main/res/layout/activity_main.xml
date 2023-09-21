@@ -104,10 +104,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/ic_cameras_main" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/arialmt"
                     android:gravity="center_horizontal"
                     android:text="@string/camera_system_title"
                     android:textColor="@color/white"
@@ -152,10 +151,9 @@
                     app:layout_constraintVertical_bias="0.248"
                     app:srcCompat="@drawable/ic_alarms_log" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/arialmt"
                     android:gravity="center_horizontal"
                     android:text="@string/alarm_log_title"
                     android:textColor="@color/white"
@@ -200,10 +198,9 @@
                     app:layout_constraintVertical_bias="0.299"
                     app:srcCompat="@drawable/ic_configurations_main" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/arialmt"
                     android:gravity="center_horizontal"
                     android:text="@string/config_title"
                     android:textColor="@color/white"
@@ -245,10 +242,9 @@
 
                     />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/arialmt"
                     android:gravity="center_horizontal"
                     android:text="@string/map_title"
                     android:textColor="@color/white"
@@ -262,7 +258,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvShowVer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

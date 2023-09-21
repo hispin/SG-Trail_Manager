@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.interfaces.OnAdapterListener
-import java.util.*
 
 
 class CameraDialogAdapter(
@@ -142,7 +141,7 @@ class CameraDialogAdapter(
 //                   return@setOnLongClickListener true
 //               }
 
-                etName?.setOnEditorActionListener { v, actionId, event ->
+                etName?.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         if (!v.text.isNullOrEmpty()) {
                             sensor.setName(v.text.toString())
@@ -151,7 +150,8 @@ class CameraDialogAdapter(
                         tvName?.visibility = View.VISIBLE
                         etName?.visibility = View.INVISIBLE
                         //TODO find better way to hide the softkey
-                        val imm = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val imm =
+                            v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
                         true
                     } else {

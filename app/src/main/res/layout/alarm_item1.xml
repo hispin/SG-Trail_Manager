@@ -6,7 +6,7 @@
         android:layout_height="70dp">
 
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDateTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:text="dddd" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:text="dddd" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:text="dddd" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:text="dddd" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
