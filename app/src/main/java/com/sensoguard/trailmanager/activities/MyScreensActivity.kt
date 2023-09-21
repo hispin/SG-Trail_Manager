@@ -1,6 +1,7 @@
 package com.sensoguard.trailmanager.activities
 
 import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,12 +10,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -33,8 +35,6 @@ import com.sensoguard.trailmanager.global.IS_MYSCREENACTIVITY_FOREGROUND
 import com.sensoguard.trailmanager.global.MAIN_MENU_NUM_ITEM
 import com.sensoguard.trailmanager.global.MAP_SHOW_SATELLITE_VALUE
 import com.sensoguard.trailmanager.global.MAP_SHOW_VIEW_TYPE_KEY
-import com.sensoguard.trailmanager.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-import com.sensoguard.trailmanager.global.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
 import com.sensoguard.trailmanager.global.USB_CONNECTION_FAILED
 import com.sensoguard.trailmanager.global.getIntInPreference
@@ -238,64 +238,92 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     }
 
 
-    private fun setLocationPermission() {
-        /*
-     * Request location permission, so that we can get the location of the
-     * device. The result of the permission request is handled by a callback,
-     * onRequestPermissionsResult.
+    /**
+     * callback of external permission
      */
-        if (ContextCompat.checkSelfPermission(
-                this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                init()
+                // Permission is granted. Continue the action or workflow in your
+                // app.
+            } else {
+                // Explain to the user that the feature is unavailable because the
+                // feature requires a permission that the user has denied. At the
+                // same time, respect the user's decision. Don't link to system
+                // settings in an effort to convince the user to change their
+                // decision.
+            }
+        }
+
+
+    /**
+     * check permission depend on sdk version
+     */
+    fun isGrantedPermissionWRITE_EXTERNAL_STORAGE(activity: Activity): Boolean {
+        if (Build.VERSION.SDK_INT <= 32) {
+            val isAllowPermissionApi28 = ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            setExternalPermission()
+            return isAllowPermissionApi28
         } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            )
+            val isAllowPermissionApi33 = Environment.isExternalStorageManager()
+            return isAllowPermissionApi33
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
-                setExternalPermission()
-            }
-            PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    init()
-                }
-            }
-        }
-
-    }
-
-
+    /**
+     * set external storage permission
+     */
     private fun setExternalPermission() {
         /*
      * Request location permission, so that we can get the location of the
      * device. The result of the permission request is handled by a callback,
      * onRequestPermissionsResult.
      */
-        if (ContextCompat.checkSelfPermission(
-                this.applicationContext,
+
+        val permission: String?
+        if (Build.VERSION.SDK_INT <= 32) {
+            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+            requestPermissionLauncher.launch(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            init()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
             )
+        } else {
+            permission = Manifest.permission.READ_MEDIA_IMAGES
+        }
+        when {
+            isGrantedPermissionWRITE_EXTERNAL_STORAGE(this) -> {
+                // You can use the API that requires the permission.
+                init()
+            }
+
+            shouldShowRequestPermissionRationale(permission) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected, and what
+                // features are disabled if it's declined. In this UI, include a
+                // "cancel" or "no thanks" button that lets the user continue
+                // using your app without granting the permission.
+                //showInContextUI(...)
+            }
+
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+
+                if (Build.VERSION.SDK_INT <= 32) {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                } else {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.READ_MEDIA_IMAGES
+
+                    )
+                }
+            }
         }
     }
 
@@ -363,11 +391,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        //start activity for loading new language if it has been changed
-//        startActivity(Intent(this,MainActivity::class.java))
-//    }
 
     //set the language of the app (calling  from activity)
     override fun updateLanguage() {
@@ -376,6 +399,5 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         this.startActivity(intent)
     }
 
-//    override fun setSelectedFragment(cameraCommandsDialogFragment: CameraCommandsDialogFragment?) {
 }
 
