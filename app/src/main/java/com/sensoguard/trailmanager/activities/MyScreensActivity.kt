@@ -23,6 +23,7 @@ import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.fragments.AlarmLogFragment
 import com.sensoguard.trailmanager.fragments.CameraCommandsDialogFragment
+import com.sensoguard.trailmanager.fragments.CamerasFragment
 import com.sensoguard.trailmanager.fragments.ConfigurationFragment
 import com.sensoguard.trailmanager.fragments.MapSensorsFragment
 import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS
@@ -314,6 +315,11 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
             //set event of click ic_on top menu
             when (position) {
                 0 -> {
+                    fragment = CamerasFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
                 }
                 1 -> {
                     fragment = MapSensorsFragment()
