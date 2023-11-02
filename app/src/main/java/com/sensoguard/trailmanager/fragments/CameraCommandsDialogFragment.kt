@@ -190,22 +190,26 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 )
             )
 
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_parameters_mms),
-                    "#M#",
-                    R.drawable.get_snapshot_mms
+            // in 636 hide mms parameters and internet parameters
+            if (!myCamera?.cameraModel.equals(myModels[MODEL_636])) {
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.get_parameters_mms),
+                        "#M#",
+                        R.drawable.get_snapshot_mms
+                    )
                 )
-            )
 
 
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_parameters_internet),
-                    "#S#",
-                    R.drawable.get_snapshot_email
+
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.get_parameters_internet),
+                        "#S#",
+                        R.drawable.get_snapshot_email
+                    )
                 )
-            )
+            }
 
             mainCommands?.add(
                 Command(

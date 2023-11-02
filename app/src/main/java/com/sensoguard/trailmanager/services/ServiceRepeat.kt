@@ -5,18 +5,35 @@ import android.app.NotificationManager
 import android.app.Service
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.EmailsManage
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.CREATE_ALARM_KEY
+import com.sensoguard.trailmanager.global.HUNTER_LOG
+import com.sensoguard.trailmanager.global.IS_EMAIL_CONFIG_PREF_KEY
+import com.sensoguard.trailmanager.global.IS_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.IS_VIBRATE_WHEN_ALARM_KEY
+import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.getBooleanInPreference
+import com.sensoguard.trailmanager.global.getMyEmailAccountFromLocally
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.writeFile
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -109,7 +126,11 @@ open class ServiceRepeat : Service() {
                         }
                     }
 
-                    thread.start()
+                    if (Build.VERSION.SDK_INT <= 32) {
+                        thread.start()
+                    } else {
+
+                    }
                 } catch (ex: Exception) {
                     //write to log
                     writeFile("exception in executeTimer:" + ex.message, this)

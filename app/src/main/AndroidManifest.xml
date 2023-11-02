@@ -83,14 +83,11 @@
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyC7lrolhXNPEeiNJuBccG6LgOwGRrBRQos" /> <!-- TODO restrict the api key -->
-        <service
-                android:name="com.sensoguard.trailmanager.services.ServiceConnectSensor1"
-                android:enabled="true"
-                android:exported="true" />
-        <service
-                android:name="com.sensoguard.trailmanager.services.ServiceConnectSensor"
-                android:enabled="true"
-                android:exported="true" />
+
+        <!--        <service-->
+        <!--                android:name="com.sensoguard.trailmanager.services.ServiceConnectSensor"-->
+        <!--                android:enabled="true"-->
+        <!--                android:exported="true" />-->
         <service
                 android:name="com.sensoguard.trailmanager.services.ServiceFindLocation"
                 android:exported="true" />
