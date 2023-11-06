@@ -23,10 +23,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.adapters.SystemSortDialogAdapter
 import com.sensoguard.trailmanager.classes.Camera
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.CAMERA_KEY
+import com.sensoguard.trailmanager.global.DETECTORS_LIST_KEY_PREF
+import com.sensoguard.trailmanager.global.ERROR_RESP
+import com.sensoguard.trailmanager.global.SORT_BY_DATETIME_KEY
+import com.sensoguard.trailmanager.global.SORT_BY_SYSTEM_KEY
+import com.sensoguard.trailmanager.global.SORT_TYPE_KEY
+import com.sensoguard.trailmanager.global.convertJsonToSensorList
+import com.sensoguard.trailmanager.global.convertToGson
+import com.sensoguard.trailmanager.global.getStringFromCalendar
+import com.sensoguard.trailmanager.global.getStringInPreference
 import com.squareup.timessquare.CalendarPickerView
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class SystemSortDialogFragment : DialogFragment(),
@@ -250,9 +258,14 @@ class SystemSortDialogFragment : DialogFragment(),
 
         myCameras = ArrayList()
 
-
-        val itemDecorator = DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
-        itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider)!!)
+        if (activity == null) return
+        val itemDecorator = DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
+        itemDecorator.setDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.divider
+            )!!
+        )
         rvSystemCameras?.addItemDecoration(itemDecorator)
 
         systemFilterDialogAdapter = activity?.let { adapter ->
@@ -281,7 +294,9 @@ class SystemSortDialogFragment : DialogFragment(),
 
             detectorListStr?.let {
                 val temp = convertJsonToSensorList(it)
-                temp?.let { tmp -> myCameras?.addAll(tmp) }
+                temp?.let { tmp ->
+                    myCameras = ArrayList(tmp)
+                }
             }
         }
 

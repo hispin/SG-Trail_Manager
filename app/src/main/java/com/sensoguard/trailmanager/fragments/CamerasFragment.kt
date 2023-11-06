@@ -361,10 +361,8 @@ class CamerasFragment : Fragment(), OnAdapterListener {
 
     override fun onStart() {
         super.onStart()
-
         activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)
             ?.registerOnSharedPreferenceChangeListener(appStateChangeListener)
-
         setFilter()
 
         initCamerasAdapter()
@@ -374,21 +372,19 @@ class CamerasFragment : Fragment(), OnAdapterListener {
     }
 
     private fun refreshCamerasFromPref() {
-        cameras = ArrayList()
         //sensors?.add(Camera(resources.getString(R.string.id_title),resources.getString(R.string.name_title)))
         val detectorListStr = getStringInPreference(activity, DETECTORS_LIST_KEY_PREF, ERROR_RESP)
-
         if (detectorListStr.equals(ERROR_RESP)) {
             //cameras?.add(Camera("1"))
             //cameras?.let { storeSensorsToLocally(it, activity!!) }
         } else {
-
             detectorListStr?.let {
                 val temp = convertJsonToSensorList(it)
-                temp?.let { tmp -> cameras?.addAll(tmp) }
+                temp?.let { tmp ->
+                    cameras = ArrayList(tmp)
+                }
             }
         }
-
         camerasAdapter?.setDetects(cameras)
         camerasAdapter?.notifyDataSetChanged()
     }
@@ -515,7 +511,6 @@ class CamerasFragment : Fragment(), OnAdapterListener {
     private fun addCamera() {
 
         val cameras = activity?.let { getCamerasFromLocally(it) }
-
 
         val id: String?
         id = if (cameras != null && cameras.size > 0) {

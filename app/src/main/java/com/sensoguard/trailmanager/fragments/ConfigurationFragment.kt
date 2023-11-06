@@ -503,8 +503,7 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
 
     //To prevent two identical list with the same address and depends on each other
     private fun createLanguagesItemsDeliver(items: java.util.ArrayList<GeneralItemMenu>): java.util.ArrayList<GeneralItemMenu> {
-        val newItems = java.util.ArrayList<GeneralItemMenu>()
-        newItems.addAll(items)
+        val newItems = java.util.ArrayList(items)
         return newItems
     }
 

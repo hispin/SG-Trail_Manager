@@ -19,7 +19,6 @@ import com.sensoguard.trailmanager.global.COMMANDS_ACTION_TYPE
 import com.sensoguard.trailmanager.global.DELETE_ACTION_TYPE
 import com.sensoguard.trailmanager.global.EDIT_ACTION_TYPE
 import com.sensoguard.trailmanager.interfaces.OnAdapterListener
-import java.util.*
 
 
 class CamerasAdapter(

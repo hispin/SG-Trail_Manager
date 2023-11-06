@@ -164,16 +164,13 @@ fun convertToAlarmsGson(alarmsArr:ArrayList<Alarm>): String? {
 fun convertJsonToSensorList(inputJsonArrayString: String): ArrayList<Camera>? {
 
     //if the json string is empty, then return empty array list
-    if(inputJsonArrayString.isNullOrEmpty()){
+    if (inputJsonArrayString.isNullOrEmpty()) {
         return ArrayList()
     }
-
-    val mySensors: ArrayList<Camera>? = ArrayList()
-    //mySensors?.add(Camera("ID","NAME"))
-
-    var jsonArr: JSONArray?=null
+    var mySensors: ArrayList<Camera>? = null
+    var jsonArr: JSONArray? = null
     try {
-        jsonArr= JSONArray(inputJsonArrayString)
+        jsonArr = JSONArray(inputJsonArrayString)
     } catch (e: JSONException) {
         e.printStackTrace()
         e.message?.let { Log.e("convertJsonToUriList", it) }
@@ -183,7 +180,7 @@ fun convertJsonToSensorList(inputJsonArrayString: String): ArrayList<Camera>? {
         val listType = object : TypeToken<List<Camera>>() {
 
         }.type
-        mySensors?.addAll(Gson().fromJson(jsonArr.toString(), listType) as ArrayList<Camera>)
+        mySensors = ArrayList(Gson().fromJson(jsonArr.toString(), listType) as ArrayList<Camera>)
     }catch(e:JsonIOException){
         e.printStackTrace()
         e.message?.let { Log.e("convertJsonToUriList", it) }

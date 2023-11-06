@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.sensoguard.trailmanager.interfaces.CallToParentInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,8 +45,8 @@ public class ParentAdapter<T> extends ArrayAdapter<T> {
         return super.getPosition(item);
     }
 
-    public void setItems(ArrayList<T> arrZones) {
-        clear();
-        addAll(arrZones);
-    }
+//    public void setItems(ArrayList<T> arrZones) {
+//        clear();
+//        addAll(arrZones);
+//    }
 }
