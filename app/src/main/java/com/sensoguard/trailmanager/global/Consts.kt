@@ -112,6 +112,7 @@ const val MODEL_ATC = 2
 const val MODEL_310 = 3
 const val MODEL_584 = 4
 const val MODEL_636 = 5
+const val MODEL_636_48MP = 6
 
 const val REMOVE_ACTION_TYPE = 0
 const val ADD_ACTION_TYPE = 1

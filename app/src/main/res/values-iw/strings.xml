@@ -197,6 +197,7 @@
     <string name="video_length">אורך וידאו</string>
     <string name="motion_sensor_sensitivity">רגישות חיישן תנועה</string>
     <string name="turned_off">כבוי</string>
+    <string name="maximum">מקסימלי</string>
     <string name="high">גבוה</string>
     <string name="normal">רגיל</string>
     <string name="low">נמוך</string>
@@ -206,6 +207,9 @@
     <string name="real_time_alert">התראה בזמן אמת</string>
     <string name="work_hour">שעות עבודה</string>
     <string name="turned_on">פועל</string>
+    <string name="after_seven_days">לאחר 7 ימים</string>
+    <string name="after_fourteen_days">לאחר 14 ימים</string>
+    <string name="after_thirty_days">לאחר 30 ימים</string>
     <string name="from_time">משעה</string>
     <string name="until">עד שעה</string>
     <string name="select_an_hour">בחר שעה</string>
@@ -244,6 +248,7 @@
         <item>310</item>
         <item>584</item>
         <item>636</item>
+        <item>BG636–48</item>
     </string-array>
 
     <string-array name="time_180_seconds">

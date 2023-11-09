@@ -198,7 +198,8 @@
     <string name="video_quality">video quality</string>
     <string name="video_length">video length</string>
     <string name="motion_sensor_sensitivity">Motion sensor sensitivity</string>
-    <string name="turned_off">turned off</string>
+    <string name="turned_off">turned off</string>\
+    <string name="maximum">maximum</string>
     <string name="high">high</string>
     <string name="normal">normal</string>
     <string name="low">low</string>
@@ -208,6 +209,9 @@
     <string name="real_time_alert">Real time alert</string>
     <string name="work_hour">work hour</string>
     <string name="turned_on">turned on</string>
+    <string name="after_seven_days">after 7 days</string>
+    <string name="after_fourteen_days">after 14 days</string>
+    <string name="after_thirty_days">after 30 days</string>
     <string name="from_time">from</string>
     <string name="until">until</string>
     <string name="select_an_hour">select an hour</string>
@@ -245,6 +249,7 @@
         <item>310</item>
         <item>584</item>
         <item>636</item>
+        <item>BG636–48</item>
     </string-array>
 
     <string-array name="time_180_seconds">
