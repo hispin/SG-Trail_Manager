@@ -242,14 +242,29 @@
     <string name="config_email">manual email configuration settings</string>
     <string name="no_commands">no commands</string>
 
+    <!--    <string-array name="camera_model">-->
+    <!--        <item>MG983G/984G</item>-->
+    <!--        <item>BG668</item>-->
+    <!--        <item>ATC</item>-->
+    <!--        <item>310</item>-->
+    <!--        <item>584</item>-->
+    <!--        <item>636</item>-->
+    <!--        <item>BG636–48</item>-->
+    <!--    </string-array>-->
+
     <string-array name="camera_model">
+        <item>Boly 636–48MP</item>
+        //BG636–48
+        <item>Boly 636–36MP</item>
+        //636
+        <item>Boly 584</item>
+        //584
+        <item>Boly 310</item>
+        //310
         <item>MG983G/984G</item>
-        <item>BG668</item>
+        <item>Boly 668</item>
+        //BG668
         <item>ATC</item>
-        <item>310</item>
-        <item>584</item>
-        <item>636</item>
-        <item>BG636–48</item>
     </string-array>
 
     <string-array name="time_180_seconds">
