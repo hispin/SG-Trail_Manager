@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.util.Linkify
 import android.util.Log
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -285,7 +287,11 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
 
     private fun setFilter() {
         val filter = IntentFilter(DETECT_ALARM_KEY)
-        activity?.registerReceiver(receiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(receiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
+        } else {
+            activity?.registerReceiver(receiver, filter)
+        }
     }
 
     override fun onDestroy() {

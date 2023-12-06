@@ -241,14 +241,24 @@
     <string name="no_commands">אין פקודות</string>
 
 
+    <!--    <string-array name="camera_model">-->
+    <!--        <item>MG983G/984G</item>-->
+    <!--        <item>BG668</item>-->
+    <!--        <item>ATC</item>-->
+    <!--        <item>310</item>-->
+    <!--        <item>584</item>-->
+    <!--        <item>636</item>-->
+    <!--        <item>BG636–48</item>-->
+    <!--    </string-array>-->
+
     <string-array name="camera_model">
-        <item>MG983G/984G</item>
-        <item>BG668</item>
+        <item>Boly 636–48MP</item>
+        <item>Boly 636–36MP</item>
+        <item>Boly 584</item>
+        <item>Boly 310</item>
+        <item>Boly 984G/983G</item>
+        <item>Boly 668</item>
         <item>ATC</item>
-        <item>310</item>
-        <item>584</item>
-        <item>636</item>
-        <item>BG636–48</item>
     </string-array>
 
     <string-array name="time_180_seconds">

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -577,7 +579,11 @@ open class ConfigurationFragment : Fragment(),CallToParentInterface{
     private fun setFilter() {
         val filter = IntentFilter(RESULT_VALIDATION_EMAIL_ACTION)
         filter.addAction(ERROR_RESULT_VALIDATION_EMAIL_ACTION)
-        activity?.registerReceiver(receiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(receiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
+        } else {
+            activity?.registerReceiver(receiver, filter)
+        }
     }
 
 

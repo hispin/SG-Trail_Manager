@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import android.view.Window.FEATURE_NO_TITLE
 import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
@@ -159,8 +162,11 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 id: Long
             ) {
                 val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
+                var type = parent?.getItemAtPosition(position).toString()
+                //Log.d("testType",type)
                 when (parent?.getItemAtPosition(position).toString()) {
                     myModels[MODEL_984] -> {
+                        Log.d("testType", "984")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.mg_983_img
@@ -169,6 +175,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_668] -> {
+                        Log.d("testType", "668")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.bg_668_img
@@ -177,6 +184,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_ATC] -> {
+                        Log.d("testType", "atc")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.atc_img
@@ -185,6 +193,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_310] -> {
+                        Log.d("testType", "310")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.ic_camera310
@@ -193,6 +202,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_584] -> {
+                        Log.d("testType", "584")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.ic_camera584
@@ -201,6 +211,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_636] -> {
+                        Log.d("testType", "636")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.ic_camera636
@@ -209,6 +220,7 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                     }
 
                     myModels[MODEL_636_48MP] -> {
+                        Log.d("testType", "636_48")
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.ic_camera636
@@ -249,6 +261,8 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         myCamera?.setName(etSysName?.text.toString())
         myCamera?.phoneNum = etTelNum?.text.toString()
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
+        Log.d("testType", myCamera?.getName() + "")
+        Log.d("testType", myCamera?.cameraModel + "")
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
     }
 
@@ -353,7 +367,11 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
     private fun setFilter() {
         val filter = IntentFilter(RESULT_VALIDATION_EMAIL_ACTION)
         filter.addAction(ERROR_RESULT_VALIDATION_EMAIL_ACTION)
-        activity?.registerReceiver(reciever, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(reciever, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
+        } else {
+            activity?.registerReceiver(reciever, filter)
+        }
     }
 
     override fun onStart() {

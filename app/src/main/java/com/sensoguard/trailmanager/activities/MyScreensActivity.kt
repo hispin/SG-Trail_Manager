@@ -135,7 +135,11 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     private fun setFilter() {
         val filter = IntentFilter(USB_CONNECTION_FAILED)
 
-        registerReceiver(usbReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(usbReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(usbReceiver, filter)
+        }
     }
 
 

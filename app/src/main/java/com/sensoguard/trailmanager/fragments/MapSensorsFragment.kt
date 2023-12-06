@@ -30,6 +30,7 @@ import android.view.animation.Animation
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -619,7 +620,11 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         val filter = IntentFilter(CREATE_ALARM_KEY)
         filter.addAction(RESET_MARKERS_KEY)
         filter.addAction(GET_CURRENT_LOCATION_KEY)
-        activity?.registerReceiver(usbReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(usbReceiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
+        } else {
+            activity?.registerReceiver(usbReceiver, filter)
+        }
     }
 
     override fun onStart() {

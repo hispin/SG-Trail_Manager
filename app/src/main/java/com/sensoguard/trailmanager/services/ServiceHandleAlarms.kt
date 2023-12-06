@@ -11,11 +11,25 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Alarm
 import com.sensoguard.trailmanager.classes.Camera
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.ALARM_LIST_KEY_PREF
+import com.sensoguard.trailmanager.global.CREATE_ALARM_ID_KEY
+import com.sensoguard.trailmanager.global.CREATE_ALARM_KEY
+import com.sensoguard.trailmanager.global.CREATE_ALARM_NAME_KEY
+import com.sensoguard.trailmanager.global.CREATE_ALARM_TYPE_KEY
+import com.sensoguard.trailmanager.global.DETECTORS_LIST_KEY_PREF
+import com.sensoguard.trailmanager.global.ERROR_RESP
+import com.sensoguard.trailmanager.global.READ_DATA_KEY
+import com.sensoguard.trailmanager.global.RESET_MARKERS_KEY
+import com.sensoguard.trailmanager.global.convertJsonToAlarmList
+import com.sensoguard.trailmanager.global.convertJsonToSensorList
+import com.sensoguard.trailmanager.global.convertToAlarmsGson
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.setStringInPreference
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,7 +66,11 @@ class ServiceHandleAlarms : Service(){
 
     private fun setFilter() {
         val filter = IntentFilter(READ_DATA_KEY)
-        registerReceiver(usbReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(usbReceiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(usbReceiver, filter)
+        }
     }
 
     private val usbReceiver = object : BroadcastReceiver() {

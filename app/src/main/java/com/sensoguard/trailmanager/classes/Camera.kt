@@ -26,17 +26,18 @@ class Camera {
 
     //private var type:Int?=null
 
-    constructor( _uid: String?,_name: String?){
-        id=_uid
-        sysName = _name
-        isArmed = true
-    }
-    constructor( _id: String?){
-        id=_id
-        sysName = "id-$id"
-        isArmed = true
-    }
+//    constructor( _uid: String?,_name: String?){
+//        id=_uid
+//        sysName = _name
+//        isArmed = true
+//    }
+constructor(_id: String?) {
+    id = _id
+    sysName = "id-$id"
+    isArmed = true
+}
 
+    //
     constructor(id: Int) {
         this.id = id.toString()
         sysName = "id-${this.id}"
