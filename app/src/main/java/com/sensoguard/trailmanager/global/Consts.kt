@@ -118,3 +118,5 @@ const val MODEL_ATC = 6
 const val REMOVE_ACTION_TYPE = 0
 const val ADD_ACTION_TYPE = 1
 
+const val TEST_ACTIVATION = "testv/HLGMgmhDtsz7MqJK6NS8CV9KhziwWKoQYKGzjM"
+
