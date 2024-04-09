@@ -25,8 +25,8 @@ android {
         compileSdk = 34
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 45
-        versionName "1.45"
+        versionCode 46
+        versionName "1.46"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -99,12 +99,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.google.android.things:androidthings:1.0'
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.github.kai-morich:usb-serial-for-android:1.7.0'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'com.google.android.material:material:1.11.0-alpha02'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.android.gms:play-services-location:21.2.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.opencsv:opencsv:3.9'
     implementation 'com.github.felHR85:UsbSerial:6.0.6'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -126,11 +126,11 @@ dependencies {
     implementation files('libs/jsoup-1.12.1.jar')
     implementation "androidx.cardview:cardview:1.0.0"
 
-    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation platform('com.google.firebase:firebase-bom:32.8.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation platform('com.google.firebase:firebase-bom:32.8.0')
 
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -138,9 +138,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
-    implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.fragment:fragment-ktx:1.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+    implementation "androidx.activity:activity-ktx:1.8.2"
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
 
 }

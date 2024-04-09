@@ -2,6 +2,8 @@ package com.sensoguard.trailmanager.activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,6 +16,7 @@ import android.os.Environment
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -89,14 +92,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         currentItemTopMenu = intent.getIntExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
 
         init()
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            setExternalPermission()
-//            //setLocationPermission()
-//        } else {
-//            init()
-//        }
-
     }
 
 
@@ -147,12 +142,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         configureActionBar()
 
-        //start listener to alarm
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startForegroundService(Intent(this, ServiceHandleAlarms::class.java))
-//        } else {
-//            startService(Intent(this, ServiceHandleAlarms::class.java))
-//        }
         configTabs()
 
     }
@@ -170,25 +159,60 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     //TODO : the toggle will updated by the status changing
     private fun configureActionBar() {
 
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)//supportActionBar
+        val toolbar =
+            findViewById<androidx.appcompat.widget.Toolbar>(com.sensoguard.trailmanager.R.id.toolbar)//supportActionBar
+        val btnClearData: Button =
+            toolbar.findViewById(com.sensoguard.trailmanager.R.id.btnClearData)
+        btnClearData.setOnClickListener {
+            showClearDtaDialog()
+        }
         setSupportActionBar(toolbar)
 
-//        togChangeStatus = findViewById<ToggleButton>(
-//            R.id.togChangeStatus
-//        )
-//        togChangeStatus?.isChecked = false
-//
-//        togChangeStatus?.setOnCheckedChangeListener { buttonView, isChecked ->
-//            if (isChecked) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    startForegroundService(Intent(this, ServiceConnectSensor::class.java))
-//                } else {
-//                    startService(Intent(this, ServiceConnectSensor::class.java))
-//                }
-//            } else {
-//                sendBroadcast(Intent(STOP_READ_DATA_KEY))
-//            }
-//        }
+    }
+
+    /**
+     * clear data and cache
+     */
+    private fun clearAppData() {
+        try {/* clearing app data */
+            if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+                val service = (this.getSystemService(ACTIVITY_SERVICE) as ActivityManager?)
+                service?.clearApplicationUserData()
+            } else {
+                val packageName: String = packageName
+                val runtime = Runtime.getRuntime()
+                runtime.exec("pm clear $packageName")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    /**
+     * show dialog before clear data
+     */
+    private fun showClearDtaDialog() {
+
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(this.resources.getString(R.string.clear_data))
+        val yes = resources.getString(R.string.yes)
+        val no = resources.getString(R.string.no)
+        builder.setMessage(resources.getString(R.string.do_you_realy_want_clear_data))
+            .setCancelable(false)
+        builder.setPositiveButton(yes) { dialog, _ ->
+            clearAppData()
+            dialog.dismiss()
+        }
+
+
+        // Display a negative button on alert dialog
+        builder.setNegativeButton(no) { dialog, which ->
+            dialog.dismiss()
+        }
+        val alert = builder.create()
+        alert.show()
     }
 
     override fun onPause() {
