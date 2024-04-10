@@ -1891,10 +1891,10 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                         command = myCommand.selectionsCommands[2]
                     }
                     R.id.rbFour -> {
-                        command = myCommand.selectionsCommands[4]
+                        command = myCommand.selectionsCommands[3]
                     }
                     R.id.rbFive -> {
-                        command = myCommand.selectionsCommands[5]
+                        command = myCommand.selectionsCommands[4]
                     }
                 }
 
