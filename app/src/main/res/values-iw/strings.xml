@@ -240,7 +240,7 @@
     <string name="config_email">הגדרות תצורה ידנית אימייל</string>
     <string name="no_commands">אין פקודות</string>
     <string name="clear_data">נקה נתונים</string>
-    <string name="do_you_realy_want_clear_data">כל נתוני האפליקציה יימחקו לצמיתות. לרבות כל התמונות, ההגדרות ופרטי המשתמש</string>
+    <string name="do_you_realy_want_clear_data">כל נתוני האפליקציה יימחקו לצמיתות. לרבות כל מצלמות, ההגדרות ופרטי המשתמש</string>
 
 
     <!--    <string-array name="camera_model">-->

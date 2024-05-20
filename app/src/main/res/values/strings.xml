@@ -242,7 +242,7 @@
     <string name="config_email">manual email configuration settings</string>
     <string name="no_commands">no commands</string>
     <string name="clear_data">Clear Data</string>
-    <string name="do_you_realy_want_clear_data">All of this application data will be deleted permanently. This includes all pictures, settings, and user information.</string>
+    <string name="do_you_realy_want_clear_data">All of this application data will be deleted permanently. This includes all cameras, settings, and user information.</string>
 
     <!--    <string-array name="camera_model">-->
     <!--        <item>Boly MG983G/984G</item>-->
