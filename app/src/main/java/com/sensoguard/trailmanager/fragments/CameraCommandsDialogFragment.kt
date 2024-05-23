@@ -192,9 +192,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 )
             )
 
-            // in 636 hide mms parameters and internet parameters
+            // hide mms parameters and internet parameters
             if (!myCamera?.cameraModel.equals(myModels[MODEL_636]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                !myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) &&
+                !myCamera?.cameraModel.equals(myModels[MODEL_584]) &&
+                !myCamera?.cameraModel.equals(myModels[MODEL_310])
             ) {
                 mainCommands?.add(
                     Command(
@@ -457,7 +459,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 R.drawable.arm_camera
             )
 
-            command.defaultSelected = 3
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
+                command.defaultSelected = 4
+            } else {
+                command.defaultSelected = 3
+            }
             if (myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
@@ -608,6 +614,14 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 R.drawable.get_snapshot_email
             )
 
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                || myCamera?.cameraModel.equals(myModels[MODEL_636])
+                || myCamera?.cameraModel.equals(myModels[MODEL_584])
+                || myCamera?.cameraModel.equals(myModels[MODEL_310])
+            ) {
+                command.defaultSelected = 2
+            }
+
             command.selectionsTitles.add(resources.getString(R.string.high))
             command.selectionsTitles.add(resources.getString(R.string.normal))
             command.selectionsTitles.add(resources.getString(R.string.low))
@@ -628,7 +642,15 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             command.selectionsTitles.add(resources.getString(R.string.real_time_alert))
             command.selectionsTitles.add(resources.getString(R.string.turned_off))
             command.selectionsCommands.add("#e#ed")
-            command.selectionsCommands.add("#e#ei99#")
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                || myCamera?.cameraModel.equals(myModels[MODEL_636])
+                || myCamera?.cameraModel.equals(myModels[MODEL_584])
+                || myCamera?.cameraModel.equals(myModels[MODEL_310])
+            ) {
+                command.selectionsCommands.add("#e#ei100#")
+            } else {
+                command.selectionsCommands.add("#e#ei99#")
+            }
             command.selectionsCommands.add("#e#eo#")
 
             moreCommands?.add(command)
@@ -647,7 +669,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
             moreCommands?.add(command)
 
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_584])) {
+            //if (!myCamera?.cameraModel.equals(myModels[MODEL_584])) {
                 //business days
                 command = Command(
                     resources.getString(R.string.business_days),
@@ -661,7 +683,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 command.selectionsCommands.add("#e#HOFF#")
 
                 moreCommands?.add(command)
-            }
+            //}
 
 
             //remote control
