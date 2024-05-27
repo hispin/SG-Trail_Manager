@@ -139,7 +139,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 mainCommands?.add(
                     Command(
                         resources.getString(R.string.disarm_camera),
-                        "e#HON2:0-2:1##",
+                        "#e#HON2:0-2:1#",
                         R.drawable.disarm_camera
                     )
                 )
