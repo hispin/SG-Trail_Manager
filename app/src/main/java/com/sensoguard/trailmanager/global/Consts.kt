@@ -113,6 +113,7 @@ const val MODEL_310 = 3
 const val MODEL_984 = 4
 const val MODEL_668 = 5
 const val MODEL_ATC = 6
+const val MODEL_410 = 7
 
 
 const val REMOVE_ACTION_TYPE = 0

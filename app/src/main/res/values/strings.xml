@@ -243,6 +243,10 @@
     <string name="no_commands">no commands</string>
     <string name="clear_data">Clear Data</string>
     <string name="do_you_realy_want_clear_data">All of this application data will be deleted permanently. This includes all cameras, settings, and user information.</string>
+    <string name="get_picture_from_memory">get picture from memory</string>
+    <string name="picture_num">picture number</string>
+    <string name="four_chars">must be 4 characters</string>
+    <string name="get_snapshot_to_outwatch">Get snapshot to outwatch</string>
 
     <!--    <string-array name="camera_model">-->
     <!--        <item>Boly MG983G/984G</item>-->
@@ -262,6 +266,7 @@
         <item>Boly 984G/983G</item>
         <item>Boly 668</item>
         <item>ATC</item>
+        <item>BG-410N(S)</item>
     </string-array>
 
     <string-array name="time_180_seconds">

@@ -19,7 +19,7 @@ class CommandConfigEmail {
     fun populateCommands(): ArrayList<String> {
         commands.add("#s#$email#$password#$port#sphone#$server###1#")
         commands.add("#s#$email#$password#$port#internet.golantelecom.net.il#$server###1#")
-        commands.add("#s#$email#$password#$port#uinternet#$server#orange#orange#1#")
+        commands.add("#s#$email#$password#$port#uinternet#$server#orange#orange#0#")
         commands.add("#s#$email#$password#$port#sphone.pelephone.net.il#$server#pcl@3g#pcl#1#")
         commands.add("#s#$email#$password#$port#net.hotm#$server###1#")
         commands.add("#s#$email#$password#$port#netazi#$server###1#")

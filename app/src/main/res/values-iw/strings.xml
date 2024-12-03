@@ -228,7 +228,7 @@
     <string name="minutes">דקות</string>
     <string name="hr">שעות</string>
     <string name="setting_up_new_camera">הגדרת מצלמה חדשה</string>
-    <string name="through_receiving_alerts">דרך קבלת התרעות</string>
+    <string name="through_receiving_alerts">דרך קבלת התראות</string>
     <string name="configure_send">הגדרת תצורת שליחה</string>
     <string name="cellcom">סלקום</string>
     <string name="golan_telecom">golan telecom</string>
@@ -241,6 +241,10 @@
     <string name="no_commands">אין פקודות</string>
     <string name="clear_data">נקה נתונים</string>
     <string name="do_you_realy_want_clear_data">כל נתוני האפליקציה יימחקו לצמיתות. לרבות כל מצלמות, ההגדרות ופרטי המשתמש</string>
+    <string name="get_picture_from_memory">קבלת תמונה מהזיכרון</string>
+    <string name="picture_num">מספר תמונה</string>
+    <string name="four_chars">חייב להיות 4 תווים</string>
+    <string name="get_snapshot_to_outwatch">תמונה יזומה ל Outwatch</string>
 
 
     <!--    <string-array name="camera_model">-->
@@ -261,6 +265,7 @@
         <item>Boly 984G/983G</item>
         <item>Boly 668</item>
         <item>ATC</item>
+        <item>BG-410N(S)</item>
     </string-array>
 
     <string-array name="time_180_seconds">

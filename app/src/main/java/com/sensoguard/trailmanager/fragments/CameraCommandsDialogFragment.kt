@@ -37,6 +37,7 @@ import com.sensoguard.trailmanager.global.ADD_ACTION_TYPE
 import com.sensoguard.trailmanager.global.CAMERA_KEY
 import com.sensoguard.trailmanager.global.MAIN_COMMANDS_LIST_TYPE
 import com.sensoguard.trailmanager.global.MODEL_310
+import com.sensoguard.trailmanager.global.MODEL_410
 import com.sensoguard.trailmanager.global.MODEL_584
 import com.sensoguard.trailmanager.global.MODEL_636
 import com.sensoguard.trailmanager.global.MODEL_636_48MP
@@ -111,7 +112,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
+            myCamera?.cameraModel.equals(myModels[MODEL_410])
         ) {
 
             mainCommands = ArrayList()
@@ -126,7 +128,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
             //int model 584,310 difference of those commands
             if (myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_310])
+                myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
+                myCamera?.cameraModel.equals(myModels[MODEL_410])
             ) {
 
                 mainCommands?.add(
@@ -177,13 +180,41 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     R.drawable.get_snapshot_email
                 )
             )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_snapshot_mms),
-                    "#T#",
-                    R.drawable.get_snapshot_mms
+            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.get_snapshot_mms),
+                        "#T#",
+                        R.drawable.get_snapshot_mms
+                    )
                 )
-            )
+            }
+
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                || myCamera?.cameraModel.equals(myModels[MODEL_410])
+            ) {
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.get_snapshot_to_outwatch),
+                        "#T#H#",
+                        R.drawable.get_snapshot_email
+                    )
+                )
+            }
+
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636])
+                || myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                || myCamera?.cameraModel.equals(myModels[MODEL_410])
+            ) {
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.get_picture_from_memory),
+                        null,
+                        R.drawable.get_snapshot_email
+                    )
+                )
+            }
+
             mainCommands?.add(
                 Command(
                     resources.getString(R.string.get_parameters),
@@ -196,7 +227,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             if (!myCamera?.cameraModel.equals(myModels[MODEL_636]) &&
                 !myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) &&
                 !myCamera?.cameraModel.equals(myModels[MODEL_584]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_310])
+                !myCamera?.cameraModel.equals(myModels[MODEL_310]) &&
+                !myCamera?.cameraModel.equals(myModels[MODEL_410])
             ) {
                 mainCommands?.add(
                     Command(
@@ -241,13 +273,15 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     R.drawable.set_email_recipient
                 )
             )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.set_mms_recipients),
-                    null,
-                    R.drawable.set_mms_recipients
+            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                mainCommands?.add(
+                    Command(
+                        resources.getString(R.string.set_mms_recipients),
+                        null,
+                        R.drawable.set_mms_recipients
+                    )
                 )
-            )
+            }
 //            mainCommands?.add(
 //                Command(
 //                    resources.getString(R.string.set_admin_title),
@@ -380,7 +414,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
+            myCamera?.cameraModel.equals(myModels[MODEL_410])
+
         ) {
 
             newCameraCommands = ArrayList()
@@ -391,12 +427,19 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 R.drawable.parameters
             )
 
-            command.selectionsTitles.add("phone MMS")
-            command.selectionsTitles.add("e-mail gprs")
-            command.selectionsTitles.add("Molnus")
-            command.selectionsCommands.add("#e#Mp#")
-            command.selectionsCommands.add("#e#Mg#")
-            command.selectionsCommands.add("#e#Mm#")
+            if (myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                command.selectionsTitles.add("e-mail gprs")
+                command.selectionsTitles.add("OutWatch")
+                command.selectionsCommands.add("#e#Mg#")
+                command.selectionsCommands.add("#e#Mm#")
+            } else {
+                command.selectionsTitles.add("phone MMS")
+                command.selectionsTitles.add("e-mail gprs")
+                command.selectionsTitles.add("OutWatch")
+                command.selectionsCommands.add("#e#Mp#")
+                command.selectionsCommands.add("#e#Mg#")
+                command.selectionsCommands.add("#e#Mm#")
+            }
 
             newCameraCommands?.add(command)
 
@@ -416,12 +459,14 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             )
             newCameraCommands?.add(command)
 
-            command = Command(
-                resources.getString(R.string.set_mms_recipients),
-                null,
-                R.drawable.set_mms_recipients
-            )
-            newCameraCommands?.add(command)
+            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                command = Command(
+                    resources.getString(R.string.set_mms_recipients),
+                    null,
+                    R.drawable.set_mms_recipients
+                )
+                newCameraCommands?.add(command)
+            }
         }
     }
 
@@ -432,7 +477,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
             myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
+            myCamera?.cameraModel.equals(myModels[MODEL_410])
         ) {
 
             moreCommands = ArrayList()
@@ -490,6 +536,17 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 command.selectionsCommands.add("#e#s12#")
                 command.selectionsCommands.add("#e#s18#")
 
+            } else if (myCamera?.cameraModel.equals(myModels[MODEL_410])
+            ) {
+                command.selectionsTitles.add("4MP")
+                command.selectionsTitles.add("12MP")
+                command.selectionsTitles.add("24MP")
+                command.selectionsTitles.add("37MP")
+                command.selectionsCommands.add("#e#s4#")
+                command.selectionsCommands.add("#e#s12#")
+                command.selectionsCommands.add("#e#s24#")
+                command.selectionsCommands.add("#e#s37#")
+
             } else if (myCamera?.cameraModel.equals(myModels[MODEL_584])
             ) {
                 command.selectionsTitles.add("10MP")
@@ -514,7 +571,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
                 myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_984])
+                myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
+                myCamera?.cameraModel.equals(myModels[MODEL_410])
             ) {
                 command.selectionsTitles.add(resources.getString(R.string.photos_1))
                 command.selectionsTitles.add(resources.getString(R.string.photos_2))
@@ -562,11 +620,25 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 command.selectionsCommands.add("#E#FH#")
                 command.selectionsCommands.add("#E#FF#")
                 command.defaultSelected = 2
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])) {
+            } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])
+            ) {
                 command.selectionsTitles.add("VGA")
                 command.selectionsTitles.add("720P")
                 command.selectionsCommands.add("#E#FL#")
                 command.selectionsCommands.add("#E#FH#")
+                command.defaultSelected = 2
+            } else if (myCamera?.cameraModel.equals(myModels[MODEL_410])
+            ) {
+                command.selectionsTitles.add("360P")
+                command.selectionsTitles.add("720P")
+                command.selectionsTitles.add("1080P")
+                command.selectionsTitles.add("1530P")
+                command.selectionsTitles.add("4k")
+                command.selectionsCommands.add("#E#FL#")//TODO
+                command.selectionsCommands.add("#E#FL#")//TODO
+                command.selectionsCommands.add("#E#FL#")//TODO
+                command.selectionsCommands.add("#E#FL#")//TODO
+                command.selectionsCommands.add("#E#FL#")//TODO
                 command.defaultSelected = 2
             }
             moreCommands?.add(command)
@@ -618,6 +690,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 || myCamera?.cameraModel.equals(myModels[MODEL_636])
                 || myCamera?.cameraModel.equals(myModels[MODEL_584])
                 || myCamera?.cameraModel.equals(myModels[MODEL_310])
+                || myCamera?.cameraModel.equals(myModels[MODEL_410])
             ) {
                 command.defaultSelected = 2
             }
@@ -646,6 +719,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 || myCamera?.cameraModel.equals(myModels[MODEL_636])
                 || myCamera?.cameraModel.equals(myModels[MODEL_584])
                 || myCamera?.cameraModel.equals(myModels[MODEL_310])
+                || myCamera?.cameraModel.equals(myModels[MODEL_410])
             ) {
                 command.selectionsCommands.add("#e#ei100#")
             } else {
@@ -950,11 +1024,16 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                         myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
                         myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
                         myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-                        myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                        myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
+                        myCamera?.cameraModel.equals(myModels[MODEL_410])
                     ) {
                         when (command.commandName) {
                             resources.getString(R.string.set_email_recipient) -> {
                                 showEmailsDialog()
+                            }
+
+                            resources.getString(R.string.get_picture_from_memory) -> {
+                                showGetPictureMemoryDialog()
                             }
                             resources.getString(R.string.set_mms_recipients) -> {
                                 showPhoneNumbersDialog()
@@ -966,7 +1045,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                                 showRadio3SelectedDialog(command)
                             }
                             resources.getString(R.string.picture_quality) -> {
-                                if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
+                                if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                                    || myCamera?.cameraModel.equals(myModels[MODEL_410])
+                                ) {
                                     showRadio4SelectedDialog(command)
                                 } else {
                                     showRadio3SelectedDialog(command)
@@ -989,6 +1070,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                                     }
                                     2 -> {
                                         showRadio2SelectedDialog(command)
+                                    }
+                                    5 -> {
+                                        showRadio5SelectedDialog(command)
                                     }
                                 }
                             }
@@ -1051,7 +1135,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                                 refreshCommandsAdapter()
                             }
                             resources.getString(R.string.through_receiving_alerts) -> {
-                                showRadio3SelectedDialog(command)
+                                if (myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                                    showRadio2SelectedDialog(command)
+                                } else {
+                                    showRadio3SelectedDialog(command)
+                                }
                             }
                             else -> {
                                 sendSMS(command.commandContent)
@@ -1243,6 +1331,36 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
                 sendSMS(command)
                 dialog.dismiss()
+
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+    }
+
+    //show dialog with number of picture field
+    private fun showGetPictureMemoryDialog() {
+
+        if (this@CameraCommandsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
+            dialog.setContentView(R.layout.custom_dialog_get_picture_memory)
+
+            dialog.setCancelable(true)
+
+            val etPictureNum = dialog.findViewById<AppCompatEditText>(R.id.etPictureNum)
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                if (etPictureNum.text?.isNotEmpty() == true && etPictureNum.text.toString().length == 4) {
+                    val command = "#" + etPictureNum.text.toString() + "#G#"
+                    sendSMS(command)
+                    dialog.dismiss()
+                } else {
+                    etPictureNum.error = resources.getString(R.string.four_chars)
+                }
 
             }
             val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)

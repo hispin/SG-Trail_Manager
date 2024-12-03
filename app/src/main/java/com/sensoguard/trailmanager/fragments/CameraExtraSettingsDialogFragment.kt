@@ -35,6 +35,7 @@ import com.sensoguard.trailmanager.global.ERROR_RESULT_VALIDATION_EMAIL_ACTION
 import com.sensoguard.trailmanager.global.ERROR_VALIDATION_EMAIL_MSG_KEY
 import com.sensoguard.trailmanager.global.LAST_DATE_ALARM
 import com.sensoguard.trailmanager.global.MODEL_310
+import com.sensoguard.trailmanager.global.MODEL_410
 import com.sensoguard.trailmanager.global.MODEL_584
 import com.sensoguard.trailmanager.global.MODEL_636
 import com.sensoguard.trailmanager.global.MODEL_636_48MP
@@ -224,6 +225,13 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                         ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
                             ContextCompat.getDrawable(
                                 it, R.drawable.ic_camera636
+                            )
+                        })
+                    }
+                    myModels[MODEL_410] -> {
+                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
+                            ContextCompat.getDrawable(
+                                it, R.drawable.ic_camera310
                             )
                         })
                     }
