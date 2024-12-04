@@ -1129,7 +1129,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                                 refreshCommandsAdapter()
                             }
                             resources.getString(R.string.configure_send) -> {
-                                showConfigurationSendingDialog(command)
+                                if (myCamera?.cameraModel.equals(myModels[MODEL_410])) {
+                                    showConfigurationSendingNoMMSDialog(command)
+                                } else {
+                                    showConfigurationSendingDialog(command)
+                                }
                             }
                             resources.getString(R.string.more_orders) -> {
                                 typeCommandList = MORE_COMMANDS_LIST_TYPE
@@ -1952,6 +1956,125 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     R.id.rbHotWe4g -> {
                         command = myCommand.selectionsCommands[9]
                     }
+                    else -> {
+                        Toast.makeText(
+                            activity,
+                            resources.getString(R.string.no_commands),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@setOnClickListener
+                    }
+
+                }
+
+                sendSMS(command)
+                dialog.dismiss()
+            }
+            val btnCancel = dialog.findViewById<AppCompatButton>(R.id.btnCancel)
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+    }
+
+    //show dialog with configuration sending no MMS
+    private fun showConfigurationSendingNoMMSDialog(myCommand: Command) {
+        var commandConfigEmail: CommandConfigEmail? = null
+
+        if (this@CameraCommandsDialogFragment.context != null) {
+            val dialog = Dialog(this@CameraCommandsDialogFragment.requireContext())
+            dialog.setContentView(R.layout.custom_dialog_configuration_send_no_mms)
+
+            dialog.setCancelable(true)
+
+            val tvCommandTitle = dialog.findViewById<AppCompatTextView>(R.id.tvCommandTitle)
+            tvCommandTitle.text = myCommand.commandName
+
+            //addCommandConfigMMS(myCommand)
+
+            val rgConfigSelects = dialog.findViewById<RadioGroup>(R.id.rgConfigSelects)
+            val rbHotWe4g = dialog.findViewById<RadioButton>(R.id.rbHotWe4g)
+            rgConfigSelects.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+//                    R.id.rbConfigMms -> {
+//                        rbHotWe4g.isEnabled = false
+//                        addCommandConfigMMS(myCommand)
+//                    }
+
+                    R.id.rbConfigEmail -> {
+                        myCommand.selectionsCommands = ArrayList()
+                        rbHotWe4g.isEnabled = true
+                        commandConfigEmail = CommandConfigEmail()
+                        commandConfigEmail?.showPhoneNumbersDialog(this@CameraCommandsDialogFragment.context)
+                    }
+
+                }
+
+            }
+
+            val rgSelects = dialog.findViewById<RadioGroup>(R.id.rgSelects)
+            val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
+            btnSendCommand.setOnClickListener {
+                var command = ""
+
+                if (rgConfigSelects.checkedRadioButtonId == R.id.rbConfigEmail) {
+                    if (commandConfigEmail != null) {
+                        myCommand.selectionsCommands = commandConfigEmail!!.populateCommands()
+                    }
+                }
+
+                if (myCommand.selectionsCommands.size < 1) {
+                    Toast.makeText(
+                        activity,
+                        resources.getString(R.string.no_commands),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@setOnClickListener
+                }
+
+                when (rgSelects.checkedRadioButtonId) {
+                    R.id.rbCellcom -> {
+                        command = myCommand.selectionsCommands[0]
+                    }
+
+                    R.id.rbGolanTelecom -> {
+                        command = myCommand.selectionsCommands[1]
+                    }
+
+                    R.id.rbPartner -> {
+                        command = myCommand.selectionsCommands[2]
+                    }
+
+                    R.id.rbCellPhone -> {
+                        command = myCommand.selectionsCommands[3]
+                    }
+
+                    R.id.rbHotMobile -> {
+                        command = myCommand.selectionsCommands[4]
+                    }
+
+                    R.id.rb019 -> {
+                        command = myCommand.selectionsCommands[5]
+                    }
+
+                    R.id.rbRamiLevi -> {
+                        command = myCommand.selectionsCommands[6]
+                    }
+
+                    R.id.rbYouPhone -> {
+                        command = myCommand.selectionsCommands[7]
+                    }
+
+                    R.id.rb012 -> {
+                        command = myCommand.selectionsCommands[8]
+                    }
+
+                    R.id.rbHotWe4g -> {
+                        command = myCommand.selectionsCommands[9]
+                    }
+
                     else -> {
                         Toast.makeText(
                             activity,
