@@ -128,8 +128,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
             //int model 584,310 difference of those commands
             if (myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_410])
+                myCamera?.cameraModel.equals(myModels[MODEL_310])
             ) {
 
                 mainCommands?.add(
@@ -505,7 +504,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 R.drawable.arm_camera
             )
 
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
+            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
+                || myCamera?.cameraModel.equals(myModels[MODEL_410])
+            ) {
                 command.defaultSelected = 4
             } else {
                 command.defaultSelected = 3
@@ -1355,7 +1356,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
                 if (etPictureNum.text?.isNotEmpty() == true && etPictureNum.text.toString().length == 4) {
-                    val command = "#" + etPictureNum.text.toString() + "#G#"
+                    val command = "#G#" + etPictureNum.text.toString() + "#"
                     sendSMS(command)
                     dialog.dismiss()
                 } else {

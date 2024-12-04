@@ -108,12 +108,13 @@ const val NEW_CAMERA_LIST_TYPE = 2
 //camera models
 const val MODEL_636_48MP = 0
 const val MODEL_636 = 1
-const val MODEL_584 = 2
-const val MODEL_310 = 3
-const val MODEL_984 = 4
-const val MODEL_668 = 5
-const val MODEL_ATC = 6
-const val MODEL_410 = 7
+const val MODEL_410 = 2
+const val MODEL_584 = 3
+const val MODEL_310 = 4
+const val MODEL_984 = 5
+const val MODEL_668 = 6
+const val MODEL_ATC = 7
+
 
 
 const val REMOVE_ACTION_TYPE = 0
