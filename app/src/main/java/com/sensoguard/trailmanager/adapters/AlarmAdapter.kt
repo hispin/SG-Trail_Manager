@@ -19,7 +19,6 @@ import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Alarm
 import com.sensoguard.trailmanager.global.getStrDateTimeByMilliSeconds
 import java.io.File
-import java.util.*
 
 
 class AlarmAdapter(
@@ -236,7 +235,7 @@ class AlarmAdapter(
                             override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,
-                                target: Target<Drawable>?,
+                                target: Target<Drawable>,
                                 isFirstResource: Boolean
                             ): Boolean {
                                 Toast.makeText(
@@ -248,10 +247,10 @@ class AlarmAdapter(
                             }
 
                             override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
+                                resource: Drawable,
+                                model: Any,
                                 target: Target<Drawable>?,
-                                dataSource: DataSource?,
+                                dataSource: DataSource,
                                 isFirstResource: Boolean
                             ): Boolean {
                                 //if the the image is video then show the video icon
@@ -260,11 +259,8 @@ class AlarmAdapter(
                                 } else {
                                     ivIconVideo?.visibility = View.GONE
                                 }
-
                                 return false
-
                             }
-
 
                         }).into(it)
 

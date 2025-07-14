@@ -22,11 +22,11 @@ repositories {
 android {
     defaultConfig {
         applicationId "com.sensoguard.trailmanager"
-        compileSdk = 34
+        compileSdk = 36
         minSdkVersion 26
-        targetSdkVersion 34
-        versionCode 54
-        versionName "1.54"
+        targetSdkVersion 36
+        versionCode 57
+        versionName "1.57"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -94,43 +94,43 @@ configurations {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.google.android.things:androidthings:1.0'
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-maps:19.2.0'
     implementation 'com.github.kai-morich:usb-serial-for-android:1.7.0'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.gms:play-services-location:21.2.0'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.opencsv:opencsv:3.9'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.opencsv:opencsv:5.11.2'
     implementation 'com.github.felHR85:UsbSerial:6.0.6'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     //Support language
     implementation 'com.github.delight-im:Android-Languages:v1.0.1'
     implementation files('libs/javax.mail.jar')
     //test attached
-    implementation 'com.sun.mail:android-activation:1.6.4'
+    implementation 'com.sun.mail:android-activation:1.6.7'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.squareup:android-times-square:1.6.5@aar'
+    implementation 'com.squareup:android-times-square:1.7.11@aar'
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
     //swipe
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
 
     implementation files('libs/jsoup-1.12.1.jar')
     implementation "androidx.cardview:cardview:1.0.0"
 
-    implementation platform('com.google.firebase:firebase-bom:32.8.0')
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:32.8.0')
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
 
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -138,9 +138,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
-    implementation "androidx.activity:activity-ktx:1.8.2"
-    implementation "androidx.fragment:fragment-ktx:1.6.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.1"
+    implementation "androidx.activity:activity-ktx:1.10.1"
+    implementation "androidx.fragment:fragment-ktx:1.8.8"
 
 }

@@ -635,11 +635,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                 command.selectionsTitles.add("1080P")
                 command.selectionsTitles.add("1530P")
                 command.selectionsTitles.add("4k")
-                command.selectionsCommands.add("#E#FL#")//TODO
-                command.selectionsCommands.add("#E#FL#")//TODO
-                command.selectionsCommands.add("#E#FL#")//TODO
-                command.selectionsCommands.add("#E#FL#")//TODO
-                command.selectionsCommands.add("#E#FL#")//TODO
+                command.selectionsCommands.add("#e#f0#")//360P
+                command.selectionsCommands.add("#e#fh#")//720P
+                command.selectionsCommands.add("#e#ff#")//1080P
+                command.selectionsCommands.add("#e#f3#")//1530P
+                command.selectionsCommands.add("#e#f4#")//4k
                 command.defaultSelected = 2
             }
             moreCommands?.add(command)
@@ -2484,8 +2484,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
         )
     }
 
-    //handler just for business days
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+    override fun onCheckedChanged(p0: CompoundButton, isChecked: Boolean) {
         if (!isChecked)
             cbSelectAll?.isChecked = false
     }
