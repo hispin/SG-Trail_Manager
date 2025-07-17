@@ -39,7 +39,6 @@
             android:roundIcon="@drawable/ic_launcher"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-
             >
         <activity android:name="com.sensoguard.trailmanager.activities.TestScanEmail">
 

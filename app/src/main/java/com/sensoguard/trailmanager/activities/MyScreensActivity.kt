@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -64,17 +65,6 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     val TAG = "MyScreensActivity"
 
-    override fun onBackPressed() {
-        //super.onBackPressed()
-        val fragment = supportFragmentManager.findFragmentByTag("CameraCommandsDialogFragment")
-        if (fragment != null && fragment.isVisible) {
-            val res = (fragment as CameraCommandsDialogFragment).onBackPressed()
-            if (!res) {
-                return
-            }
-        }
-        super.onBackPressed()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -85,6 +75,8 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         setContentView(R.layout.activity_my_screens)
 
+        //add back button
+        setBackHandler()
 
         //store locally default values of configuration
         setConfigurationDefault()
@@ -92,6 +84,27 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         currentItemTopMenu = intent.getIntExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
 
         init()
+    }
+
+    /**
+     * add back button
+     */
+    private fun setBackHandler() {
+        //create the back button
+        onBackPressedDispatcher.addCallback(
+            this /* lifecycle owner */,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag("CameraCommandsDialogFragment")
+                    if (fragment != null && fragment.isVisible) {
+                        val res = (fragment as CameraCommandsDialogFragment).onBackPressed()
+                        if (!res) {
+                            return
+                        }
+                    }
+                }
+            })
     }
 
 

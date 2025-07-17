@@ -9,6 +9,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         tools:context=".activities.MyScreensActivity">
 
 
@@ -33,15 +34,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvShowLogs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="sansoGaurd"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.sensoguard.trailmanager.classes.NonSwipeAbleViewPager
@@ -51,15 +43,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="?attr/actionBarSize"
-
-    >
+            android:layout_marginTop="?attr/actionBarSize" />
 
 
-        />
-
-
-    </com.sensoguard.trailmanager.classes.NonSwipeAbleViewPager>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
