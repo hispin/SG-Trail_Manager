@@ -2372,9 +2372,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     override fun onBackPressed(): Boolean {
         if (typeCommandList == MAIN_COMMANDS_LIST_TYPE) {
             return true
+        } else if (typeCommandList == MORE_COMMANDS_LIST_TYPE) {
+            typeCommandList = MAIN_COMMANDS_LIST_TYPE
+            refreshCommandsAdapter()
+            return false
         }
-        typeCommandList = MAIN_COMMANDS_LIST_TYPE
-        refreshCommandsAdapter()
         return false
     }
 

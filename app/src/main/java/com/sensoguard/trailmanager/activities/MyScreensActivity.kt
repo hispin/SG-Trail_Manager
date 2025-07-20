@@ -99,9 +99,14 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
                         supportFragmentManager.findFragmentByTag("CameraCommandsDialogFragment")
                     if (fragment != null && fragment.isVisible) {
                         val res = (fragment as CameraCommandsDialogFragment).onBackPressed()
+                        // res is false when show extra command, the back button is change the to the previous list
                         if (!res) {
                             return
+                        } else {// res is true when show main command, the back button dismissed the fragment
+                            fragment.dismiss()
                         }
+                    } else {// when CameraCommandsDialogFragment is not visible ,the back button is  close activity
+                        finish()
                     }
                 }
             })
