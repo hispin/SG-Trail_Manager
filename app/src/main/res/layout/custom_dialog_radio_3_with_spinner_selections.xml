@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="5.6sp"
-            android:text="title"
+            tools:text="title"
             android:textColor="@color/medium_green"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -83,7 +83,7 @@
                 android:id="@+id/rbOne"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="אחד"
+                tools:text="אחד"
                 android:textAlignment="center"
                 android:textSize="14.7sp" />
 
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="שתיים"
+                tools:text="שתיים"
                 android:textAlignment="center"
                 android:textSize="14.7sp" />
 
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="שלוש"
+                tools:text="שלוש"
                 android:textAlignment="center"
                 android:textSize="14.7sp"
 

@@ -1,3 +1,24 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="Haggay" />
+  <dictionary name="Haggay">
+    <words>
+      <w>boly</w>
+      <w>cellcom</w>
+      <w>contentprovider</w>
+      <w>golantelecom</w>
+      <w>hikvision</w>
+      <w>hmmss</w>
+      <w>hotm</w>
+      <w>imgs</w>
+      <w>msgs</w>
+      <w>netazi</w>
+      <w>pelephone</w>
+      <w>senso</w>
+      <w>sensoalias</w>
+      <w>sensoguard</w>
+      <w>smsto</w>
+      <w>trailmanager</w>
+      <w>uwap</w>
+      <w>youphone</w>
+    </words>
+  </dictionary>
 </component>

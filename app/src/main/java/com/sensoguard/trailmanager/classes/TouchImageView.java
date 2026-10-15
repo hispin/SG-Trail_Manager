@@ -11,6 +11,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 
 public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView {
 
@@ -28,9 +30,9 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     // Remember some things for zooming
     Matrix matrix;
     int mode = NONE;
-    PointF last = new PointF();
-    PointF start = new PointF();
-    float minScale = 1f;
+    final PointF last = new PointF();
+    final PointF start = new PointF();
+    final float minScale = 1f;
     float maxScale = 15f;
     float[] m;
     int viewWidth, viewHeight;
@@ -79,12 +81,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
         setScaleType(ImageView.ScaleType.MATRIX);
 
 
-        setOnTouchListener(new View.OnTouchListener() {
-
-
-            @Override
-
-            public boolean onTouch(View v, MotionEvent event) {
+        setOnTouchListener((v, event) -> {
 
                 mScaleDetector.onTouchEvent(event);
 
@@ -156,9 +153,6 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
                 invalidate();
 
                 return true; // indicate event was handled
-
-            }
-
 
         });
 
@@ -323,7 +317,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
 
         @Override
 
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
+        public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
 
             mode = ZOOM;
 
@@ -334,7 +328,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
 
         @Override
 
-        public boolean onScale(ScaleGestureDetector detector) {
+        public boolean onScale(@NonNull ScaleGestureDetector detector) {
 
             float mScaleFactor = detector.getScaleFactor();
 
@@ -359,7 +353,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
 
             if (origWidth * saveScale <= viewWidth || origHeight * saveScale <= viewHeight)
 
-                matrix.postScale(mScaleFactor, mScaleFactor, viewWidth / 2, viewHeight / 2);
+                matrix.postScale(mScaleFactor, mScaleFactor, viewWidth / 2f, viewHeight / 2f);
 
             else
 

@@ -3,12 +3,13 @@ package com.sensoguard.trailmanager.classes;
 import android.content.Context;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
 import static com.sensoguard.trailmanager.global.ConstsKt.ALARM_OTHER;
 
+//the parse methods are package-private so they can be unit tested
 class EmailParsing {
+    private static final String TAG = "EmailParsing";
     private static final EmailParsing ourInstance = new EmailParsing();
 
     private EmailParsing() {
@@ -22,9 +23,7 @@ class EmailParsing {
         if (camera.getCameraModel() == null)
             return;
 
-        WeakReference<Context> wContext = new WeakReference<Context>(context1);
-
-        Calendar myCalendar = null;
+        Calendar myCalendar;
         float batteryVal = -1;
         float wifiVal = -1;
         switch (camera.getCameraModel()) {
@@ -34,7 +33,7 @@ class EmailParsing {
             case ("MG-984G-30M"):
                 //parsing the date time
                 myCalendar = parseDateTimeBySubject(mySubject);
-                //parsing wifi by subject
+                //parsing Wi-Fi by subject
                 wifiVal = parseWifiBySubject(mySubject);
                 break;
             case ("MG-983G-30M"):
@@ -42,7 +41,7 @@ class EmailParsing {
                 myCalendar = parseDateTimeBySubject(mySubject);
                 //parsing battery by content
                 batteryVal = parseBatteryByContent(myContent);
-                //parsing wifi by subject
+                //parsing Wi-Fi by subject
                 wifiVal = parseWifiBySubject(mySubject);
                 break;
             case ("BG-668"):
@@ -56,7 +55,7 @@ class EmailParsing {
                 batteryVal = parseBatteryByContent(myContent);
 
 
-                //parsing wifi
+                //parsing Wi-Fi
                 wifiVal = parseWifiByContent(myContent);
 
 
@@ -65,22 +64,21 @@ class EmailParsing {
                 throw new IllegalStateException("Unexpected value: " + camera.getCameraModel());
         }
         if (myCalendar != null) {
-            myAlarm.addAlarmToHistory(camera, ALARM_OTHER, wContext.get(), myCalendar, batteryVal, wifiVal);
-            Log.d("", "");
+            myAlarm.addAlarmToHistory(camera, ALARM_OTHER, context1, myCalendar, batteryVal, wifiVal);
         }
 
 
     }
 
-    //parsing wifi by subject
-    private float parseWifiBySubject(String mySubject) {
+    //parsing Wi-Fi by subject
+    float parseWifiBySubject(String mySubject) {
         float wifiVal = -1;
         try {
             String[] arr = mySubject.split("-");
-            if (arr.length > 3) {
+            if (arr.length > 4) {
                 String wifiStr = arr[4];
                 wifiStr = wifiStr.substring(0, 2);
-                float wifi = Float.valueOf(wifiStr);
+                float wifi = Float.parseFloat(wifiStr);
                 if (wifi >= 1 && wifi < 8) {
                     wifiVal = 24;
                 } else if (wifi >= 8 && wifi < 15) {
@@ -92,45 +90,45 @@ class EmailParsing {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.w(TAG, "parsing failed", ex);
         }
         return wifiVal;
     }
 
-    //parsing wifi
-    private float parseWifiByContent(String myContent) {
+    //parsing Wi-Fi
+    float parseWifiByContent(String myContent) {
         try {
             int tmpIdx = myContent.indexOf("Signal");
             String tmpStr = myContent.substring(tmpIdx);
             tmpIdx = tmpStr.indexOf("%");
             String wifiValStr = tmpStr.substring(tmpStr.indexOf(":") + 1, tmpIdx);
-            return Float.valueOf(wifiValStr);
+            return Float.parseFloat(wifiValStr);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.w(TAG, "parsing failed", ex);
         }
         return -1f;
     }
 
     //parsing battery
-    private float parseBatteryByContent(String myContent) {
+    float parseBatteryByContent(String myContent) {
         try {
             //String myContent = getTextFromMessage(unReadLastDayMsg);
             int tmpIdx = myContent.indexOf("Battery");
             String tmpStr = myContent.substring(tmpIdx);
             tmpIdx = tmpStr.indexOf("%");
             String batteryValStr = tmpStr.substring(tmpStr.indexOf(":") + 1, tmpIdx);
-            return Float.valueOf(batteryValStr);
+            return Float.parseFloat(batteryValStr);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.w(TAG, "parsing failed", ex);
             return -1f;
         }
     }
 
     //parsing the date time
-    private Calendar parseDateTimeBySubject(String mySubject) {
+    Calendar parseDateTimeBySubject(String mySubject) {
         String[] arr = mySubject.split("-");
-        if (arr.length > 1) {
+        if (arr.length > 2) {
             String datetimeStr = arr[2];
             String[] datetimeArr = datetimeStr.split(" ");
             if (datetimeArr.length > 1) {
@@ -141,10 +139,16 @@ class EmailParsing {
     }
 
     //parsing the date time by content
-    private Calendar parseDateTimeByContent(String myContent) {
+    Calendar parseDateTimeByContent(String myContent) {
         int tmpIdx = myContent.indexOf("EVENT TIME");
+        if (tmpIdx < 0) {
+            return null;
+        }
         String tmpStr = myContent.substring(tmpIdx);
         tmpIdx = tmpStr.indexOf("\n");
+        if (tmpIdx < 0) {
+            tmpIdx = tmpStr.length();
+        }
         String calendarValStr = tmpStr.substring(tmpStr.indexOf(":") + 1, tmpIdx);
         //remove the space
         calendarValStr = calendarValStr.trim();
@@ -176,10 +180,10 @@ class EmailParsing {
 
                     Calendar myCalendar = Calendar.getInstance();
                     int year = myCalendar.get(Calendar.YEAR);
-                    int monthVal = Integer.valueOf(month);
-                    int dayVal = Integer.valueOf(day);
-                    int hourVal = Integer.valueOf(hour);
-                    int minutesVal = Integer.valueOf(minutes);
+                    int monthVal = Integer.parseInt(month);
+                    int dayVal = Integer.parseInt(day);
+                    int hourVal = Integer.parseInt(hour);
+                    int minutesVal = Integer.parseInt(minutes);
 
                     //the month start with 0
                     myCalendar.set(year, monthVal - 1, dayVal, hourVal, minutesVal);
@@ -187,7 +191,7 @@ class EmailParsing {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.w(TAG, "parsing failed", ex);
         }
         return null;
     }
@@ -214,12 +218,12 @@ class EmailParsing {
                     String year = dateArr[0];
 
                     Calendar myCalendar = Calendar.getInstance();
-                    int yearVal = Integer.valueOf(year);
-                    int monthVal = Integer.valueOf(month);
-                    int dayVal = Integer.valueOf(day);
-                    int hourVal = Integer.valueOf(hour);
-                    int minutesVal = Integer.valueOf(minutes);
-                    int secondsVal = Integer.valueOf(seconds);
+                    int yearVal = Integer.parseInt(year);
+                    int monthVal = Integer.parseInt(month);
+                    int dayVal = Integer.parseInt(day);
+                    int hourVal = Integer.parseInt(hour);
+                    int minutesVal = Integer.parseInt(minutes);
+                    int secondsVal = Integer.parseInt(seconds);
 
                     //the month start with 0
                     myCalendar.set(yearVal, monthVal - 1, dayVal, hourVal, minutesVal, secondsVal);
@@ -227,7 +231,7 @@ class EmailParsing {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.w(TAG, "parsing failed", ex);
         }
         return null;
     }

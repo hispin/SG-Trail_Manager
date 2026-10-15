@@ -1,90 +1,87 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'kotlin-android'
-
-//apply plugin: 'kotlin-android-extensions'
+// Kotlin is built into AGP 9 (no kotlin-android plugin needed)
 
 apply plugin: 'com.google.gms.google-services'
-
 
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
 
-
-repositories {
-
-    //test attached
-    mavenCentral()
-    maven {
-        url "https://maven.java.net/content/groups/public/"
-    }
+// Secrets (Maps key, keystore passwords) are kept out of git in <project>/secrets.properties
+// see secrets.properties.example
+def secrets = new Properties()
+def secretsFile = rootProject.file('secrets.properties')
+if (secretsFile.exists()) {
+    secretsFile.withInputStream { secrets.load(it) }
 }
 
 android {
+    namespace = 'com.sensoguard.trailmanager'
+    compileSdk = 37
+
     defaultConfig {
-        applicationId "com.sensoguard.trailmanager"
-        compileSdk = 36
-        minSdkVersion 26
-        targetSdkVersion 36
-        versionCode 60
-        versionName "1.60"
+        applicationId = "com.sensoguard.trailmanager"
+        minSdk = 26
+        targetSdk = 37
+        versionCode = 62
+        versionName = "1.62"
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [MAPS_API_KEY: secrets.getProperty('MAPS_API_KEY', '')]
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
-
-    packagingOptions {
+    packaging {
         resources {
-            pickFirsts += ['META-INF/LICENSE.txt']
+            pickFirsts += ['META-INF/LICENSE.txt', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md']
         }
     }
-
-    //test attached
 
     signingConfigs {
         release {
-            storeFile file("sensoKeystore.jks")
-            storePassword "senso1234"
-            keyAlias "sensoalias"
-            keyPassword "senso1234"
+            if (secrets.getProperty('RELEASE_STORE_FILE')) {
+                storeFile = file(secrets.getProperty('RELEASE_STORE_FILE'))
+                storePassword = secrets.getProperty('RELEASE_STORE_PASSWORD')
+                keyAlias = secrets.getProperty('RELEASE_KEY_ALIAS')
+                keyPassword = secrets.getProperty('RELEASE_KEY_PASSWORD')
+            }
         }
     }
 
-
     buildTypes {
         release {
-            signingConfig signingConfigs.release
-            ext.enableCrashlytics = true
-            //minifyEnabled true
-            //buildConfigField "Boolean", "REPORT_CRASH", 'true'
-            //minifyEnabled false
+            signingConfig = signingConfigs.release
+            //remove the unused code (see proguard-rules.pro)
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             ext.alwaysUpdateBuildId = false
-            ext.enableCrashlytics = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            //buildConfigField "Boolean", "REPORT_CRASH", 'false'
-            debuggable true
-//            minifyEnabled false
+            debuggable = true
         }
     }
 
-    kotlinOptions { jvmTarget = "1.8" }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace 'com.sensoguard.trailmanager'
 
+    // the app changes the language at runtime, so all languages must be in the base APK
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
-
-
 
 configurations {
     configureEach {
@@ -92,57 +89,46 @@ configurations {
     }
 }
 
-
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.13.2'
-    implementation 'com.google.android.things:androidthings:1.0'
-    implementation 'com.google.android.gms:play-services-maps:19.2.0'
-    implementation 'com.github.kai-morich:usb-serial-for-android:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.google.code.gson:gson:2.13.1'
-    implementation 'com.google.android.gms:play-services-location:21.3.0'
-    implementation 'com.opencsv:opencsv:5.11.2'
-    implementation 'com.github.felHR85:UsbSerial:6.0.6'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.core:core-ktx:1.19.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.activity:activity-ktx:1.13.0'
+    implementation 'androidx.fragment:fragment-ktx:1.9.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-service:2.11.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0'
+    implementation 'com.google.android.material:material:1.14.0'
+
+    // Google Play services
+    implementation 'com.google.android.gms:play-services-maps:20.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.4.0'
+
+    // Firebase (the BoM sets the versions; the -ktx modules were removed in BoM 34)
+    implementation platform('com.google.firebase:firebase-bom:35.0.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+
+    // Email (IMAP) and parsing
+    implementation 'com.sun.mail:android-mail:1.6.8'
+    implementation 'com.sun.mail:android-activation:1.6.8'
+    implementation 'org.jsoup:jsoup:1.23.2'
+    implementation 'org.apache.commons:commons-lang3:3.21.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
+
+    // UI
+    implementation 'com.github.bumptech.glide:glide:5.0.9'
+    implementation 'com.squareup:android-times-square:1.7.11@aar'
+    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
     //Support language
     implementation 'com.github.delight-im:Android-Languages:v1.0.1'
-    implementation files('libs/javax.mail.jar')
-    //test attached
-    implementation 'com.sun.mail:android-activation:1.6.7'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.squareup:android-times-square:1.7.11@aar'
-    //glide
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
-    //swipe
-    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
 
-    implementation files('libs/jsoup-1.12.1.jar')
-    implementation "androidx.cardview:cardview:1.0.0"
-
-    implementation platform('com.google.firebase:firebase-bom:33.16.0')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-
-    // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:33.16.0')
-
-    // Declare the dependencies for the Crashlytics and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.1"
-    implementation "androidx.activity:activity-ktx:1.10.1"
-    implementation "androidx.fragment:fragment-ktx:1.8.8"
-
-    implementation('androidx.activity:activity:1.10.1')
-
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
 }

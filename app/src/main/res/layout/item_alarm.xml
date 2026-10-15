@@ -7,7 +7,9 @@
         android:background="@color/white"
         android:layout_width="match_parent"
         android:clickable="true"
-        android:focusable="true">
+        xmlns:tools="http://schemas.android.com/tools"
+        android:focusable="true"
+        tools:ignore="Overdraw">
 
 
     <!--    <CheckBox-->

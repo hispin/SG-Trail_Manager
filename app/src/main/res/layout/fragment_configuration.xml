@@ -69,7 +69,7 @@
                 app:layout_constraintHorizontal_bias="0.735"
                 android:inputType="number"
                 android:gravity="center"
-                android:hint="0"
+                android:hint="@string/zero"
                 android:background="@drawable/shape_bottom_border"
 
         />
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/choose_alarm_sound"
                 android:textColor="@color/turquoise_blue"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:layout_marginStart="64.7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -151,7 +151,6 @@
 
         <ToggleButton
                 android:id="@+id/togChangeAlarmSound"
-                android:text="ToggleButton"
                 android:layout_width="44dp"
                 android:layout_height="25dp"
                 android:background="@color/transparent"
@@ -204,7 +203,6 @@
 
         <ToggleButton
                 android:id="@+id/togChangeAlarmVibrate"
-                android:text="ToggleButton"
                 android:layout_width="44dp"
                 android:layout_height="25dp"
                 android:background="@color/transparent"
@@ -236,7 +234,7 @@
         <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/config_ic_alarm_fliker"
+                app:srcCompat="@drawable/config_ic_alarm_flicker"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -267,7 +265,7 @@
                 app:layout_constraintHorizontal_bias="0.735"
                 android:inputType="number"
                 android:gravity="center"
-                android:hint="0"
+                android:hint="@string/zero"
                 android:background="@drawable/shape_bottom_border"
 
         />
@@ -323,7 +321,6 @@
 
         <ToggleButton
                 android:id="@+id/togChangeLoadSettings"
-                android:text="ToggleButton"
                 android:layout_width="44dp"
                 android:layout_height="25dp"
                 android:background="@color/transparent"
@@ -387,7 +384,7 @@
                 android:text="@string/satellite"
                 android:textColor="@drawable/selected_text_color_status"
                 android:textAllCaps="false"
-                android:textSize="10sp"
+                android:textSize="11sp"
         />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -404,7 +401,7 @@
                 android:text="@string/map"
                 android:textAllCaps="false"
                 android:textColor="@drawable/selected_text_color_status"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:enabled="false"
 
         />
@@ -454,7 +451,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/english"
                 android:textColor="@color/turquoise_blue"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:layout_marginStart="64.7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -604,7 +601,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/edit_text_border"
-                    android:inputType="text"
+                    android:inputType="textUri"
                     android:textSize="14.7sp"
                     app:layout_constraintBottom_toBottomOf="@+id/tvMailServer"
                     app:layout_constraintHeight_default="percent"

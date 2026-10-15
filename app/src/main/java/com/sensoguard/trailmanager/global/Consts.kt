@@ -1,8 +1,5 @@
 package com.sensoguard.trailmanager.global
 
-const val  CHECK_AVAILABLE_KEY="find.drivers.command"
-const val  STOP_READ_DATA_KEY="stop.data.command"
-const val  HANDLE_READ_DATA_EXCEPTION="handle.read.data.exception"
 const val  GET_CURRENT_LOCATION_KEY ="handle.get.current.location"
 const val CURRENT_ITEM_TOP_MENU_KEY = "currentItemTopKey"
 
@@ -31,7 +28,9 @@ const val VALIDATION_EMAIL_RESULT = "validationEmailResult"
 
 const val CURRENT_LANG_KEY_PREF = "currentLangKey"
 const val CURRENT_LATITUDE_PREF = "currentLatitudePref"
-const val CURRENT_LONGTUDE_PREF = "currentLongtudePref"
+
+//the value is kept as is (it is the key of data that is already stored)
+const val CURRENT_LONGITUDE_PREF = "currentLongtudePref"
 const val  NO_DATA  ="-1"
 
 
@@ -39,7 +38,6 @@ const val  ALARM_FLICKERING_DURATION_KEY="alarmFlickeringDuration"
 const val  ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS=30L
 
 
-const val  USB_CONNECTION_FAILED="usbConnectionFailed"
 
 const val  CREATE_ALARM_ID_KEY="CreateAlarmIdKey"
 const val  CREATE_ALARM_NAME_KEY="CreateAlarmNameKey"
@@ -59,15 +57,8 @@ const val EMAIL_ACCOUNT_KEY = "emailAccount"
 const val SORT_TYPE_KEY = "sortType"
 const val SORT_BY_SYSTEM_KEY = 1
 const val SORT_BY_DATETIME_KEY = 2
-const val ACTION_TYPE_KEY = "actionType"
-const val ACTION_PICTURE_KEY = 1
-const val ACTION_VIDEO_KEY = 2
 
-const val IMAGE_PATH_KEY = "imagePathKey"
 
-const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0
-const val PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
-const val PERMISSIONS_REQUEST_READ_PHONE_STATE = 2
 
 const val CURRENT_LOCATION = "currentLocation"
 
@@ -79,15 +70,20 @@ const val ALARM_SENSOR_OFF = "sensor off"
 const val ALARM_LOW_BATTERY = "low battery"
 const val ALARM_OTHER = "other"
 
-const val TARGET_CAMERA_EXTRA_SETTING_REQUEST_CODE = 1
-const val TAKE_PICTURE_REQUEST_CODE = 2
-const val SORT_BY_SYSTEM_REQUEST_CODE = 3
-const val SORT_PICK_DATE_TIME_REQUEST_CODE = 4
+//keys of results between fragments (Fragment Result API)
+const val CAMERA_EXTRA_SETTINGS_RESULT_KEY = "cameraExtraSettingsResult"
+const val SORT_BY_SYSTEM_RESULT_KEY = "sortBySystemResult"
+const val SORT_PICK_DATE_TIME_RESULT_KEY = "sortPickDateTimeResult"
+
+//true when the user confirmed (false when canceled)
+const val RESULT_IS_OK_KEY = "resultIsOk"
+const val SORT_FROM_TIME_KEY = "fromTimeInMillis"
+const val SORT_TO_TIME_KEY = "toTimeInMillis"
 
 const val CHANNEL_NAME = "newAlarmDetected"
 const val CHANNEL_ID = "1.0"
 
-const val IS_MYSCREENACTIVITY_FOREGROUND = "isMyScreenActivityForeground"
+const val IS_MY_SCREENS_ACTIVITY_FOREGROUND = "isMyScreenActivityForeground"
 const val IS_LOAD_APP = "isLoadApp"
 const val HUNTER_LOG = "hunterLog"
 

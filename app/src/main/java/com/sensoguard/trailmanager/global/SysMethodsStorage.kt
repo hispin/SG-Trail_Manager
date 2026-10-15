@@ -1,119 +1,77 @@
 package com.sensoguard.trailmanager.global
 
 import android.content.Context
+import android.util.Log
 import com.sensoguard.trailmanager.classes.Alarm
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.MyEmailAccount
-import java.lang.ref.WeakReference
+
+private const val APP_LOG_TAG = "TrailManager"
 
 //get myEmail from locally
 fun getMyEmailAccountFromLocally(context: Context): MyEmailAccount? {
 
-    val myEmailAccountStr = getStringInPreference(context, EMAIL_ACCOUNT_KEY, null)
-    myEmailAccountStr?.let {
-        var myEmailAccount = convertJsonToMyEmailAccount(myEmailAccountStr)
-        return myEmailAccount
+    val myEmailAccountStr = getStringInPreference(context, EMAIL_ACCOUNT_KEY, null) ?: return null
+    val myEmailAccount = convertJsonToMyEmailAccount(myEmailAccountStr) ?: return null
+    //the password is stored encrypted
+    val storedPassword = myEmailAccount.password
+    myEmailAccount.password = decryptSecret(storedPassword)
+    //migrate an old plain text password to encrypted
+    if (!storedPassword.isNullOrEmpty() && !isEncryptedSecret(storedPassword)) {
+        storeMyEmailAccountLocally(myEmailAccount, context)
     }
-    return null
+    return myEmailAccount
 }
 
 //store the sensors to locally
 fun storeSensorsToLocally(sensors: ArrayList<Camera>, context: Context) {
-
-    var detectorsJsonStr:String?=""
-    if(sensors!=null && sensors.size>0){
-        detectorsJsonStr= convertToGson(sensors)
-    }
-    setStringInPreference(context,DETECTORS_LIST_KEY_PREF,detectorsJsonStr)
+    val detectorsJsonStr: String? = if (sensors.isNotEmpty()) convertToGson(sensors) else ""
+    setStringInPreference(context, DETECTORS_LIST_KEY_PREF, detectorsJsonStr)
 }
 
 //get the sensors from locally
 fun getCamerasFromLocally(activity: Context): ArrayList<Camera>? {
-    val sensors: ArrayList<Camera>?
-    val detectorListStr=getStringInPreference(activity,DETECTORS_LIST_KEY_PREF, ERROR_RESP)
+    val detectorListStr = getStringInPreference(activity, DETECTORS_LIST_KEY_PREF, ERROR_RESP)
 
-    sensors = if(detectorListStr.equals(ERROR_RESP)){
+    return if (detectorListStr == ERROR_RESP) {
         ArrayList()
-    }else {
+    } else {
         detectorListStr?.let { convertJsonToSensorList(it) }
     }
-    return sensors
 }
 
 //get the alarms from locally
-fun getAlarmsFromLocally(context: Context): java.util.ArrayList<Alarm>? {
-    //use WeakReference if the activity is no longer alive
-    val wContext: WeakReference<Context> =
-        WeakReference(context)
-    val alarms: java.util.ArrayList<Alarm>?
-    val alarmListStr = getStringInPreference(wContext.get(), ALARM_LIST_KEY_PREF, ERROR_RESP)
+fun getAlarmsFromLocally(context: Context): ArrayList<Alarm>? {
+    val alarmListStr = getStringInPreference(context, ALARM_LIST_KEY_PREF, ERROR_RESP)
 
-    alarms = if (alarmListStr.equals(ERROR_RESP)) {
-        java.util.ArrayList()
+    return if (alarmListStr == ERROR_RESP) {
+        ArrayList()
     } else {
         alarmListStr?.let { convertJsonToAlarmList(it) }
     }
-    return alarms
 }
 
-//store the detectors to locally
-fun storeAlarmsToLocally(alarms: java.util.ArrayList<Alarm>, context: Context) {
-    //use WeakReference if the activity is no longer alive
-    val wContext: WeakReference<Context> =
-        WeakReference(context)
+//store the alarms to locally
+fun storeAlarmsToLocally(alarms: ArrayList<Alarm>, context: Context) {
     // sort the list of events by date in descending
-    val alarms = java.util.ArrayList(alarms.sortedWith(compareByDescending { it.timeInMillis }))
-    if (alarms != null) {
-        val alarmsJsonStr = convertToAlarmsGson(alarms)
-        setStringInPreference(wContext.get(), ALARM_LIST_KEY_PREF, alarmsJsonStr)
-    }
+    val sortedAlarms = ArrayList(alarms.sortedWith(compareByDescending { it.timeInMillis }))
+    setStringInPreference(context, ALARM_LIST_KEY_PREF, convertToAlarmsGson(sortedAlarms))
 }
 
-//store the my email account to locally
-fun storeMyEmailAccountToLocaly(myEmailAccount: MyEmailAccount, context: Context) {
-    //use WeakReference if the activity is no longer alive
-    val wContext: WeakReference<Context> =
-        WeakReference(context)
-
-    if (myEmailAccount != null) {
-        val myEmailAccountStr = convertToGson(myEmailAccount)
-        setStringInPreference(wContext.get(), EMAIL_ACCOUNT_KEY, myEmailAccountStr)
-    }
+//store my email account locally
+fun storeMyEmailAccountLocally(myEmailAccount: MyEmailAccount, context: Context) {
+    //store a copy with an encrypted password ,the caller keeps the plain password
+    val encryptedAccount = MyEmailAccount(
+        myEmailAccount.emailAddress,
+        encryptSecret(myEmailAccount.password),
+        myEmailAccount.emailServer,
+        myEmailAccount.emailPort,
+        myEmailAccount.isUseSSL
+    )
+    setStringInPreference(context, EMAIL_ACCOUNT_KEY, convertToGson(encryptedAccount))
 }
 
-//write to log
-fun writeFile(logMsg: String, context: Context) {
-//    val thread = object : Thread() {
-//        override fun run() {
-//            val externalStorageDir = Environment.getExternalStorageDirectory()
-//            val myFile = File(externalStorageDir, "hunter_logs.txt")
-//
-//            if (myFile.exists()) {
-//                try {
-//                    val currDateStr =
-//                        getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy kk:mm:ss", context)
-//                    val fostream = FileOutputStream(myFile, true)
-//                    val oswriter = OutputStreamWriter(fostream)
-//                    val bwriter = BufferedWriter(oswriter)
-//                    bwriter.write("$currDateStr:log:$logMsg")
-//                    bwriter.newLine()
-//                    bwriter.close()
-//                    oswriter.close()
-//                    fostream.close()
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                }
-//            } else {
-//                try {
-//                    myFile.createNewFile()
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//
-//        }
-//    }
-//
-//    thread.start()
-
+//write to the log (logcat)
+fun writeLog(logMsg: String) {
+    Log.d(APP_LOG_TAG, logMsg)
 }

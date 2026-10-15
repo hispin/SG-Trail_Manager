@@ -10,16 +10,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Command
-import java.util.*
 
+//list of the commands of a camera
 class CommandAdapter(
-    private var commands: ArrayList<Command>,
+    private val commands: ArrayList<Command>,
     val context: Context,
     var itemClick: (Command) -> Unit
 ) : RecyclerView.Adapter<CommandAdapter.ViewHolder>() {
 
 
-    override fun onBindViewHolder(holder: CommandAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindReservation((commands[position]))
         holder.setIsRecyclable(false)
     }
@@ -28,23 +28,16 @@ class CommandAdapter(
         return this.commands.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CommandAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_command, parent, false)
-
-
         return ViewHolder(view, itemClick)
     }
 
-    fun setCommands(_detectors: ArrayList<Command>?) {
-        _detectors?.let { commands = it }
-        //TODO how to define with this
-    }
-
     inner class ViewHolder(
-        private val _itemView: View,
+        private val view: View,
         private val itemClick: (Command) -> Unit
     ) :
-        RecyclerView.ViewHolder(_itemView) {
+        RecyclerView.ViewHolder(view) {
 
         private var tvCommandTitle: TextView? = null
         private var ivIcon: AppCompatImageView? = null
@@ -52,22 +45,20 @@ class CommandAdapter(
 
         init {
             itemView.setOnClickListener {
-                itemClick.invoke(commands[adapterPosition])
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    itemClick.invoke(commands[position])
+                }
             }
         }
 
 
         fun bindReservation(command: Command) {
-            //tvId = _itemView.findViewById(R.id.tvId)
-            tvCommandTitle = _itemView.findViewById(R.id.tvCommandTitle)
+            tvCommandTitle = view.findViewById(R.id.tvCommandTitle)
             tvCommandTitle?.text = command.commandName
-            ivIcon = _itemView.findViewById(R.id.ivIcon)
+            ivIcon = view.findViewById(R.id.ivIcon)
             if (command.icId != -1) {
-                ivIcon?.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context, command.icId
-                    )
-                )
+                ivIcon?.setImageDrawable(ContextCompat.getDrawable(context, command.icId))
             }
 
         }

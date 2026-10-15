@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/constrainItemMenu"
     android:layout_width="wrap_content"
@@ -8,7 +9,8 @@
     android:clickable="true"
     android:focusable="true"
     android:paddingEnd="16dp"
-    android:paddingStart="16dp">
+        android:paddingStart="16dp"
+        tools:ignore="Overdraw">
 
     <ImageView
         android:id="@+id/ivIconItemMenu"
@@ -33,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:gravity="start"
-        android:text="test"
+            tools:text="test"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivIconItemMenu"

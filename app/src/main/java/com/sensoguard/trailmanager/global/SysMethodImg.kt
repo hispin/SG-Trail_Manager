@@ -3,31 +3,25 @@ package com.sensoguard.trailmanager.global
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.os.Build
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.createBitmap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 
-//convert bitmap to bitmap discriptor
-fun convertBitmapToBitmapDiscriptor(context:Context,resId:Int): BitmapDescriptor? {
-    val bitmap = context.let { getBitmapFromVectorDrawable(it, resId) }
-    return bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) }
+//convert drawable resource to bitmap descriptor (for map markers)
+fun convertBitmapToBitmapDescriptor(context: Context, resId: Int): BitmapDescriptor? {
+    return getBitmapFromVectorDrawable(
+        context,
+        resId
+    )?.let { BitmapDescriptorFactory.fromBitmap(it) }
 }
 
 //convert resId to bitmap
 fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
-    var drawable =  AppCompatResources.getDrawable(context, drawableId)
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-        drawable = (drawable?.let { DrawableCompat.wrap(it) })?.mutate()
-    }
+    val drawable = AppCompatResources.getDrawable(context, drawableId) ?: return null
 
-    val bitmap = drawable?.intrinsicWidth?.let {
-        Bitmap.createBitmap(
-            it,
-            drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-    } ?: return null
+    val bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
 
     val canvas = Canvas(bitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)

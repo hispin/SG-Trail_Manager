@@ -6,7 +6,8 @@
         android:layout_height="match_parent"
         android:background="@color/white2"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        tools:ignore="Overdraw">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/consTitle"
@@ -105,7 +106,6 @@
             <!--<ScrollView android:layout_width="wrap_content" android:layout_height="wrap_content">-->
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCommands"
-                    android:name="com.app.simplehostdev.viewLayer.fragments.NewReservationFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"

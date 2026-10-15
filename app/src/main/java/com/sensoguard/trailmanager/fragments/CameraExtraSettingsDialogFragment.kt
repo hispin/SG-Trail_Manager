@@ -1,16 +1,12 @@
 package com.sensoguard.trailmanager.fragments
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +14,7 @@ import android.view.Window.FEATURE_NO_TITLE
 import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
@@ -30,6 +26,7 @@ import androidx.fragment.app.DialogFragment
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.ImageStorageManager
+import com.sensoguard.trailmanager.global.CAMERA_EXTRA_SETTINGS_RESULT_KEY
 import com.sensoguard.trailmanager.global.CAMERA_KEY
 import com.sensoguard.trailmanager.global.ERROR_RESULT_VALIDATION_EMAIL_ACTION
 import com.sensoguard.trailmanager.global.ERROR_VALIDATION_EMAIL_MSG_KEY
@@ -42,8 +39,8 @@ import com.sensoguard.trailmanager.global.MODEL_636_48MP
 import com.sensoguard.trailmanager.global.MODEL_668
 import com.sensoguard.trailmanager.global.MODEL_984
 import com.sensoguard.trailmanager.global.MODEL_ATC
+import com.sensoguard.trailmanager.global.RESULT_IS_OK_KEY
 import com.sensoguard.trailmanager.global.RESULT_VALIDATION_EMAIL_ACTION
-import com.sensoguard.trailmanager.global.TAKE_PICTURE_REQUEST_CODE
 import com.sensoguard.trailmanager.global.VALIDATION_EMAIL_RESULT
 import com.sensoguard.trailmanager.global.convertJsonToSensor
 import com.sensoguard.trailmanager.global.convertToGson
@@ -52,6 +49,8 @@ import com.sensoguard.trailmanager.global.removePreference
 import java.util.regex.Pattern
 
 
+//settings of a camera (name, phone, model, picture of the last visit)
+//the result is returned to CamerasFragment with the key CAMERA_EXTRA_SETTINGS_RESULT_KEY
 class CameraExtraSettingsDialogFragment : DialogFragment() {
 
     //set as global in order to show it as big picture
@@ -81,12 +80,9 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         )
         isCancelable = false
 
-
         initViews(view)
 
-
-        val bundle = arguments
-        val cameraStr = bundle?.getString(CAMERA_KEY, null)
+        val cameraStr = arguments?.getString(CAMERA_KEY, null)
         cameraStr?.let {
             myCamera = convertJsonToSensor(cameraStr)
             populateMyFields()
@@ -96,8 +92,21 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         return view
     }
 
-    private fun initViews(view: View?) {
-        btnSave = view?.findViewById(R.id.btnSave)
+    //the image of each camera model (by the position of the model in R.array.camera_model)
+    private fun getModelImage(modelPosition: Int): Int? {
+        return when (modelPosition) {
+            MODEL_984 -> R.drawable.mg_983_img
+            MODEL_668 -> R.drawable.bg_668_img
+            MODEL_ATC -> R.drawable.atc_img
+            MODEL_310, MODEL_410 -> R.drawable.ic_camera310
+            MODEL_584 -> R.drawable.ic_camera584
+            MODEL_636, MODEL_636_48MP -> R.drawable.ic_camera636
+            else -> null
+        }
+    }
+
+    private fun initViews(view: View) {
+        btnSave = view.findViewById(R.id.btnSave)
         btnSave?.setOnClickListener {
             if (isValidMobile(etTelNum?.text.toString())) {
                 populateMyCamera()
@@ -107,53 +116,41 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 sendResult()
             } else {
                 etTelNum?.error = resources.getString(R.string.invalid_telephone_number)
-//                Toast.makeText(
-//                    activity,
-//                    resources.getString(R.string.invalid_telephone_number),
-//                    Toast.LENGTH_LONG
-//                ).show()
             }
 
         }
 
-        btnCancel = view?.findViewById(R.id.btnCancel)
+        btnCancel = view.findViewById(R.id.btnCancel)
         btnCancel?.setOnClickListener {
             sendCancelResult()
         }
 
-        ibTakePic = view?.findViewById(R.id.ibTakePic)
+        ibTakePic = view.findViewById(R.id.ibTakePic)
         ibTakePic?.setOnClickListener {
-            val myIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(myIntent, TAKE_PICTURE_REQUEST_CODE)
+            takePictureLauncher.launch(null)
         }
 
-        ibShowPicture = view?.findViewById(R.id.ibShowPicture)
+        ibShowPicture = view.findViewById(R.id.ibShowPicture)
         ibShowPicture?.setOnClickListener {
             openLargePictureDialog()
         }
 
-        etSysName = view?.findViewById(R.id.etSysName)
-        etTelNum = view?.findViewById(R.id.etTelNum)
+        etSysName = view.findViewById(R.id.etSysName)
+        etTelNum = view.findViewById(R.id.etTelNum)
 
-        tvShowVer = view?.findViewById(R.id.tvShowVer)
+        tvShowVer = view.findViewById(R.id.tvShowVer)
 
         val verName =
-            activity?.packageName?.let {
-                activity?.packageManager?.getPackageInfo(
-                    it,
-                    0
-                )?.versionName
-            }
-        val verTitle = "version:$verName"
-        tvShowVer?.text = verTitle
+            activity?.let { it.packageManager.getPackageInfo(it.packageName, 0).versionName }
+        tvShowVer?.text = getString(R.string.version_title, verName)
 
-        ivModelImg = view?.findViewById(R.id.ivModelImg)
-        spCameraType = view?.findViewById(R.id.spCameraType)
+        ivModelImg = view.findViewById(R.id.ivModelImg)
+        spCameraType = view.findViewById(R.id.spCameraType)
 
 
         spCameraType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                //nothing to change
             }
 
             override fun onItemSelected(
@@ -162,87 +159,16 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
                 position: Int,
                 id: Long
             ) {
-                val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
-                var type = parent?.getItemAtPosition(position).toString()
-                //Log.d("testType",type)
-                when (parent?.getItemAtPosition(position).toString()) {
-                    myModels[MODEL_984] -> {
-                        Log.d("testType", "984")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.mg_983_img
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_668] -> {
-                        Log.d("testType", "668")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.bg_668_img
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_ATC] -> {
-                        Log.d("testType", "atc")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.atc_img
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_310] -> {
-                        Log.d("testType", "310")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.ic_camera310
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_584] -> {
-                        Log.d("testType", "584")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.ic_camera584
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_636] -> {
-                        Log.d("testType", "636")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.ic_camera636
-                            )
-                        })
-                    }
-
-                    myModels[MODEL_636_48MP] -> {
-                        Log.d("testType", "636_48")
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.ic_camera636
-                            )
-                        })
-                    }
-                    myModels[MODEL_410] -> {
-                        ivModelImg?.setImageDrawable(this@CameraExtraSettingsDialogFragment.context?.let {
-                            ContextCompat.getDrawable(
-                                it, R.drawable.ic_camera310
-                            )
-                        })
-                    }
+                val context = context ?: return
+                getModelImage(position)?.let {
+                    ivModelImg?.setImageDrawable(ContextCompat.getDrawable(context, it))
                 }
-                ivModelImg
             }
 
         }
 
 
-        pbValidationEmail = view?.findViewById(R.id.pbValidationEmail)
+        pbValidationEmail = view.findViewById(R.id.pbValidationEmail)
 
     }
 
@@ -253,12 +179,12 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         etTelNum?.setText(myCamera?.phoneNum)
         myCamera?.cameraModelPosition?.let { spCameraType?.setSelection(it) }
         myCamera?.lastVisitPicturePath?.let {
-            if (context != null) {
+            context?.let { context ->
                 bitmap = ImageStorageManager.getImageFromInternalStorage(
-                    requireContext(),
+                    context,
                     "image" + myCamera?.getId()
                 )
-                bitmap?.let { ibShowPicture?.setImageBitmap(bitmap) }
+                bitmap?.let { ibShowPicture?.setImageBitmap(it) }
             }
         }
     }
@@ -269,8 +195,6 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
         myCamera?.setName(etSysName?.text.toString())
         myCamera?.phoneNum = etTelNum?.text.toString()
         myCamera?.cameraModel = spCameraType?.selectedItem.toString()
-        Log.d("testType", myCamera?.getName() + "")
-        Log.d("testType", myCamera?.cameraModel + "")
         spCameraType?.selectedItemPosition?.let { myCamera?.cameraModelPosition = it }
     }
 
@@ -283,111 +207,99 @@ class CameraExtraSettingsDialogFragment : DialogFragment() {
 
 
     private fun saveLastVisitPicture() {
+        val context = context ?: return
         bitmap?.let {
-            if (context != null) {
-                myCamera?.lastVisitPicturePath = ImageStorageManager.saveToInternalStorage(
-                    requireContext(),
-                    it,
-                    "image" + myCamera?.getId()
-                )
-            }
+            myCamera?.lastVisitPicturePath = ImageStorageManager.saveToInternalStorage(
+                context,
+                it,
+                "image" + myCamera?.getId()
+            )
         }
     }
 
     //open large picture
     private fun openLargePictureDialog() {
-        if (context != null && bitmap != null) {
-            val settingsDialog = Dialog(requireContext())
-            if (settingsDialog.window != null) {
-                settingsDialog.window!!.requestFeature(FEATURE_NO_TITLE)
-                val view = layoutInflater.inflate(R.layout.fragment_large_picture_video, null)
-                settingsDialog.setContentView(view)
-                val ibClose = view.findViewById<AppCompatImageButton>(R.id.ibClose)
-                ibClose.setOnClickListener {
-                    settingsDialog.dismiss()
-                }
+        val context = context ?: return
+        val bitmap = bitmap ?: return
 
-                val width = (bitmap?.width) as Int
-                val height = (bitmap?.height) as Int
-
-                val dialogWidth = getScreenWidth(activity) * 5 / 6
-                val dialogHeight = (height / width) * dialogWidth///dialogWidth* 4 / 3
-
-
-                val ivMyCaptureImage = view.findViewById<AppCompatImageView>(R.id.ivMyCaptureImage)
-                //resize the image view according to the size of the bitmap
-                ivMyCaptureImage.layoutParams.height = dialogHeight
-                ivMyCaptureImage.layoutParams.width = dialogWidth
-                ivMyCaptureImage.requestLayout()
-                ivMyCaptureImage?.setImageBitmap(bitmap)//newBitmap
-                settingsDialog.show()
-            }
+        val settingsDialog = Dialog(context)
+        settingsDialog.window?.requestFeature(FEATURE_NO_TITLE)
+        settingsDialog.setContentView(R.layout.fragment_large_picture_video)
+        val ibClose = settingsDialog.findViewById<AppCompatImageButton>(R.id.ibClose)
+        ibClose?.setOnClickListener {
+            settingsDialog.dismiss()
         }
+
+        //keep the proportion of the picture
+        val dialogWidth = getScreenWidth(activity) * 5 / 6
+        val dialogHeight = bitmap.height * dialogWidth / bitmap.width
+
+        val ivMyCaptureImage =
+            settingsDialog.findViewById<AppCompatImageView>(R.id.ivMyCaptureImage)
+        //resize the image view according to the size of the bitmap
+        ivMyCaptureImage?.layoutParams?.height = dialogHeight
+        ivMyCaptureImage?.layoutParams?.width = dialogWidth
+        ivMyCaptureImage?.requestLayout()
+        ivMyCaptureImage?.setImageBitmap(bitmap)
+        settingsDialog.show()
     }
 
+    //return the camera to CamerasFragment and close
     private fun sendResult() {
-        if (targetFragment == null) {
-            return
-        }
-        val intent = Intent()
         val cameraStr = myCamera?.let { convertToGson(it) }
-        cameraStr?.let {
-            val bdl = Bundle()
-            bdl.putString(CAMERA_KEY, cameraStr)
-            intent.putExtras(bdl)
-        }
-        targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
-
-        dismiss()
-        //remove fragment from stack
-        //FragmentActivity.getSupportFragmentManager()
-        parentFragmentManager.popBackStack()
-
-
+        parentFragmentManager.setFragmentResult(
+            CAMERA_EXTRA_SETTINGS_RESULT_KEY,
+            Bundle().apply {
+                putBoolean(RESULT_IS_OK_KEY, true)
+                putString(CAMERA_KEY, cameraStr)
+            }
+        )
+        close()
     }
 
     private fun sendCancelResult() {
-        if (targetFragment == null) {
-            return
-        }
-        val intent = Intent()
-        targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, intent)
-        dismiss()
-        //remove fragment from stack
-        fragmentManager?.popBackStack()
+        parentFragmentManager.setFragmentResult(
+            CAMERA_EXTRA_SETTINGS_RESULT_KEY,
+            Bundle().apply { putBoolean(RESULT_IS_OK_KEY, false) }
+        )
+        close()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (requestCode == TAKE_PICTURE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) run {
-                bitmap = intent!!.extras!!.get("data") as Bitmap
+    private fun close() {
+        dismiss()
+        //remove fragment from stack
+        parentFragmentManager.popBackStack()
+    }
+
+    //callback of the camera app (returns a thumbnail)
+    private val takePictureLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { result ->
+            if (result != null) {
+                bitmap = result
                 ibShowPicture?.setImageBitmap(bitmap)
             }
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.unregisterReceiver(reciever)
-    }
-
-    private fun setFilter() {
+    override fun onStart() {
+        super.onStart()
         val filter = IntentFilter(RESULT_VALIDATION_EMAIL_ACTION)
         filter.addAction(ERROR_RESULT_VALIDATION_EMAIL_ACTION)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(reciever, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
-        } else {
-            activity?.registerReceiver(reciever, filter)
+        activity?.let {
+            ContextCompat.registerReceiver(
+                it,
+                receiver,
+                filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setFilter()
+    override fun onStop() {
+        super.onStop()
+        activity?.unregisterReceiver(receiver)
     }
 
-    private val reciever = object : BroadcastReceiver() {
+    private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == RESULT_VALIDATION_EMAIL_ACTION) {
                 pbValidationEmail?.visibility = View.GONE

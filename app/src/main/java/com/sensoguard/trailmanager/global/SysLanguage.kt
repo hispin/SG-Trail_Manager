@@ -2,8 +2,7 @@ package com.sensoguard.trailmanager.global
 
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
-import java.util.*
+import java.util.Locale
 
 
 //Get the current language of the app
@@ -12,25 +11,17 @@ fun getAppLanguage(): String {
 }
 
 //set language for the application
-fun setAppLanguage(c: Context, lang: String) {
-
-    //set always language in hebrew
-    //TODO :  if i will enable selecting language then change here
-    val localeNew = Locale("iw")
+//the app is always shown in hebrew (TODO: if selecting a language will be enabled then change here)
+fun setAppLanguage(c: Context) {
+    val localeNew = Locale.forLanguageTag("iw")
     Locale.setDefault(localeNew)
 
     val res = c.resources
     val newConfig = Configuration(res.configuration)
-    newConfig.locale = localeNew
+    newConfig.setLocale(localeNew)
     newConfig.setLayoutDirection(localeNew)
+    //the app changes the locale of the existing resources (all activities use them),
+    //createConfigurationContext would require overriding attachBaseContext in every activity
+    @Suppress("DEPRECATION")
     res.updateConfiguration(newConfig, res.displayMetrics)
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        newConfig.setLocale(localeNew)
-        c.createConfigurationContext(newConfig)
-    }
 }
-
-
-
-

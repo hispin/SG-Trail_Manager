@@ -1,5 +1,6 @@
 package com.sensoguard.trailmanager.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -49,21 +50,33 @@ class AlarmAdapter(
         return ViewHolder(view, itemClick)
     }
 
-    fun setDetects(_alarm: ArrayList<Alarm>?) {
-        _alarm?.let { alarms = it }
-        //TODO how to define with this
+    //replace all the alarms (the list is reloaded from the storage, so all items may change)
+    @SuppressLint("NotifyDataSetChanged")
+    fun setDetects(newAlarms: ArrayList<Alarm>?) {
+        newAlarms?.let { alarms = it }
+        notifyDataSetChanged()
+    }
+
+    //the icon of a level (0-100) of battery / signal
+    private fun levelIcon(level: Float?, icons: IntArray): Int? {
+        return when {
+            level == null -> null
+            level >= 0 && level < 25 -> icons[0]
+            level >= 25 && level < 50 -> icons[1]
+            level >= 50 && level < 75 -> icons[2]
+            level in 75.0..100.0 -> icons[3]
+            else -> null
+        }
     }
 
     inner class ViewHolder(
-        private val _itemView: View,
+        private val view: View,
         private val itemClick: (Alarm, Int) -> Unit
     ) :
-        RecyclerView.ViewHolder(_itemView) {
-        private var tvName:TextView?=null
-        private var tvDate:TextView? = null
-        private var tvTime:TextView? = null
-        //TODO press twice
-        private var tvType: TextView? = null
+        RecyclerView.ViewHolder(view) {
+        private var tvName: TextView? = null
+        private var tvDate: TextView? = null
+        private var tvTime: TextView? = null
         private var ivAlarmPic: AppCompatImageView? = null
         private var ivShare: AppCompatImageView? = null
         private var ivIconVideo: AppCompatImageView? = null
@@ -74,158 +87,89 @@ class AlarmAdapter(
 
         init {
             itemView.setOnLongClickListener {
-
-                //toggle the status of ready to delete
-                alarms[adapterPosition].isReadyToDelete = !alarms[adapterPosition].isReadyToDelete
-                notifyItemChanged(adapterPosition, alarms[adapterPosition])
-
+                toggleReadyToDelete()
                 return@setOnLongClickListener false
-
             }
-
         }
 
-//        init {
-//            itemView.setOnClickListener {
-//                itemClick.invoke(alarms[adapterPosition])
-//            }
-//        }
+        //toggle the status of ready to delete
+        private fun toggleReadyToDelete() {
+            val position = bindingAdapterPosition
+            if (position == RecyclerView.NO_POSITION) {
+                return
+            }
+            alarms[position].isReadyToDelete = !alarms[position].isReadyToDelete
+            notifyItemChanged(position, alarms[position])
+        }
 
 
         fun bindReservation(myAlarm: Alarm) {
-            //tvId = _itemView.findViewById(R.id.tvId)
-            tvName = _itemView.findViewById(R.id.tvName)
-            tvDate = _itemView.findViewById(R.id.tvDate)
-            tvType = _itemView.findViewById(R.id.tvType)
-            tvTime = _itemView.findViewById(R.id.tvTime)
+            tvName = view.findViewById(R.id.tvName)
+            tvDate = view.findViewById(R.id.tvDate)
+            tvTime = view.findViewById(R.id.tvTime)
 
 
-            ivAlarmPic = _itemView.findViewById(R.id.ivAlarmPic)
+            ivAlarmPic = view.findViewById(R.id.ivAlarmPic)
             ivAlarmPic?.setOnClickListener {
                 itemClick.invoke(myAlarm, 1)
-                //alarm.imgsPath?.let { it1 -> onAdapterListener.openLargePictureDialog(it1) }
             }
 
-            //because it have onclick listener ,itemView long click does not influence it, it set specify
+            //the picture has its own click listener, so the long click of the row does not reach it
             ivAlarmPic?.setOnLongClickListener {
-                alarms[adapterPosition].isReadyToDelete = !alarms[adapterPosition].isReadyToDelete
-                notifyItemChanged(adapterPosition, alarms[adapterPosition])
+                toggleReadyToDelete()
                 return@setOnLongClickListener true
             }
 
-            ivShare = _itemView.findViewById(R.id.ivShare)
+            ivShare = view.findViewById(R.id.ivShare)
             ivShare?.setOnClickListener {
                 itemClick.invoke(myAlarm, 2)
             }
-            ivIconVideo = _itemView.findViewById(R.id.ivIconVideo)
+            ivIconVideo = view.findViewById(R.id.ivIconVideo)
 
+            pbLoadPhoto = view.findViewById(R.id.pbLoadPhoto)
+            pbLoadPhoto?.visibility = if (myAlarm.isLoadPhoto) View.VISIBLE else View.GONE
 
+            ivBatteryLevel = view.findViewById(R.id.ivBatteryLevel)
+            ivWifiLevel = view.findViewById(R.id.ivWifiLevel)
 
-
-
-            pbLoadPhoto = _itemView.findViewById(R.id.pbLoadPhoto)
-            if (myAlarm.isLoadPhoto) {
-                pbLoadPhoto?.visibility = View.VISIBLE
+            val batteryIcons = if (isGrid) {
+                intArrayOf(
+                    R.drawable.battery_level_1_grid, R.drawable.battery_level_2_grid,
+                    R.drawable.battery_level_3_grid, R.drawable.battery_level_4_grid
+                )
             } else {
-                pbLoadPhoto?.visibility = View.GONE
+                intArrayOf(
+                    R.drawable.battery_level_1_list, R.drawable.battery_level_2_list,
+                    R.drawable.battery_level_3_list, R.drawable.battery_level_4_list
+                )
             }
+            levelIcon(
+                myAlarm.batteryVal,
+                batteryIcons
+            )?.let { ivBatteryLevel?.setImageResource(it) }
 
-            ivBatteryLevel = _itemView.findViewById(R.id.ivBatteryLevel)
-            ivWifiLevel = _itemView.findViewById(R.id.ivWifiLevel)
-
-            val batteryLevel = myAlarm.batteryVal
-            if (batteryLevel != null) {
-
-                if (batteryLevel >= 0 && batteryLevel < 25) {
-                    if (isGrid) {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_1_grid)
-                    } else {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_1_list)
-                    }
-                } else if (batteryLevel >= 25 && batteryLevel < 50) {
-                    if (isGrid) {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_2_grid)
-                    } else {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_2_list)
-                    }
-                } else if (batteryLevel >= 50 && batteryLevel < 75) {
-
-                    if (isGrid) {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_3_grid)
-                    } else {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_3_list)
-                    }
-
-                } else if (batteryLevel in 75.0..100.0) {
-                    if (isGrid) {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_4_grid)
-                    } else {
-                        ivBatteryLevel?.setImageResource(R.drawable.battery_level_4_list)
-                    }
-                }
+            val wifiIcons = if (isGrid) {
+                intArrayOf(
+                    R.drawable.wifi_level_1_grid, R.drawable.wifi_level_2_grid,
+                    R.drawable.wifi_level_3_grid, R.drawable.wifi_level_4_grid
+                )
+            } else {
+                intArrayOf(
+                    R.drawable.wifi_level_1_list, R.drawable.wifi_level_2_list,
+                    R.drawable.wifi_level_3_list, R.drawable.wifi_level_4_list
+                )
             }
+            levelIcon(myAlarm.wifiVal, wifiIcons)?.let { ivWifiLevel?.setImageResource(it) }
 
-            val wifiLevel = myAlarm.wifiVal
-            if (wifiLevel != null) {
-
-                if (wifiLevel >= 0 && wifiLevel < 25) {
-                    if (isGrid) {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_1_grid)
-                    } else {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_1_list)
-                    }
-                } else if (wifiLevel >= 25 && wifiLevel < 50) {
-                    if (isGrid) {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_2_grid)
-                    } else {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_2_list)
-                    }
-                } else if (wifiLevel >= 50 && wifiLevel < 75) {
-
-                    if (isGrid) {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_3_grid)
-                    } else {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_3_list)
-                    }
-
-                } else if (wifiLevel in 75.0..100.0) {
-                    if (isGrid) {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_4_grid)
-                    } else {
-                        ivWifiLevel?.setImageResource(R.drawable.wifi_level_4_list)
-                    }
-                }
-            }
-
-
-
-            if (!isGrid) {
-                tvDate?.text = myAlarm.timeInMillis?.let {
-                    getStrDateTimeByMilliSeconds(
-                        it,
-                        "dd/MM/yyyy",
-                        context
-                    )
-                }
-            }else{
-                tvDate?.text = myAlarm.timeInMillis?.let {
-                    getStrDateTimeByMilliSeconds(
-                        it,
-                        "dd/MM/yy",
-                        context
-                    )
-                }
-            }
+            val dateFormat = if (isGrid) "dd/MM/yy" else "dd/MM/yyyy"
+            tvDate?.text =
+                myAlarm.timeInMillis?.let { getStrDateTimeByMilliSeconds(it, dateFormat, context) }
             tvTime?.text =
                 myAlarm.timeInMillis?.let { getStrDateTimeByMilliSeconds(it, "kk:mm", context) }
-            tvType?.text = myAlarm.type
             tvName?.text = myAlarm.name
 
             //get the image from external storage
             val imgFile = myAlarm.imgsPath?.let { File(it) }
-
-            //get the image from internal storage
-            //val imgFile = myAlarm.imgsPath?.let { File(context.filesDir, it) }
 
             if (imgFile != null && imgFile.exists()) {
 
@@ -253,12 +197,9 @@ class AlarmAdapter(
                                 dataSource: DataSource,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                //if the the image is video then show the video icon
-                                if (imgFile.absolutePath.endsWith("mp4")) {
-                                    ivIconVideo?.visibility = View.VISIBLE
-                                } else {
-                                    ivIconVideo?.visibility = View.GONE
-                                }
+                                //if the file is a video then show the video icon
+                                ivIconVideo?.visibility =
+                                    if (imgFile.absolutePath.endsWith("mp4")) View.VISIBLE else View.GONE
                                 return false
                             }
 
@@ -268,11 +209,7 @@ class AlarmAdapter(
             }
 
             //set selected/unselected
-            if (myAlarm.isReadyToDelete) {
-                itemView.alpha = 0.5F
-            } else {
-                itemView.alpha = 1.0F
-            }
+            itemView.alpha = if (myAlarm.isReadyToDelete) 0.5F else 1.0F
         }
     }
 }

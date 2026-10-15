@@ -2,7 +2,8 @@ package com.sensoguard.trailmanager.interfaces
 
 import com.sensoguard.trailmanager.classes.Camera
 
+//callback from an adapter of cameras to the fragment
 interface OnAdapterListener {
-    fun saveNameSensor(detector: Camera)
-    fun saveCamera(detector: Camera)
+    //the user renamed the camera
+    fun saveNameSensor(camera: Camera)
 }

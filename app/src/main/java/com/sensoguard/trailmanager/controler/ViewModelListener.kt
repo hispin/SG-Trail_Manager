@@ -4,20 +4,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import java.util.*
+import java.util.Calendar
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 
 class ViewModelListener : ViewModel() {
 
-    private var t: ScheduledFuture<*>? = null
     private var scheduleTaskExecutor: ScheduledExecutorService? = null
 
 
-    //listener to changes when the timer interval is time out
+    //listener to the ticks of the timer
     private var currentCalendar: MutableLiveData<Calendar>? = null
 
     fun startCurrentCalendarListener(): LiveData<Calendar>? {
@@ -30,23 +28,18 @@ class ViewModelListener : ViewModel() {
     }
 
 
-    fun startTimer(){
-        //if there is already at least one alarm ,it is not necessary to initial the timer
-        if(scheduleTaskExecutor==null
-            || (scheduleTaskExecutor?.isShutdown!=null && scheduleTaskExecutor?.isShutdown!!)
-        ) {
+    fun startTimer() {
+        //if there is already a running timer ,it is not necessary to initial the timer
+        if (scheduleTaskExecutor == null || scheduleTaskExecutor?.isShutdown == true) {
             scheduleTaskExecutor = Executors.newScheduledThreadPool(1)
             executeTimer()
         }
     }
 
-    // execute the time
+    // execute the timer every 1 second
+    // (fixed delay: after the device sleeps the missed ticks are not executed all at once)
     private fun executeTimer() {
-        //Log.d("testTimer", "initial timer")
-
-        // This schedule a task to run every 1 second:
-        scheduleTaskExecutor?.scheduleAtFixedRate({
-            Log.d("testTimer", "tick")
+        scheduleTaskExecutor?.scheduleWithFixedDelay({
             try {
                 this.currentCalendar?.postValue(Calendar.getInstance())
             } catch (ex: Exception) {
@@ -57,8 +50,11 @@ class ViewModelListener : ViewModel() {
     }
 
     //shut down the timer
-    fun shutDownTimer(){
-        Log.d("testTimer", "shutDownTimer")
+    fun shutDownTimer() {
         scheduleTaskExecutor?.shutdownNow()
+    }
+
+    override fun onCleared() {
+        shutDownTimer()
     }
 }

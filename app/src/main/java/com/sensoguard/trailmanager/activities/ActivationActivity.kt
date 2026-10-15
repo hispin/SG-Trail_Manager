@@ -1,12 +1,9 @@
 package com.sensoguard.trailmanager.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -18,6 +15,7 @@ import com.sensoguard.trailmanager.global.ACTIVATION_CODE_KEY
 import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
 import com.sensoguard.trailmanager.global.IMEI_KEY
 import com.sensoguard.trailmanager.global.TEST_ACTIVATION
+import com.sensoguard.trailmanager.global.applySystemBarsInsets
 import com.sensoguard.trailmanager.global.setStringInPreference
 import org.apache.commons.lang3.StringUtils
 
@@ -33,6 +31,7 @@ class ActivationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_activation)
+        applySystemBarsInsets()
 
         init()
 
@@ -56,18 +55,16 @@ class ActivationActivity : AppCompatActivity() {
         etEnterCode=findViewById(R.id.etEnterCode)
 
 
-        etEnterCode?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // do something, e.g. set your TextView here via .setText()
-                    val imm=v?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.windowToken, 0)
-
-                    return true
-                }
-                return false
+        etEnterCode?.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                //hide the keyboard
+                v.context.getSystemService(InputMethodManager::class.java)
+                    ?.hideSoftInputFromWindow(v.windowToken, 0)
+                true
+            } else {
+                false
             }
-        })
+        }
     }
 
     private fun onClickSignIn() {
@@ -90,9 +87,6 @@ class ActivationActivity : AppCompatActivity() {
                     etEnterCode?.text.toString()
                 )
                 openCameraScreen()
-//                val inn = Intent(this, MainActivity::class.java)
-//                inn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                startActivity(Intent(inn))
             } else {
                 Toast.makeText(
                     this,

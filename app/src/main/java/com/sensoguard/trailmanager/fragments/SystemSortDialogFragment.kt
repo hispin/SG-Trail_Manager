@@ -1,10 +1,7 @@
 package com.sensoguard.trailmanager.fragments
 
-import android.app.Activity
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +13,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,32 +22,37 @@ import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.adapters.SystemSortDialogAdapter
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.global.CAMERA_KEY
-import com.sensoguard.trailmanager.global.DETECTORS_LIST_KEY_PREF
-import com.sensoguard.trailmanager.global.ERROR_RESP
+import com.sensoguard.trailmanager.global.RESULT_IS_OK_KEY
 import com.sensoguard.trailmanager.global.SORT_BY_DATETIME_KEY
 import com.sensoguard.trailmanager.global.SORT_BY_SYSTEM_KEY
+import com.sensoguard.trailmanager.global.SORT_BY_SYSTEM_RESULT_KEY
+import com.sensoguard.trailmanager.global.SORT_FROM_TIME_KEY
+import com.sensoguard.trailmanager.global.SORT_PICK_DATE_TIME_RESULT_KEY
+import com.sensoguard.trailmanager.global.SORT_TO_TIME_KEY
 import com.sensoguard.trailmanager.global.SORT_TYPE_KEY
-import com.sensoguard.trailmanager.global.convertJsonToSensorList
 import com.sensoguard.trailmanager.global.convertToGson
+import com.sensoguard.trailmanager.global.getCamerasFromLocally
 import com.sensoguard.trailmanager.global.getStringFromCalendar
-import com.sensoguard.trailmanager.global.getStringInPreference
 import com.squareup.timessquare.CalendarPickerView
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
+//filter of the alarm log: by cameras or by date range
+//the result is returned to AlarmLogFragment with the keys SORT_BY_SYSTEM_RESULT_KEY / SORT_PICK_DATE_TIME_RESULT_KEY
 class SystemSortDialogFragment : DialogFragment(),
     CalendarPickerView.OnDateSelectedListener {
 
     private var sortType: Int? = null
     private var myCalendar: CalendarPickerView? = null
-    private var myCameras: ArrayList<Camera>? = null
+    private var myCameras: ArrayList<Camera> = ArrayList()
     private var rvSystemCameras: RecyclerView? = null
     private var systemFilterDialogAdapter: SystemSortDialogAdapter? = null
     private var btnApplySort: AppCompatButton? = null
     private var btnCancelSort: AppCompatButton? = null
     private var conTitle: ConstraintLayout? = null
-    private var fromCalendar: Calendar? = Calendar.getInstance()
-    private var toCalendar: Calendar? = Calendar.getInstance()
+    private val fromCalendar: Calendar = Calendar.getInstance()
+    private val toCalendar: Calendar = Calendar.getInstance()
     private var tvFromDate: TextView? = null
     private var tvToDate: TextView? = null
     private var btnFromTime: Button? = null
@@ -69,9 +72,7 @@ class SystemSortDialogFragment : DialogFragment(),
 
         initViews(view)
 
-
-        val bundle = arguments
-        sortType = bundle?.getInt(SORT_TYPE_KEY, -1)
+        sortType = arguments?.getInt(SORT_TYPE_KEY, -1)
         if (sortType == SORT_BY_SYSTEM_KEY) {
             rvSystemCameras?.visibility = View.VISIBLE
             conTitle?.visibility = View.VISIBLE
@@ -84,10 +85,7 @@ class SystemSortDialogFragment : DialogFragment(),
             myCalendar?.visibility = View.VISIBLE
             linerCalendarContainer?.visibility = View.VISIBLE
             initDateTime()
-            setFromToDateFromCalender()
         }
-
-
 
         return view
     }
@@ -101,9 +99,7 @@ class SystemSortDialogFragment : DialogFragment(),
         val prevYear: Calendar = Calendar.getInstance()
         prevYear.add(Calendar.YEAR, -2)
 
-        val today = Date()
-
-        myCalendar?.init(prevYear.time, nextYear.time)?.withSelectedDate(today)
+        myCalendar?.init(prevYear.time, nextYear.time)?.withSelectedDate(Date())
             ?.inMode(CalendarPickerView.SelectionMode.RANGE)
 
         myCalendar?.setOnDateSelectedListener(this)
@@ -113,129 +109,103 @@ class SystemSortDialogFragment : DialogFragment(),
     }
 
 
-    private fun initViews(view: View?) {
-        rvSystemCameras = view?.findViewById(R.id.rvSystemCameras)
-        btnApplySort = view?.findViewById(R.id.btnApplySort)
+    private fun initViews(view: View) {
+        rvSystemCameras = view.findViewById(R.id.rvSystemCameras)
+        btnApplySort = view.findViewById(R.id.btnApplySort)
         btnApplySort?.setOnClickListener {
             sendResult(true)
         }
 
-        btnCancelSort = view?.findViewById(R.id.btnCancelSort)
+        btnCancelSort = view.findViewById(R.id.btnCancelSort)
         btnCancelSort?.setOnClickListener {
             sendResult(false)
         }
 
-        conTitle = view?.findViewById(R.id.conTitle)
-        myCalendar = view?.findViewById(R.id.calendar_view) as CalendarPickerView
+        conTitle = view.findViewById(R.id.conTitle)
+        myCalendar = view.findViewById(R.id.calendar_view)
 
         tvFromDate = view.findViewById(R.id.tvFromDate)
         tvToDate = view.findViewById(R.id.tvToDate)
         btnFromTime = view.findViewById(R.id.btnFromTime)
         btnFromTime?.setOnClickListener {
-            val hour = fromCalendar?.get(Calendar.HOUR_OF_DAY)
-            val minutes = fromCalendar?.get(Calendar.MINUTE)
-            if (hour != null && minutes != null) {
-                openTimeDialog(hour, minutes, true)
-            }
+            openTimeDialog(
+                fromCalendar.get(Calendar.HOUR_OF_DAY),
+                fromCalendar.get(Calendar.MINUTE),
+                true
+            )
         }
         btnToTime = view.findViewById(R.id.btnToTime)
         btnToTime?.setOnClickListener {
-            val hour = toCalendar?.get(Calendar.HOUR_OF_DAY)
-            val minutes = toCalendar?.get(Calendar.MINUTE)
-            if (hour != null && minutes != null) {
-                openTimeDialog(hour, minutes, false)
-            }
+            openTimeDialog(
+                toCalendar.get(Calendar.HOUR_OF_DAY),
+                toCalendar.get(Calendar.MINUTE),
+                false
+            )
         }
         linerCalendarContainer = view.findViewById(R.id.linerCalendarContainer)
     }
 
-    //set the current selected date
-    private fun setFromToDateFromCalender() {
-
+    //copy the date (without the time) to the calendar
+    private fun setDate(calendar: Calendar, date: Date) {
         val tmp = Calendar.getInstance()
+        tmp.time = date
+        calendar.set(Calendar.YEAR, tmp.get(Calendar.YEAR))
+        calendar.set(Calendar.MONTH, tmp.get(Calendar.MONTH))
+        calendar.set(Calendar.DAY_OF_MONTH, tmp.get(Calendar.DAY_OF_MONTH))
+    }
 
-        if (myCalendar?.selectedDates?.size != null && myCalendar?.selectedDates?.size!! > 0) {
-            tmp.time = myCalendar?.selectedDates?.first()
-            fromCalendar?.set(Calendar.YEAR, tmp.get(Calendar.YEAR))
-            fromCalendar?.set(Calendar.MONTH, tmp.get(Calendar.MONTH))
-            fromCalendar?.set(Calendar.DAY_OF_MONTH, tmp.get(Calendar.DAY_OF_MONTH))
-            //fromCalendar?.time=myCalendar?.selectedDates?.first()
+    //set the current selected date (the range is from the first to the last selected date)
+    private fun setFromToDateFromCalender() {
+        val selectedDates = myCalendar?.selectedDates
+        if (!selectedDates.isNullOrEmpty()) {
+            setDate(fromCalendar, selectedDates.first())
+            setDate(toCalendar, selectedDates.last())
         }
-        if (myCalendar?.selectedDates?.size != null && myCalendar?.selectedDates?.size!! > 1) {
-            tmp.time = myCalendar?.selectedDates?.last()
-            toCalendar?.set(Calendar.YEAR, tmp.get(Calendar.YEAR))
-            toCalendar?.set(Calendar.MONTH, tmp.get(Calendar.MONTH))
-            toCalendar?.set(Calendar.DAY_OF_MONTH, tmp.get(Calendar.DAY_OF_MONTH))
-            //toCalendar?.time=myCalendar?.selectedDates?.last()
-        } else if (myCalendar?.selectedDates?.size != null && myCalendar?.selectedDates?.size!! == 1) {
-            tmp.time = myCalendar?.selectedDates?.first()
-            toCalendar?.set(Calendar.YEAR, tmp.get(Calendar.YEAR))
-            toCalendar?.set(Calendar.MONTH, tmp.get(Calendar.MONTH))
-            toCalendar?.set(Calendar.DAY_OF_MONTH, tmp.get(Calendar.DAY_OF_MONTH))
-            //toCalendar?.time=myCalendar?.selectedDates?.first()
-        }
-
         setFromToTime()
-//        fromCalendar?.let {
-//            val fromDateStr=activity?.let { it1 -> getStringFromCalendar(it, "dd/MM/yy", it1) }
-//            tvFromDate?.text = fromDateStr
-//            val fromTimeStr=activity?.let { it1 -> getStringFromCalendar(it, "kk:mm", it1) }
-//            btnFromTime?.setText(fromTimeStr)
-//        }
-//        toCalendar?.let {
-//            val toDateStr=activity?.let { it1 -> getStringFromCalendar(it, "dd/MM/yy", it1) }
-//            tvToDate?.text = toDateStr
-//            val toTimeStr=activity?.let { it1 -> getStringFromCalendar(it, "kk:mm", it1) }
-//            btnToTime?.setText(toTimeStr)
-//        }
     }
 
     //set selected time
     private fun setFromToTime() {
-        fromCalendar?.let {
-            val fromDateStr = activity?.let { it1 -> getStringFromCalendar(it, "dd/MM/yy", it1) }
-            tvFromDate?.text = fromDateStr
-            val fromTimeStr = activity?.let { it1 -> getStringFromCalendar(it, "kk:mm", it1) }
-            btnFromTime?.setText(fromTimeStr)
-        }
-        toCalendar?.let {
-            val toDateStr = activity?.let { it1 -> getStringFromCalendar(it, "dd/MM/yy", it1) }
-            tvToDate?.text = toDateStr
-            val toTimeStr = activity?.let { it1 -> getStringFromCalendar(it, "kk:mm", it1) }
-            btnToTime?.setText(toTimeStr)
-        }
+        val context = activity ?: return
+        tvFromDate?.text = getStringFromCalendar(fromCalendar, "dd/MM/yy", context)
+        btnFromTime?.text = getStringFromCalendar(fromCalendar, "kk:mm", context)
+        tvToDate?.text = getStringFromCalendar(toCalendar, "dd/MM/yy", context)
+        btnToTime?.text = getStringFromCalendar(toCalendar, "kk:mm", context)
     }
+
+    //the key of the result according to the type of the sort
+    private fun getResultKey(): String =
+        if (sortType == SORT_BY_SYSTEM_KEY) SORT_BY_SYSTEM_RESULT_KEY else SORT_PICK_DATE_TIME_RESULT_KEY
 
     private fun sendResult(isOk: Boolean) {
         if (!isOk) {
-            val intent = Intent()
-            targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, intent)
+            parentFragmentManager.setFragmentResult(
+                getResultKey(),
+                Bundle().apply { putBoolean(RESULT_IS_OK_KEY, false) })
             dismiss()
-            return
-        }
-
-
-        if (targetFragment == null) {
             return
         }
 
         if (sortType == SORT_BY_SYSTEM_KEY) {
-            val intent = Intent()
-            val cameraStr = myCameras?.let { convertToGson(it) }
-            cameraStr?.let {
-                val bdl = Bundle()
-                bdl.putString(CAMERA_KEY, cameraStr)
-                intent.putExtras(bdl)
-            }
-            targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+            parentFragmentManager.setFragmentResult(
+                SORT_BY_SYSTEM_RESULT_KEY,
+                Bundle().apply {
+                    putBoolean(RESULT_IS_OK_KEY, true)
+                    putString(CAMERA_KEY, convertToGson(myCameras))
+                }
+            )
             dismiss()
         } else if (sortType == SORT_BY_DATETIME_KEY) {
 
-            if (fromCalendar != null && fromCalendar!!.before(toCalendar)) {
-                val intent = Intent()
-                intent.putExtra("fromCalendar", fromCalendar)
-                intent.putExtra("toCalendar", toCalendar)
-                targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+            if (fromCalendar.before(toCalendar)) {
+                parentFragmentManager.setFragmentResult(
+                    SORT_PICK_DATE_TIME_RESULT_KEY,
+                    Bundle().apply {
+                        putBoolean(RESULT_IS_OK_KEY, true)
+                        putLong(SORT_FROM_TIME_KEY, fromCalendar.timeInMillis)
+                        putLong(SORT_TO_TIME_KEY, toCalendar.timeInMillis)
+                    }
+                )
                 dismiss()
             } else {
                 Toast.makeText(
@@ -245,8 +215,6 @@ class SystemSortDialogFragment : DialogFragment(),
                 ).show()
             }
         }
-
-
     }
 
     override fun onStart() {
@@ -255,98 +223,52 @@ class SystemSortDialogFragment : DialogFragment(),
     }
 
     private fun initCamerasAdapter() {
+        val context = activity ?: return
 
-        myCameras = ArrayList()
-
-        if (activity == null) return
-        val itemDecorator = DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-        itemDecorator.setDrawable(
-            ContextCompat.getDrawable(
-                requireActivity(),
-                R.drawable.divider
-            )!!
-        )
+        val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        ContextCompat.getDrawable(context, R.drawable.divider)
+            ?.let { itemDecorator.setDrawable(it) }
         rvSystemCameras?.addItemDecoration(itemDecorator)
 
-        systemFilterDialogAdapter = activity?.let { adapter ->
-            myCameras?.let { arr ->
-                SystemSortDialogAdapter(arr, adapter) { _camera ->
-                }
-            }
-        }
+        systemFilterDialogAdapter = SystemSortDialogAdapter(myCameras)
         rvSystemCameras?.adapter = systemFilterDialogAdapter
-        val layoutManager = LinearLayoutManager(activity)
-        rvSystemCameras?.layoutManager = layoutManager
-
-        systemFilterDialogAdapter?.notifyDataSetChanged()
-
-
+        rvSystemCameras?.layoutManager = LinearLayoutManager(context)
     }
 
 
     private fun refreshSystemCamerasFromPref() {
-        myCameras = ArrayList()
-        val detectorListStr = getStringInPreference(activity, DETECTORS_LIST_KEY_PREF, ERROR_RESP)
-
-        if (detectorListStr.equals(ERROR_RESP)) {
-
-        } else {
-
-            detectorListStr?.let {
-                val temp = convertJsonToSensorList(it)
-                temp?.let { tmp ->
-                    myCameras = ArrayList(tmp)
-                }
-            }
-        }
-
+        val context = activity ?: return
+        myCameras = getCamerasFromLocally(context)?.let { ArrayList(it) } ?: ArrayList()
         systemFilterDialogAdapter?.setDetects(myCameras)
-        systemFilterDialogAdapter?.notifyDataSetChanged()
     }
 
 
     override fun onDateSelected(date: Date?) {
-
         setFromToDateFromCalender()
     }
 
     override fun onDateUnselected(date: Date?) {
-
-
+        //the range is updated when a date is selected
     }
 
-    var tp: TimePickerDialog? = null
     private fun openTimeDialog(mHour: Int, mMinute: Int, isFrom: Boolean) {
         val tp = TimePickerDialog(
             context,
             R.style.DateTimeDialog,
-            TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
-
-                tp?.cancel()
-
-                if (isFrom) {
-                    fromCalendar?.set(Calendar.HOUR_OF_DAY, hour)
-                    fromCalendar?.set(Calendar.MINUTE, minute)
-                } else {
-                    toCalendar?.set(Calendar.HOUR_OF_DAY, hour)
-                    toCalendar?.set(Calendar.MINUTE, minute)
-                }
-
+            { _, hour, minute ->
+                val calendar = if (isFrom) fromCalendar else toCalendar
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
                 setFromToTime()
-
-
             },
             mHour,
             mMinute,
             true
         )
 
-        tp.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        tp.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         tp.show()
     }
 
 
 }
-
-
-

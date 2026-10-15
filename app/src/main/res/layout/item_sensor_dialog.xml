@@ -53,6 +53,7 @@
             android:id="@+id/etName"
             tool:text="dddd"
             android:hint="@string/rename"
+            android:importantForAutofill="no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13.3sp"

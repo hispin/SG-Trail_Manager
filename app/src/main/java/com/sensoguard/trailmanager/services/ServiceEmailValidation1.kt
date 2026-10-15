@@ -1,78 +1,45 @@
 package com.sensoguard.trailmanager.services
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
-import androidx.core.app.NotificationCompat
-import com.sensoguard.trailmanager.R
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.EmailsManage
 import com.sensoguard.trailmanager.global.CAMERA_KEY
+import com.sensoguard.trailmanager.global.FOREGROUND_TYPE_DATA_SYNC
 import com.sensoguard.trailmanager.global.RESULT_VALIDATION_EMAIL_ACTION
 import com.sensoguard.trailmanager.global.VALIDATION_EMAIL_RESULT
 import com.sensoguard.trailmanager.global.convertJsonToSensor
+import com.sensoguard.trailmanager.global.startForegroundWithNotification
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ServiceEmailValidation1 : Service() {
+//check the connection to the email account of a camera (IMAP) in the background and broadcast the result
+class ServiceEmailValidation1 : LifecycleService() {
 
-    private var myCamera: Camera? = null
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        startForegroundWithNotification(FOREGROUND_TYPE_DATA_SYNC)
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+        val myCamera: Camera? =
+            intent?.extras?.getString(CAMERA_KEY, null)?.let { convertJsonToSensor(it) }
 
-    override fun onStartCommand(myIntent: Intent?, flags: Int, startId: Int): Int {
-        startSysForeGround()
-
-        val cameraStr = myIntent?.extras?.getString(CAMERA_KEY, null)
-        cameraStr?.let { myCamera = convertJsonToSensor(cameraStr) }
-
-        object : Thread() {
-            override fun run() {
-                super.run()
-                val resultConnection = EmailsManage.getInstance()
-                    .emailValidation(myCamera, this@ServiceEmailValidation1)
-                val inn = Intent(RESULT_VALIDATION_EMAIL_ACTION)
-                inn.putExtra(VALIDATION_EMAIL_RESULT, resultConnection)
-                sendBroadcast(inn)
-                stopSelf()
-            }
-        }.start()
-
-        return START_STICKY
-    }
-
-
-    //The system allows apps to call Context.startForegroundService() even while the app is in the background. However, the app must call that service's startForeground() method within five seconds after the service is created
-    private fun startSysForeGround() {
-        fun getNotificationIcon(): Int {
-            val useWhiteIcon =
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            return if (useWhiteIcon) R.drawable.ic_app_notification else R.mipmap.ic_launcher
+        lifecycleScope.launch {
+            val resultConnection = myCamera?.let { camera ->
+                withContext(Dispatchers.IO) {
+                    EmailsManage.getInstance().emailValidation(camera, this@ServiceEmailValidation1)
+                }
+            } ?: false
+            val inn = Intent(RESULT_VALIDATION_EMAIL_ACTION)
+            inn.setPackage(packageName)
+            inn.putExtra(VALIDATION_EMAIL_RESULT, resultConnection)
+            sendBroadcast(inn)
+            stopSelf(startId)
         }
-        if (Build.VERSION.SDK_INT >= 26) {
-            val CHANNEL_ID = "my_channel_01"
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Channel human readable title",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
 
-            val `object` = getSystemService(Context.NOTIFICATION_SERVICE)
-            if (`object` != null && `object` is NotificationManager) {
-                `object`.createNotificationChannel(channel)
-            }
-
-            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentText("SG-Trail Manager is running")
-                .setSmallIcon(getNotificationIcon())
-                .build()
-
-            startForeground(1, notification)
-        }
+        //a one time check, do not restart the service if it is killed
+        return START_NOT_STICKY
     }
 
 }

@@ -1,32 +1,25 @@
 package com.sensoguard.trailmanager.activities
 
 import android.Manifest
-import android.app.Activity
 import android.app.ActivityManager
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnTouchListener
+import android.util.Log
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.sensoguard.trailmanager.R
-import com.sensoguard.trailmanager.classes.GeneralItemMenu
 import com.sensoguard.trailmanager.fragments.AlarmLogFragment
 import com.sensoguard.trailmanager.fragments.CameraCommandsDialogFragment
 import com.sensoguard.trailmanager.fragments.CamerasFragment
@@ -35,12 +28,12 @@ import com.sensoguard.trailmanager.fragments.MapSensorsFragment
 import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS
 import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_KEY
 import com.sensoguard.trailmanager.global.CURRENT_ITEM_TOP_MENU_KEY
-import com.sensoguard.trailmanager.global.IS_MYSCREENACTIVITY_FOREGROUND
+import com.sensoguard.trailmanager.global.IS_MY_SCREENS_ACTIVITY_FOREGROUND
 import com.sensoguard.trailmanager.global.MAIN_MENU_NUM_ITEM
 import com.sensoguard.trailmanager.global.MAP_SHOW_SATELLITE_VALUE
 import com.sensoguard.trailmanager.global.MAP_SHOW_VIEW_TYPE_KEY
 import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
-import com.sensoguard.trailmanager.global.USB_CONNECTION_FAILED
+import com.sensoguard.trailmanager.global.applySystemBarsInsets
 import com.sensoguard.trailmanager.global.getIntInPreference
 import com.sensoguard.trailmanager.global.getLongInPreference
 import com.sensoguard.trailmanager.global.getStringInPreference
@@ -52,28 +45,31 @@ import com.sensoguard.trailmanager.global.setStringInPreference
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 
 
+//the titles and the icons of the tabs (by the order of the pages)
+private val TAB_TITLES = intArrayOf(
+    R.string.cameras_title,
+    R.string.map_title,
+    R.string.config_title,
+    R.string.alarm_log_title
+)
+private val TAB_ICONS = intArrayOf(
+    R.drawable.selected_sensor_tab,
+    R.drawable.selected_map_tab,
+    R.drawable.selected_config_tab,
+    R.drawable.selected_alarm_log_tab
+)
+
 class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
-
-    // When requested, this adapter returns a DemoObjectFragment,
-    // representing an object in the collection.
-    private lateinit var collectionPagerAdapter: CollectionPagerAdapter
-    private lateinit var viewPager: ViewPager
     private var currentItemTopMenu = 0
-    //private var togChangeStatus: ToggleButton? = null
-
-
-    val TAG = "MyScreensActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
 
-        //configurationLanguage()
-
         setContentView(R.layout.activity_my_screens)
+
+        applySystemBarsInsets()
 
         //add back button
         setBackHandler()
@@ -84,6 +80,8 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         currentItemTopMenu = intent.getIntExtra(CURRENT_ITEM_TOP_MENU_KEY, 0)
 
         init()
+
+        requestNotificationPermission()
     }
 
     /**
@@ -99,11 +97,12 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
                         supportFragmentManager.findFragmentByTag("CameraCommandsDialogFragment")
                     if (fragment != null && fragment.isVisible) {
                         val res = (fragment as CameraCommandsDialogFragment).onBackPressed()
-                        // res is false when show extra command, the back button is change the to the previous list
-                        if (!res) {
-                            return
-                        } else {// res is true when show main command, the back button dismissed the fragment
+                        // res is false when the extra commands are shown: the back button returns to the previous list
+                        // res is true when the main commands are shown: the back button dismisses the fragment
+                        if (res) {
                             fragment.dismiss()
+                            //remove also the entry of the back stack (the dialog was added with addToBackStack)
+                            supportFragmentManager.popBackStack()
                         }
                     } else {// when CameraCommandsDialogFragment is not visible ,the back button is  close activity
                         finish()
@@ -128,30 +127,9 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         if (getStringInPreference(this, SELECTED_NOTIFICATION_SOUND_KEY, "-1").equals("-1")) {
 
-            val uri=Uri.parse("android.resource://$packageName/raw/alarm_sound")
+            val uri = "android.resource://$packageName/raw/alarm_sound".toUri()
 
             setStringInPreference(this, SELECTED_NOTIFICATION_SOUND_KEY, uri.toString())
-        }
-    }
-
-    private val usbReceiver = object : BroadcastReceiver() {
-        override fun onReceive(arg0: Context, arg1: Intent) {
-            when {
-                arg1.action == USB_CONNECTION_FAILED -> {
-                    editActionBar(false)
-                }
-
-            }
-        }
-    }
-
-    private fun setFilter() {
-        val filter = IntentFilter(USB_CONNECTION_FAILED)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(usbReceiver, filter, RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(usbReceiver, filter)
         }
     }
 
@@ -164,25 +142,12 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
     }
 
-//    @Override
-//    protected override fun attachBaseContext(newBase:Context) {
-//        configurationLanguage()
-//    }
-
-
-    private fun editActionBar(state: Boolean) {
-        //togChangeStatus?.isChecked = state
-    }
-
-    //TODO : the toggle will updated by the status changing
     private fun configureActionBar() {
 
-        val toolbar =
-            findViewById<androidx.appcompat.widget.Toolbar>(com.sensoguard.trailmanager.R.id.toolbar)//supportActionBar
-        val btnClearData: Button =
-            toolbar.findViewById(com.sensoguard.trailmanager.R.id.btnClearData)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val btnClearData: Button = toolbar.findViewById(R.id.btnClearData)
         btnClearData.setOnClickListener {
-            showClearDtaDialog()
+            showClearDataDialog()
         }
         setSupportActionBar(toolbar)
 
@@ -193,17 +158,9 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
      */
     private fun clearAppData() {
         try {/* clearing app data */
-            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-//            if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-//                val service = (this.getSystemService(ACTIVITY_SERVICE) as ActivityManager?)
-//                service?.clearApplicationUserData()
-//            } else {
-//                val packageName: String = packageName
-//                val runtime = Runtime.getRuntime()
-//                runtime.exec("pm clear $packageName")
-//            }
+            getSystemService(ActivityManager::class.java)?.clearApplicationUserData()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.w("MyScreensActivity", "clear data failed", e)
         }
     }
 
@@ -211,241 +168,97 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
     /**
      * show dialog before clear data
      */
-    private fun showClearDtaDialog() {
-
-
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(this.resources.getString(R.string.clear_data))
-        val yes = resources.getString(R.string.yes)
-        val no = resources.getString(R.string.no)
-        builder.setMessage(resources.getString(R.string.do_you_realy_want_clear_data))
+    private fun showClearDataDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(resources.getString(R.string.clear_data))
+            .setMessage(resources.getString(R.string.do_you_really_want_clear_data))
             .setCancelable(false)
-        builder.setPositiveButton(yes) { dialog, _ ->
-            clearAppData()
-            dialog.dismiss()
-        }
-
-
-        // Display a negative button on alert dialog
-        builder.setNegativeButton(no) { dialog, which ->
-            dialog.dismiss()
-        }
-        val alert = builder.create()
-        alert.show()
+            .setPositiveButton(resources.getString(R.string.yes)) { dialog, _ ->
+                clearAppData()
+                dialog.dismiss()
+            }
+            // Display a negative button on alert dialog
+            .setNegativeButton(resources.getString(R.string.no)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 
     override fun onPause() {
         super.onPause()
-        setBooleanInPreference(this, IS_MYSCREENACTIVITY_FOREGROUND, false)
+        setBooleanInPreference(this, IS_MY_SCREENS_ACTIVITY_FOREGROUND, false)
     }
 
     override fun onResume() {
         super.onResume()
-        setBooleanInPreference(this, IS_MYSCREENACTIVITY_FOREGROUND, true)
+        setBooleanInPreference(this, IS_MY_SCREENS_ACTIVITY_FOREGROUND, true)
     }
 
     private fun configTabs() {
+        val viewPager = findViewById<ViewPager2>(R.id.vPager)
+        viewPager.adapter = CollectionPagerAdapter(this)
+        //the pages are changed by the tabs only (no swipe)
+        viewPager.isUserInputEnabled = false
+        //keep the next page ready (as the previous ViewPager did)
+        viewPager.offscreenPageLimit = 1
 
-        //val tabs = findViewById<TabLayout>(R.id.tab_layout)
+        //the tabs of the pages (title and icon)
+        val tabs = findViewById<TabLayout>(R.id.tab_layout)
+        TabLayoutMediator(tabs, viewPager) { tab, position ->
+            tab.text = getString(TAB_TITLES[position])
+            tab.icon = ContextCompat.getDrawable(this, TAB_ICONS[position])
+        }.attach()
 
-        viewPager = findViewById(R.id.vPager)
-        collectionPagerAdapter = CollectionPagerAdapter(supportFragmentManager)
-        viewPager.adapter = collectionPagerAdapter
-        viewPager.setOnTouchListener(object : OnTouchListener {
-
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                return true
-            }
-        })
-
-        //relate the tab layout to viewpager because we need to add the icons
-//        tabs.setupWithViewPager(vPager)
-//        tabs.getTabAt(0)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
-//        tabs.getTabAt(1)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_map_tab)
-//        tabs.getTabAt(2)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_config_tab)
-//        tabs.getTabAt(3)?.icon = ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_alarm_log_tab)
-
-        viewPager.currentItem = currentItemTopMenu
-
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        setFilter()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        try {
-            unregisterReceiver(usbReceiver)
-        } catch (ex: Exception) {
-
-        }
+        viewPager.setCurrentItem(currentItemTopMenu, false)
     }
 
 
     /**
-     * callback of external permission
+     * callback of notifications permission (Android 13+)
      */
-    val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                init()
-                // Permission is granted. Continue the action or workflow in your
-                // app.
-            } else {
-                // Explain to the user that the feature is unavailable because the
-                // feature requires a permission that the user has denied. At the
-                // same time, respect the user's decision. Don't link to system
-                // settings in an effort to convince the user to change their
-                // decision.
-            }
-        }
-
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     /**
-     * check permission depend on sdk version
+     * since Android 13 the alarm notifications are not shown without POST_NOTIFICATIONS permission
      */
-    fun isGrantedPermissionWRITE_EXTERNAL_STORAGE(activity: Activity): Boolean {
-        if (Build.VERSION.SDK_INT <= 32) {
-            val isAllowPermissionApi28 = ActivityCompat.checkSelfPermission(
-                activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            return isAllowPermissionApi28
-        } else {
-            val isAllowPermissionApi33 = Environment.isExternalStorageManager()
-            return isAllowPermissionApi33
-        }
-    }
-
-    /**
-     * set external storage permission
-     */
-    private fun setExternalPermission() {
-        /*
-     * Request location permission, so that we can get the location of the
-     * device. The result of the permission request is handled by a callback,
-     * onRequestPermissionsResult.
-     */
-
-        val permission: String?
-        if (Build.VERSION.SDK_INT <= 32) {
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-            requestPermissionLauncher.launch(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        } else {
-            permission = Manifest.permission.READ_MEDIA_IMAGES
-        }
-        when {
-            isGrantedPermissionWRITE_EXTERNAL_STORAGE(this) -> {
-                // You can use the API that requires the permission.
-                init()
-            }
-
-            shouldShowRequestPermissionRationale(permission) -> {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected, and what
-                // features are disabled if it's declined. In this UI, include a
-                // "cancel" or "no thanks" button that lets the user continue
-                // using your app without granting the permission.
-                //showInContextUI(...)
-            }
-
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-
-                if (Build.VERSION.SDK_INT <= 32) {
-                    requestPermissionLauncher.launch(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                } else {
-                    requestPermissionLauncher.launch(
-                        Manifest.permission.READ_MEDIA_IMAGES
-
-                    )
-                }
-            }
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
 
-    // Since this is an object collection, use a FragmentStatePagerAdapter,
-// and NOT a FragmentPagerAdapter.
-    inner class CollectionPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(
-        fm,
-        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-    ) {
+    //the main screens: cameras, map, configuration and alarm log
+    private class CollectionPagerAdapter(activity: AppCompatActivity) :
+        FragmentStateAdapter(activity) {
 
-        override fun getCount(): Int = MAIN_MENU_NUM_ITEM
+        override fun getItemCount(): Int = MAIN_MENU_NUM_ITEM
 
-        override fun getItem(position: Int): Fragment {
-
-            var fragment: Fragment? = null
-            //set event of click ic_on top menu
-            when (position) {
-                0 -> {
-                    fragment = CamerasFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                1 -> {
-                    fragment = MapSensorsFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                2 -> {
-                    fragment = ConfigurationFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                3 -> {
-                    fragment = AlarmLogFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-
+        override fun createFragment(position: Int): Fragment {
+            val fragment = when (position) {
+                0 -> CamerasFragment()
+                1 -> MapSensorsFragment()
+                2 -> ConfigurationFragment()
+                else -> AlarmLogFragment()
             }
-            return fragment!!
-
-        }
-
-        override fun getPageTitle(position: Int): CharSequence {
-
-            //set the title text of top menu
-            return when (position) {
-                0 -> resources.getString(R.string.cameras_title)
-                1 -> resources.getString(R.string.map_title)
-                2 -> resources.getString(R.string.config_title)
-                3 -> resources.getString(R.string.alarm_log_title)
-                else -> "nothing"
+            fragment.arguments = Bundle().apply {
+                putInt("ARG_OBJECT", position + 1)
             }
-
+            return fragment
         }
-
     }
 
 
     //set the language of the app (calling  from activity)
     override fun updateLanguage() {
-        setAppLanguage(this, GeneralItemMenu.selectedItem)
+        setAppLanguage(this)
         this.finish()
         this.startActivity(intent)
     }
 
 }
-

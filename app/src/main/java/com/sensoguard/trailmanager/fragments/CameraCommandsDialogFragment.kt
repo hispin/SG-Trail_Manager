@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +16,6 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.NumberPicker
-import android.widget.NumberPicker.OnValueChangeListener
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -31,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.adapters.CommandAdapter
 import com.sensoguard.trailmanager.classes.Camera
+import com.sensoguard.trailmanager.classes.CameraCommandsCatalog
 import com.sensoguard.trailmanager.classes.Command
 import com.sensoguard.trailmanager.classes.CommandConfigEmail
 import com.sensoguard.trailmanager.global.ADD_ACTION_TYPE
@@ -59,9 +59,6 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     private var myCamera: Camera? = null
     private var tvCameraName: TextView? = null
     private var tvPhoneNum: TextView? = null
-    private var mainCommands: ArrayList<Command>? = null
-    private var moreCommands: ArrayList<Command>? = null
-    private var newCameraCommands: ArrayList<Command>? = null
     private var rvCommands: RecyclerView? = null
     private var commandsAdapter: CommandAdapter? = null
     private var typeCommandList: Int = MAIN_COMMANDS_LIST_TYPE
@@ -86,7 +83,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
         cameraStr?.let {
             myCamera = convertJsonToSensor(cameraStr)
             tvCameraName?.text = myCamera?.getName()
-            tvPhoneNum?.setText(myCamera?.phoneNum)
+            tvPhoneNum?.text = myCamera?.phoneNum
         }
 
 
@@ -105,915 +102,27 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
         refreshCommandsAdapter()
     }
 
-    private fun populateCommandsByModel() {
-        val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
-        if (myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_410])
-        ) {
-
-            mainCommands = ArrayList()
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.setting_up_new_camera),
-                    "#A#",
-                    R.drawable.arm_camera
-                )
-            )
-
-            //int model 584,310 difference of those commands
-            if (myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_310])
-            ) {
-
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.arm_camera),
-                        "#e#HOFF#",
-                        R.drawable.arm_camera
-                    )
-                )
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.disarm_camera),
-                        "#e#HON2:0-2:1#",
-                        R.drawable.disarm_camera
-                    )
-                )
-
-            } else {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.arm_camera),
-                        "#A#",
-                        R.drawable.arm_camera
-                    )
-                )
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.disarm_camera),
-                        "#D#",
-                        R.drawable.disarm_camera
-                    )
-                )
-            }
-            ///////////////////
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.time_synchronization),
-                    "#E#T#",
-                    R.drawable.parameters
-                )
-            )
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_snapshot_email),
-                    "#T#E#",
-                    R.drawable.get_snapshot_email
-                )
-            )
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.get_snapshot_mms),
-                        "#T#",
-                        R.drawable.get_snapshot_mms
-                    )
-                )
-            }
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-                || myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.get_snapshot_to_outwatch),
-                        "#T#H#",
-                        R.drawable.get_snapshot_email
-                    )
-                )
-            }
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636])
-                || myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-                || myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.get_picture_from_memory),
-                        null,
-                        R.drawable.get_snapshot_email
-                    )
-                )
-            }
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_parameters),
-                    "#L#",
-                    R.drawable.parameters
-                )
-            )
-
-            // hide mms parameters and internet parameters
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_636]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_584]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_310]) &&
-                !myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.get_parameters_mms),
-                        "#M#",
-                        R.drawable.get_snapshot_mms
-                    )
-                )
-
-
-
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.get_parameters_internet),
-                        "#S#",
-                        R.drawable.get_snapshot_email
-                    )
-                )
-            }
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.get_battery_status),
-                    "#C#",
-                    R.drawable.get_battery_status
-                )
-            )
-
-
-//            mainCommands?.add(
-//                Command(
-//                    resources.getString(R.string.help),
-//                    "#H#",
-//                    R.drawable.parameters
-//                )
-//            )
-
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.set_email_recipient),
-                    null,
-                    R.drawable.set_email_recipient
-                )
-            )
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
-                mainCommands?.add(
-                    Command(
-                        resources.getString(R.string.set_mms_recipients),
-                        null,
-                        R.drawable.set_mms_recipients
-                    )
-                )
-            }
-//            mainCommands?.add(
-//                Command(
-//                    resources.getString(R.string.set_admin_title),
-//                    null,
-//                    R.drawable.manager
-//                )
-//            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.delete_all_images),
-                    "#F#",
-                    R.drawable.delete_all_images
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.more_orders),
-                    null,
-                    R.drawable.more
-                )
-            )
-        } else if (myCamera?.cameraModel.equals(myModels[MODEL_ATC])) {
-            mainCommands = ArrayList()
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.arm_camera),
-                    "*202#1#",
-                    R.drawable.arm_camera
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.disarm_camera),
-                    "*202#3#",
-                    R.drawable.disarm_camera
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.take_a_proactive_picture),
-                    "*500#",
-                    R.drawable.get_snapshot_email
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.add_recipient_to_mms),
-                    "*100#" + myCamera?.phoneNum + "#",
-                    R.drawable.set_mms_recipients
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.add_recipient_to_email),
-                    "*110#" + myCamera?.emailAddress + "#",
-                    R.drawable.set_email_recipient
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.send_via_mms),
-                    "*120#0#",
-                    R.drawable.get_snapshot_mms
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.send_over_the_internet),
-                    "*120#1#",
-                    R.drawable.get_snapshot_email
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.receipt_only_in_mms),
-                    "*130#0#",
-                    R.drawable.get_snapshot_mms
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.reception_only_by_email),
-                    "*130#1#",
-                    R.drawable.get_snapshot_email
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.parameter_testing),
-                    "*160#",
-                    R.drawable.parameters
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.signal_testing),
-                    "*150#",
-                    R.drawable.parameters
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.battery_test),
-                    "*201#",
-                    R.drawable.get_battery_status
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.delete_all_images),
-                    "*204#",
-                    R.drawable.delete_all_images
-                )
-            )
-            mainCommands?.add(
-                Command(
-                    resources.getString(R.string.more_orders),
-                    null,
-                    R.drawable.more
-                )
-            )
-        }
-    }
-
-    //populate commands of new camera
-    private fun populateCommandsOfNewCamera() {
-        val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
-        if (myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_410])
-
-        ) {
-
-            newCameraCommands = ArrayList()
-
-            var command = Command(
-                resources.getString(R.string.through_receiving_alerts),
-                null,
-                R.drawable.parameters
-            )
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_410])) {
-                command.selectionsTitles.add("e-mail gprs")
-                command.selectionsTitles.add("OutWatch")
-                command.selectionsCommands.add("#e#Mg#")
-                command.selectionsCommands.add("#e#Mm#")
-            } else {
-                command.selectionsTitles.add("phone MMS")
-                command.selectionsTitles.add("e-mail gprs")
-                command.selectionsTitles.add("OutWatch")
-                command.selectionsCommands.add("#e#Mp#")
-                command.selectionsCommands.add("#e#Mg#")
-                command.selectionsCommands.add("#e#Mm#")
-            }
-
-            newCameraCommands?.add(command)
-
-            command = Command(
-                resources.getString(R.string.configure_send),
-                null,
-                R.drawable.get_snapshot_mms
-            )
-
-            newCameraCommands?.add(command)
-
-
-            command = Command(
-                resources.getString(R.string.set_email_recipient),
-                null,
-                R.drawable.set_email_recipient
-            )
-            newCameraCommands?.add(command)
-
-            if (!myCamera?.cameraModel.equals(myModels[MODEL_410])) {
-                command = Command(
-                    resources.getString(R.string.set_mms_recipients),
-                    null,
-                    R.drawable.set_mms_recipients
-                )
-                newCameraCommands?.add(command)
-            }
-        }
-    }
-
-    private fun populateMoreCommandsByModel() {
-        val myModels: Array<String> = resources.getStringArray(R.array.camera_model)
-        if (myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-            myCamera?.cameraModel.equals(myModels[MODEL_410])
-        ) {
-
-            moreCommands = ArrayList()
-            var command = Command(
-                resources.getString(R.string.setting_the_camera_mode),
-                null,
-                R.drawable.arm_camera
-            )
-
-
-            command.selectionsTitles.add(resources.getString(R.string.picture))
-            command.selectionsTitles.add(resources.getString(R.string.video))
-            command.selectionsTitles.add(resources.getString(R.string.picture_video))
-            command.selectionsCommands.add("#e#cp#")
-            command.selectionsCommands.add("#e#cv#")
-            command.selectionsCommands.add("#e#ct#")
-            moreCommands?.add(command)
-
-
-            //picture quality
-            command = Command(
-                resources.getString(R.string.picture_quality),
-                null,
-                R.drawable.arm_camera
-            )
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-                || myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.defaultSelected = 4
-            } else {
-                command.defaultSelected = 3
-            }
-            if (myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-            ) {
-                command.selectionsTitles.add("14MP")
-                command.selectionsTitles.add("25MP")
-                command.selectionsTitles.add("36MP")
-                if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                    command.selectionsTitles.add("48MP")
-                }
-                command.selectionsCommands.add("#e#s14#")
-                command.selectionsCommands.add("#e#s25#")
-                command.selectionsCommands.add("#e#s36#")
-                if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                    command.selectionsCommands.add("#E#S48#")
-                }
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])
-            ) {
-                command.selectionsTitles.add("5MP")
-                command.selectionsTitles.add("12MP")
-                command.selectionsTitles.add("18MP")
-                command.selectionsCommands.add("#e#s5#")
-                command.selectionsCommands.add("#e#s12#")
-                command.selectionsCommands.add("#e#s18#")
-
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.selectionsTitles.add("4MP")
-                command.selectionsTitles.add("12MP")
-                command.selectionsTitles.add("24MP")
-                command.selectionsTitles.add("37MP")
-                command.selectionsCommands.add("#e#s4#")
-                command.selectionsCommands.add("#e#s12#")
-                command.selectionsCommands.add("#e#s24#")
-                command.selectionsCommands.add("#e#s37#")
-
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_584])
-            ) {
-                command.selectionsTitles.add("10MP")
-                command.selectionsTitles.add("16MP")
-                command.selectionsTitles.add("24MP")
-                command.selectionsCommands.add("#e#s10#")
-                command.selectionsCommands.add("#e#s16#")
-                command.selectionsCommands.add("#e#s24#")
-
-            }
-            moreCommands?.add(command)
-
-            //Continuous photo taking
-            command = Command(
-                resources.getString(R.string.continuous_photo_taking),
-                null,
-                R.drawable.arm_camera
-            )
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_668]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_310]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_984]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.selectionsTitles.add(resources.getString(R.string.photos_1))
-                command.selectionsTitles.add(resources.getString(R.string.photos_2))
-                command.selectionsTitles.add(resources.getString(R.string.photos_3))
-                command.selectionsCommands.add("#E#B1#")
-                command.selectionsCommands.add("#E#B2#")
-                command.selectionsCommands.add("#E#B3#")
-
-                if (myCamera?.cameraModel.equals(myModels[MODEL_984])) {
-                    command.selectionsTitles.add(resources.getString(R.string.photos_4))
-                    command.selectionsTitles.add(resources.getString(R.string.photos_5))
-                    command.selectionsCommands.add("#E#B4#")
-                    command.selectionsCommands.add("#E#B5#")
-                }
-            }
-            moreCommands?.add(command)
-
-
-            //video quality
-            command = Command(
-                resources.getString(R.string.video_quality),
-                null,
-                R.drawable.arm_camera
-            )
-            if (myCamera?.cameraModel.equals(myModels[MODEL_668])) {
-                command.selectionsTitles.add("720P")
-                command.selectionsTitles.add("1080P")
-                command.selectionsTitles.add("2k")
-                command.selectionsTitles.add("4k")
-                command.selectionsCommands.add("#E#FH#")
-                command.selectionsCommands.add("#E#FF#")
-                command.selectionsCommands.add("#E#F2#")
-                command.selectionsCommands.add("#E#F4#")
-                command.defaultSelected = 1
-            } else if (
-                myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_584]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_984])
-            ) {
-                command.selectionsTitles.add("VGA")
-                command.selectionsTitles.add("720P")
-                command.selectionsTitles.add("1080P")
-                command.selectionsCommands.add("#E#FL#")
-                command.selectionsCommands.add("#E#FH#")
-                command.selectionsCommands.add("#E#FF#")
-                command.defaultSelected = 2
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_310])
-            ) {
-                command.selectionsTitles.add("VGA")
-                command.selectionsTitles.add("720P")
-                command.selectionsCommands.add("#E#FL#")
-                command.selectionsCommands.add("#E#FH#")
-                command.defaultSelected = 2
-            } else if (myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.selectionsTitles.add("360P")
-                command.selectionsTitles.add("720P")
-                command.selectionsTitles.add("1080P")
-                command.selectionsTitles.add("1530P")
-                command.selectionsTitles.add("4k")
-                command.selectionsCommands.add("#e#f0#")//360P
-                command.selectionsCommands.add("#e#fh#")//720P
-                command.selectionsCommands.add("#e#ff#")//1080P
-                command.selectionsCommands.add("#e#f3#")//1530P
-                command.selectionsCommands.add("#e#f4#")//4k
-                command.defaultSelected = 2
-            }
-            moreCommands?.add(command)
-
-            //Video length
-            command = Command(
-                resources.getString(R.string.video_length),
-                "#E#V",
-                R.drawable.arm_camera
-            )
-
-            moreCommands?.add(command)
-
-            //Motion sensor sensitivity
-            command = Command(
-                resources.getString(R.string.motion_sensor_sensitivity),
-                null,
-                R.drawable.parameters
-            )
-            command.defaultSelected = 3
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                command.defaultSelected = 4
-            }
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                command.selectionsTitles.add(resources.getString(R.string.maximum))
-            }
-            command.selectionsTitles.add(resources.getString(R.string.high))
-            command.selectionsTitles.add(resources.getString(R.string.normal))
-            command.selectionsTitles.add(resources.getString(R.string.low))
-            command.selectionsCommands.add("#e#po#")
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                command.selectionsCommands.add("#e#pmax#")
-            }
-            command.selectionsCommands.add("#e#ph#")
-            command.selectionsCommands.add("#e#pn#")
-            command.selectionsCommands.add("#e#pl#")
-
-            moreCommands?.add(command)
-
-            //File sending quality
-            command = Command(
-                resources.getString(R.string.file_sending_quality),
-                null,
-                R.drawable.get_snapshot_email
-            )
-
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-                || myCamera?.cameraModel.equals(myModels[MODEL_636])
-                || myCamera?.cameraModel.equals(myModels[MODEL_584])
-                || myCamera?.cameraModel.equals(myModels[MODEL_310])
-                || myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.defaultSelected = 2
-            }
-
-            command.selectionsTitles.add(resources.getString(R.string.high))
-            command.selectionsTitles.add(resources.getString(R.string.normal))
-            command.selectionsTitles.add(resources.getString(R.string.low))
-            command.selectionsCommands.add("#E#QH#")
-            command.selectionsCommands.add("#E#QN#")
-            command.selectionsCommands.add("#E#QL#")
-
-            moreCommands?.add(command)
-
-            //Frequency of sending alert
-            command = Command(
-                resources.getString(R.string.frequency_of_sending_alert),
-                null,
-                R.drawable.get_snapshot_email
-            )
-            command.defaultSelected = 2
-            command.selectionsTitles.add(resources.getString(R.string.daily_report))
-            command.selectionsTitles.add(resources.getString(R.string.real_time_alert))
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsCommands.add("#e#ed")
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])
-                || myCamera?.cameraModel.equals(myModels[MODEL_636])
-                || myCamera?.cameraModel.equals(myModels[MODEL_584])
-                || myCamera?.cameraModel.equals(myModels[MODEL_310])
-                || myCamera?.cameraModel.equals(myModels[MODEL_410])
-            ) {
-                command.selectionsCommands.add("#e#ei100#")
-            } else {
-                command.selectionsCommands.add("#e#ei99#")
-            }
-            command.selectionsCommands.add("#e#eo#")
-
-            moreCommands?.add(command)
-
-            //work hour
-            command = Command(
-                resources.getString(R.string.work_hour),
-                null,
-                R.drawable.parameters
-            )
-            command.defaultSelected = 2
-            command.selectionsTitles.add(resources.getString(R.string.turned_on))
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsCommands.add("#e#HON")
-            command.selectionsCommands.add("#e#HOFF#")
-
-            moreCommands?.add(command)
-
-            //if (!myCamera?.cameraModel.equals(myModels[MODEL_584])) {
-                //business days
-                command = Command(
-                    resources.getString(R.string.business_days),
-                    null,
-                    R.drawable.parameters
-                )
-                command.defaultSelected = 2
-                command.selectionsTitles.add(resources.getString(R.string.turned_on))
-                command.selectionsTitles.add(resources.getString(R.string.turned_off))
-                command.selectionsCommands.add("#e#HON")
-                command.selectionsCommands.add("#e#HOFF#")
-
-                moreCommands?.add(command)
-            //}
-
-
-            //remote control
-            command = Command(
-                resources.getString(R.string.remote_control),
-                null,
-                R.drawable.manager
-            )
-            command.defaultSelected = 1
-            command.selectionsTitles.add(resources.getString(R.string.turned_on))
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsCommands.add("#e#ZON#")
-            command.selectionsCommands.add("#e#ZOFF#")
-
-            moreCommands?.add(command)
-
-            //GPS
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_636_48MP]) ||
-                myCamera?.cameraModel.equals(myModels[MODEL_668])
-            ) {
-                command = Command(
-                    resources.getString(R.string.gps),
-                    null,
-                    R.drawable.parameters
-                )
-                command.defaultSelected = 1
-                command.selectionsTitles.add(resources.getString(R.string.turned_on))
-                command.selectionsTitles.add(resources.getString(R.string.turned_off))
-                command.selectionsCommands.add("#e#yon#")
-                command.selectionsCommands.add("#e#yoff#")
-
-                moreCommands?.add(command)
-            }
-
-            // Recycling bin
-            command = Command(
-                resources.getString(R.string.recycling_bin),
-                null,
-                R.drawable.delete_all_images
-            )
-            command.defaultSelected = 1
-            command.selectionsTitles.add(resources.getString(R.string.turned_on))
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                command.selectionsTitles.add(resources.getString(R.string.after_seven_days))
-                command.selectionsTitles.add(resources.getString(R.string.after_fourteen_days))
-                command.selectionsTitles.add(resources.getString(R.string.after_thirty_days))
-            }
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsCommands.add("#E#RON#")
-            if (myCamera?.cameraModel.equals(myModels[MODEL_636_48MP])) {
-                command.selectionsCommands.add("#E#R7#")
-                command.selectionsCommands.add("#E#R14#")
-                command.selectionsCommands.add("#E#R30#")
-            }
-            command.selectionsCommands.add("#E#ROFF#")
-
-            moreCommands?.add(command)
-
-            //Photography at regular intervals
-            command = Command(
-                resources.getString(R.string.photography_at_regular_intervals),
-                null,
-                R.drawable.parameters
-            )
-            command.defaultSelected = 1
-            command.selectionsTitles.add(resources.getString(R.string.turned_off))
-            command.selectionsTitles.add(resources.getString(R.string.minutes))
-            command.selectionsTitles.add(resources.getString(R.string.hr))
-            command.selectionsCommands.add("#E#T#L0#")
-            command.selectionsCommands.add("#E#T#L")
-            command.selectionsCommands.add("#E#T#L")
-
-            moreCommands?.add(command)
-
-            /////////////////////Model ATC
-        } else if (myCamera?.cameraModel.equals(myModels[MODEL_ATC])) {
-            moreCommands = ArrayList()
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.main_commands),
-                    null,
-                    R.drawable.more
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.delete_recipients_for_mms),
-                    "*101#" + myCamera?.phoneNum + "#",
-                    R.drawable.set_mms_recipients
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.delete_recipients_by_email),
-                    "*111#" + myCamera?.emailAddress + "#",
-                    R.drawable.set_email_recipient
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.receive_email_and_MMS),
-                    "*130#2#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sending_mode_operational),
-                    "*140#0#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sending_mode_daily_report),
-                    "*140#1#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sending_mode_off),
-                    "*140#2#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.photo_mode_photo),
-                    "*200#0#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.photo_mode_video),
-                    "*200#1#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.photo_mode_photo_video),
-                    "*200#2#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.image_quality_low),
-                    "*190#0#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.image_quality_medium),
-                    "*190#2#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.image_quality_high),
-                    "*190#3#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sensor_approaches_off),
-                    "*202#3#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sensor_sensitivity_high),
-                    "*202#0#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sensor_sensitivity_medium),
-                    "*202#1#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.sensor_sensitivity_low),
-                    "*202#2#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.enable_remote_control),
-                    "*209#1#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.turn_off_remote_control),
-                    "*209#0#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.update_time_and_date),
-                    null,
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.selecting_quantity_of_pictures_unlimited),
-                    "*180#999#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.image_quantity_selection_manual),
-                    "*180#",
-                    R.drawable.parameters
-                )
-            )
-            moreCommands?.add(
-                Command(
-                    resources.getString(R.string.image_quantity_selection_zero_counter),
-                    "*180#",
-                    R.drawable.parameters
-                )
-            )
-        }
-    }
-
 
     private fun refreshCommandsAdapter() {
 
-        var commands: ArrayList<Command>? = null
-        if (typeCommandList == MAIN_COMMANDS_LIST_TYPE) {
-            populateCommandsByModel()
-            commands = mainCommands
-        } else if (typeCommandList == MORE_COMMANDS_LIST_TYPE) {
-            populateMoreCommandsByModel()
-            commands = moreCommands
-        } else if (typeCommandList == NEW_CAMERA_LIST_TYPE) {
-            populateCommandsOfNewCamera()
-            commands = newCameraCommands
+        val commandsCatalog = CameraCommandsCatalog(resources, myCamera)
+        val commands: ArrayList<Command>? = when (typeCommandList) {
+            MAIN_COMMANDS_LIST_TYPE -> {
+                commandsCatalog.populateCommandsByModel()
+                commandsCatalog.mainCommands
+            }
+
+            MORE_COMMANDS_LIST_TYPE -> {
+                commandsCatalog.populateMoreCommandsByModel()
+                commandsCatalog.moreCommands
+            }
+
+            NEW_CAMERA_LIST_TYPE -> {
+                commandsCatalog.populateCommandsOfNewCamera()
+                commandsCatalog.newCameraCommands
+            }
+
+            else -> null
         }
 
         commandsAdapter = activity?.let { adapter ->
@@ -1204,14 +313,11 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
         val layoutManager = LinearLayoutManager(activity)
         rvCommands?.layoutManager = layoutManager
 
-        commandsAdapter?.notifyDataSetChanged()
-
 
     }
 
     //to disable when one of the checkboxes are unchecked
-    var cbSelectAll: CheckBox? = null
-    var isOneDisable = false
+    private var cbSelectAll: CheckBox? = null
 
     //show dialog with days selection
     private fun showSelectDaysDialog(myCommand: Command) {
@@ -1442,10 +548,9 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             var myNum = 1
 
             //Set a value change listener for NumberPicker
-            numMultiSelectManual.setOnValueChangedListener(OnValueChangeListener { _, _, newVal -> //Display the newly selected number from picker
+            numMultiSelectManual.setOnValueChangedListener { _, _, newVal ->
                 myNum = newVal
-                //tv.setText("Selected Number : $newVal")
-            })
+            }
 
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
@@ -1496,7 +601,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     )
                 val itemNames = resources.getStringArray(R.array.time_120_seconds)
 
-                for (element in itemNames)  // Maximum size of i upto --> Your Array Size
+                for (element in itemNames)
                 {
                     dataAdapter.add(element)
                 }
@@ -1897,8 +1002,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     R.id.rbConfigEmail -> {
                         myCommand.selectionsCommands = ArrayList()
                         rbHotWe4g.isEnabled = true
-                        commandConfigEmail = CommandConfigEmail()
-                        commandConfigEmail?.showPhoneNumbersDialog(this@CameraCommandsDialogFragment.context)
+                        CommandConfigEmail().also { commandConfigEmail = it }
+                            .showPhoneNumbersDialog(this@CameraCommandsDialogFragment.context)
                     }
 
                 }
@@ -1908,15 +1013,13 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             val rgSelects = dialog.findViewById<RadioGroup>(R.id.rgSelects)
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
-                var command = ""
+                val command: String
 
                 if (rgConfigSelects.checkedRadioButtonId == R.id.rbConfigEmail) {
-                    if (commandConfigEmail != null) {
-                        myCommand.selectionsCommands = commandConfigEmail!!.populateCommands()
-                    }
+                    commandConfigEmail?.let { myCommand.selectionsCommands = it.populateCommands() }
                 }
 
-                if (myCommand.selectionsCommands.size < 1) {
+                if (myCommand.selectionsCommands.isEmpty()) {
                     Toast.makeText(
                         activity,
                         resources.getString(R.string.no_commands),
@@ -2006,8 +1109,8 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
                     R.id.rbConfigEmail -> {
                         myCommand.selectionsCommands = ArrayList()
                         rbHotWe4g.isEnabled = true
-                        commandConfigEmail = CommandConfigEmail()
-                        commandConfigEmail?.showPhoneNumbersDialog(this@CameraCommandsDialogFragment.context)
+                        CommandConfigEmail().also { commandConfigEmail = it }
+                            .showPhoneNumbersDialog(this@CameraCommandsDialogFragment.context)
                     }
 
                 }
@@ -2017,15 +1120,13 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             val rgSelects = dialog.findViewById<RadioGroup>(R.id.rgSelects)
             val btnSendCommand = dialog.findViewById<AppCompatButton>(R.id.btnSendCommand)
             btnSendCommand.setOnClickListener {
-                var command = ""
+                val command: String
 
                 if (rgConfigSelects.checkedRadioButtonId == R.id.rbConfigEmail) {
-                    if (commandConfigEmail != null) {
-                        myCommand.selectionsCommands = commandConfigEmail!!.populateCommands()
-                    }
+                    commandConfigEmail?.let { myCommand.selectionsCommands = it.populateCommands() }
                 }
 
-                if (myCommand.selectionsCommands.size < 1) {
+                if (myCommand.selectionsCommands.isEmpty()) {
                     Toast.makeText(
                         activity,
                         resources.getString(R.string.no_commands),
@@ -2269,12 +1370,12 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             myCommand += "#"
         } else {
             //delete "-"
-            var phnum = etField.text?.toString()
-            phnum = phnum?.replace("-", "")
+            var phoneNumber = etField.text?.toString()
+            phoneNumber = phoneNumber?.replace("-", "")
 
-            if (phnum != null && isValidMobile(phnum)) {
-                myCommand += "$phnum#"
-            } else if (phnum.equals("")) {
+            if (phoneNumber != null && isValidMobile(phoneNumber)) {
+                myCommand += "$phoneNumber#"
+            } else if (phoneNumber.equals("")) {
                 myCommand += "#"
             } else {
                 etField.error = resources.getString(R.string.invalid_telephone_number)
@@ -2363,7 +1464,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
     }
 
     private fun sendSMS(command: String?) {
-        val uri = Uri.parse("smsto:" + myCamera?.phoneNum)
+        val uri = "smsto:${myCamera?.phoneNum}".toUri()
         val intent = Intent(Intent.ACTION_SENDTO, uri)
         intent.putExtra("sms_body", command)
         startActivity(intent)
@@ -2410,7 +1511,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             rbOne.isChecked = false
         }
 
-        tp?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        tp?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         tp?.show()
     }
 
@@ -2425,7 +1526,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
 
                 selectedHour = hour
                 selectedMinute = minute
-                val tmp = selectedHour.toString() + ":" + selectedMinute.toString()
+                val tmp = "$selectedHour:$selectedMinute"
                 btn.text = tmp
 
 
@@ -2439,7 +1540,7 @@ class CameraCommandsDialogFragment : DialogFragment(), OnBackPressed,
             //btn.isChecked=false
         }
 
-        tp?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        tp?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         tp?.show()
     }
 

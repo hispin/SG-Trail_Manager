@@ -1,16 +1,15 @@
 package com.sensoguard.trailmanager.classes
 
 
+//a camera, stored locally as JSON (the field names are part of the stored data)
 class Camera {
 
-    private var longitude: Double?=null
-    private var latitude: Double?=null
+    private var longitude: Double? = null
+    private var latitude: Double? = null
     private var sysName: String? = null
-    private var id: String?=null
+    private var id: String? = null
     private var isArmed = false
-    var isLocallyDefined:Boolean=false
 
-    //TODO make getter and setter
     var phoneNum: String? = null
     var cameraModel: String? = null
     var cameraModelPosition: Int = 0
@@ -23,66 +22,55 @@ class Camera {
     var lastVisitPicturePath: String? = null
     var isSorted: Boolean = false
 
+    constructor(id: String?) {
+        this.id = id
+        sysName = "id-$id"
+        isArmed = true
+    }
 
-    //private var type:Int?=null
-
-//    constructor( _uid: String?,_name: String?){
-//        id=_uid
-//        sysName = _name
-//        isArmed = true
-//    }
-constructor(_id: String?) {
-    id = _id
-    sysName = "id-$id"
-    isArmed = true
-}
-
-    //
     constructor(id: Int) {
         this.id = id.toString()
         sysName = "id-${this.id}"
         isArmed = true
-
     }
 
-    fun getId():String{
+    fun getId(): String {
         return id.toString()
     }
 
-    fun setId(_id:String){
-         id=_id
+    fun setId(id: String) {
+        this.id = id
     }
 
     fun getName(): String? {
         return sysName
     }
 
-    fun setName(_name:String){
-        sysName = _name
+    fun setName(name: String) {
+        sysName = name
     }
 
-    fun setArm(state:Boolean){
-        isArmed=state
+    fun setArm(state: Boolean) {
+        isArmed = state
     }
 
-    fun isArmed():Boolean{
+    fun isArmed(): Boolean {
         return isArmed
     }
 
-    fun getLatitude():Double?{
+    fun getLatitude(): Double? {
         return latitude
     }
 
-    fun getLongtitude(): Double? {
+    fun getLongitude(): Double? {
         return longitude
     }
 
-    fun setLatitude(_latitude:Double?){
-        latitude=_latitude
-    }
-    fun setLongtitude(_longitude:Double?){
-        longitude=_longitude
+    fun setLatitude(latitude: Double?) {
+        this.latitude = latitude
     }
 
-
+    fun setLongitude(longitude: Double?) {
+        this.longitude = longitude
+    }
 }

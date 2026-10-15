@@ -4,34 +4,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="empty_field_error">This field cannot be blank</string>
     <string name="rename">rename</string>
-    <string name="csv">csv</string>
-    <string name="dialog_new_sensor_title">Configure Sensors</string>
     <string name="invalid_mum_sensors">invalid number of sensors</string>
     <string name="name_title">Name</string>
     <string name="id_title">Id</string>
-    <string name="map_location_title">Location</string>
-    <string name="status_title">Active</string>
-    <string name="type_title">Type</string>
-    <string name="time_title">Time</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="content_delete_extra_sensor">The System has more sensors than configured, do you want to delete extra
         sensors ?
     </string>
     <string name="remove_extra_sensors">Remove extra sensors</string>
-    <string name="csv_date_title"><![CDATA[Date&Time]]></string>
-    <string name="csv_name_title">Sensor Name</string>
-    <string name="csv_id_title">Id</string>
-    <string name="csv_alarm_type_title">Alarm Type</string>
-    <string name="csv_latitude_title">latitude</string>
-    <string name="csv_longitude_title">longitude</string>
-    <string name="cameras_title">Cameras</string>
-    <string name="map_title">Map</string>
-    <string name="config_title">Configuration</string>
-    <string name="alarm_log_title">Alarm</string>
-    <string name="not_located">Not Located</string>
-    <string name="located">Located</string>
-    <string name="date_title">Date</string>
     <string name="date_title1">Date:</string>
     <string name="save">Save</string>
     <string name="define_sensor_amount">Define sensor amount</string>
@@ -46,7 +27,7 @@
         <item>intruder</item>
         <item>not in use</item>
         <item>sensor disconnected</item>
-        <item>system ok</item>
+        <item>system OK</item>
         <item>low battery</item>
         <item>dual tech alarm</item>
     </string-array>
@@ -59,18 +40,13 @@
     <string name="time_flickering_save_successfully">Time flickering was successfully saved</string>
     <string name="english">English</string>
     <string name="no_selected_sound">no selected sound</string>
-    <string name="channel_name">my_channel_01_name</string>
-    <string name="channel_description">my_channel_01_description</string>
     <string name="share">Share</string>
     <string name="enter_code">enter activation code</string>
     <string name="wrong_activate_code">wrong activate code</string>
-    <string name="sign_in">sign in</string>
     <string name="activate">Activate</string>
     <string name="error">Error</string>
     <string name="general_desc">description</string>
     <string name="email_subject">My Code for SG-Trail Manager App</string>
-    <string name="camera_system_title">Cameras and systems</string>
-    <string name="system_camera_configuration">System / Camera Settings</string>
     <string name="system_camera_name">System Name:</string>
     <string name="tel_num_title">Phone Number:</string>
     <string name="camera_type_title">Camera Model:</string>
@@ -79,7 +55,6 @@
     <string name="incoming_email_server_title">Incoming Email server:</string>
     <string name="incoming_email_server_port_title">Incoming Email Port:</string>
     <string name="use_ssl_title">Using SSL:</string>
-    <string name="date_last_visit_title">Last visit date:</string>
     <string name="description">description</string>
     <string name="cancel">Cancel</string>
     <string name="time_title1">time:</string>
@@ -90,19 +65,17 @@
     <string name="systems_filter">System</string>
     <string name="date_time">Date and time</string>
     <string name="filter_by">Filter by:</string>
-    <string name="apply">apply</string>
     <string name="from">from</string>
     <string name="to">to</string>
     <string name="ok">OK</string>
     <string name="date_older">End date may not be earlier than start date</string>
-    <string name="validation_error">validation error</string>
     <string name="validation_successfully">The verification was successful</string>
     <string name="no_photo">no photo</string>
     <string name="select_all">Select all</string>
-    <string name="select">Select</string>
-    <string name="do_you_realy_want_delete_selected_alarm">Do you realy want to delete selected alarms?</string>
+    <string name="do_you_really_want_delete_selected_alarm">Do you really want to delete selected alarms?</string>
     <string name="no_selected_alarms">No selected alarm</string>
-    <string name="selected_alarms">selected alarm</string>
+    <string name="share_image">Share image</string>
+    <string name="select_alarm_sound">Select alarm sound</string>
     <string name="reset">reset</string>
     <string name="get_snapshot_email">Get snapshot to email</string>
     <string name="delete_all_images">Delete all images</string>
@@ -112,7 +85,6 @@
     <string name="disarm_camera">Disarm camera</string>
     <string name="set_email_recipient">Set email recipients</string>
     <string name="set_mms_recipients">Set MMS recipients</string>
-    <string name="missing_phone_number">Missing phone number</string>
     <string name="emails_title">Add emails</string>
     <string name="send">Send</string>
     <string name="email1">Email 1</string>
@@ -124,20 +96,15 @@
     <string name="phone_num_2">Phone number 2</string>
     <string name="phone_num_3">Phone number 3</string>
     <string name="phone_num_4">Phone number 4</string>
-    <string name="you_need_at_least_one_email">You need at least one email</string>
-    <string name="you_need_at_least_one_phone_num">You need at least one phone number</string>
-    <string name="invalid_email">Invalid email</string>
     <string name="set_admin_title">Set admin</string>
     <string name="incorrect_phone_number_or_password">Incorrect phone number or password</string>
     <string name="phone_num">Phone number:</string>
     <string name="phone_num_title">Phone number</string>
     <string name="settings">Settings</string>
     <string name="commands">Commands</string>
-    <string name="delete">Delete</string>
-    <string name="back">Back</string>
     <string name="commands_camera_title">Command</string>
     <string name="get_snapshot_mms">Get snapshot to MMS</string>
-    <string name="oredr_cannot_sent">Orders cannot be sent without a phone number</string>
+    <string name="order_cannot_sent">Orders cannot be sent without a phone number</string>
     <string name="invalid_telephone_number">Invalid telephone number</string>
     <string name="camera_title">Camera</string>
     <string name="camera_settings">Camera settings</string>
@@ -183,7 +150,6 @@
     <string name="time_synchronization">Time synchronization</string>
     <string name="get_parameters_mms">Get parameters MMS</string>
     <string name="get_parameters_internet">Get parameters internet</string>
-    <string name="help">Help</string>
     <string name="setting_the_camera_mode">Setting the camera mode</string>
     <string name="picture">picture</string>
     <string name="video">video</string>
@@ -242,7 +208,7 @@
     <string name="config_email">manual email configuration settings</string>
     <string name="no_commands">no commands</string>
     <string name="clear_data">Clear Data</string>
-    <string name="do_you_realy_want_clear_data">All of this application data will be deleted permanently. This includes all cameras, settings, and user information.</string>
+    <string name="do_you_really_want_clear_data">All of this application data will be deleted permanently. This includes all cameras, settings, and user information.</string>
     <string name="get_picture_from_memory">get picture from memory</string>
     <string name="picture_num">picture number</string>
     <string name="four_chars">must be 4 characters</string>
@@ -341,4 +307,27 @@
     <!--    </string-array>-->
 
 
+    <!-- not translatable (names of cellular operators / numbers) -->
+    <string name="operator_019" translatable="false">019</string>
+    <string name="operator_youphone" translatable="false">YouPhone</string>
+    <string name="operator_012" translatable="false">012</string>
+    <string name="operator_we4g" translatable="false">we4G</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="version_title" translatable="false">version:%1$s</string>
+    <string name="gmail_smtp_server" translatable="false">smtp.gmail.com</string>
+    <string name="gmail_smtp_port" translatable="false">465</string>
+    <string name="gmail_imap_server" translatable="false">imap.gmail.com</string>
+    <string name="gmail_imap_port" translatable="false">993</string>
+    <string name="cd_add_camera">Add camera</string>
+    <string name="cd_my_location">Go to my location</string>
+    <string name="cd_change_map_type">Change map type</string>
+    <plurals name="selected_alarms_title">
+        <item quantity="one">%1$d selected alarm</item>
+        <item quantity="other">%1$d selected alarms</item>
+    </plurals>
+    <!-- titles of the tabs of the main screen -->
+    <string name="cameras_title">Cameras</string>
+    <string name="map_title">Map</string>
+    <string name="config_title">Configuration</string>
+    <string name="alarm_log_title">Alarm</string>
 </resources>

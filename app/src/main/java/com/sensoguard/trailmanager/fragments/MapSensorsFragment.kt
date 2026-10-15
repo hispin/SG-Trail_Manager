@@ -1,15 +1,6 @@
 package com.sensoguard.trailmanager.fragments
 
-
-//import android.support.design.widget.FloatingActionButton
-//import android.support.v4.app.Fragment
-//import android.support.v4.app.FragmentManager
-//import android.support.v4.content.ContextCompat
-//import android.support.v4.content.ContextCompat.startForegroundService
-//import android.support.v7.widget.DividerItemDecoration
-//import android.support.v7.widget.LinearLayoutManager
-//import android.support.v7.widget.RecyclerView
-//import androidx.lifecycle.ViewModelProviders
+import android.Manifest
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,20 +11,20 @@ import android.location.Location
 import android.location.LocationManager
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,62 +42,69 @@ import com.sensoguard.trailmanager.adapters.CameraDialogAdapter
 import com.sensoguard.trailmanager.classes.AlarmSensor
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.controler.ViewModelListener
-import com.sensoguard.trailmanager.global.*
+import com.sensoguard.trailmanager.global.ALARM_CAR
+import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS
+import com.sensoguard.trailmanager.global.ALARM_FLICKERING_DURATION_KEY
+import com.sensoguard.trailmanager.global.ALARM_INTRUDER
+import com.sensoguard.trailmanager.global.ALARM_LOW_BATTERY
+import com.sensoguard.trailmanager.global.ALARM_SENSOR_OFF
+import com.sensoguard.trailmanager.global.CREATE_ALARM_ID_KEY
+import com.sensoguard.trailmanager.global.CREATE_ALARM_KEY
+import com.sensoguard.trailmanager.global.CREATE_ALARM_TYPE_KEY
+import com.sensoguard.trailmanager.global.CURRENT_LATITUDE_PREF
+import com.sensoguard.trailmanager.global.CURRENT_LOCATION
+import com.sensoguard.trailmanager.global.CURRENT_LONGITUDE_PREF
+import com.sensoguard.trailmanager.global.GET_CURRENT_LOCATION_KEY
+import com.sensoguard.trailmanager.global.IS_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.IS_VIBRATE_WHEN_ALARM_KEY
+import com.sensoguard.trailmanager.global.MAP_SHOW_NORMAL_VALUE
+import com.sensoguard.trailmanager.global.MAP_SHOW_SATELLITE_VALUE
+import com.sensoguard.trailmanager.global.MAP_SHOW_VIEW_TYPE_KEY
+import com.sensoguard.trailmanager.global.MAP_TYPE_KEY
+import com.sensoguard.trailmanager.global.RESET_MARKERS_KEY
+import com.sensoguard.trailmanager.global.SELECTED_NOTIFICATION_SOUND_KEY
+import com.sensoguard.trailmanager.global.UserSession
+import com.sensoguard.trailmanager.global.convertBitmapToBitmapDescriptor
+import com.sensoguard.trailmanager.global.getBooleanInPreference
+import com.sensoguard.trailmanager.global.getCamerasFromLocally
+import com.sensoguard.trailmanager.global.getIntInPreference
+import com.sensoguard.trailmanager.global.getLongInPreference
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.setStringInPreference
+import com.sensoguard.trailmanager.global.storeSensorsToLocally
 import com.sensoguard.trailmanager.interfaces.OnAdapterListener
-import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 import com.sensoguard.trailmanager.services.ServiceFindLocation
-import java.util.*
+import java.util.Calendar
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "MapSensorsFragment"
 
 /**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [MapSensorsFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [MapSensorsFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
+ * The map of the cameras (long click on the map to locate a camera)
  */
-class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
+class MapSensorsFragment : Fragment(), OnMapReadyCallback, OnAdapterListener {
 
-    override fun saveCamera(detector: Camera) {}
-    //override fun openLargePictureDialog(imgPath: String) { }
+    private var dialog: Dialog? = null
+    private var sensorsDialogAdapter: CameraDialogAdapter? = null
 
-    private var dialog: Dialog?=null
-    var sensorsDialogAdapter: CameraDialogAdapter? = null
+    private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
 
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var listener: OnFragmentListener? = null
-    private var mMap : GoogleMap?=null
-    private var mMapFragment:SupportMapFragment?=null
-    private val TAG = "MapSensorsFragment"
-    private var mCenterLatLong: LatLng? = null
     @Volatile
     private var myLocate: LatLng? = null
-    private var currentLongitude: Double?=null
-    private var currentLatitude: Double?=null
-    private var fbRefresh: FloatingActionButton?=null
-    //private var fbTest:FloatingActionButton?=null
-    private var fbChangeMapType:FloatingActionButton?=null
-    private var mapType=GoogleMap.MAP_TYPE_SATELLITE
-    private var flickering: Animation?=null
+    private var currentLongitude: Double? = null
+    private var currentLatitude: Double? = null
+    private var fbRefresh: FloatingActionButton? = null
+    private var fbChangeMapType: FloatingActionButton? = null
+    private var mapType = GoogleMap.MAP_TYPE_SATELLITE
+    private var ringtone: Ringtone? = null
 
+    //the timer of the alarms (the alarm icon is shown for a while)
+    private val timerViewModel: ViewModelListener
+        get() = ViewModelProvider(this)[ViewModelListener::class.java]
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
         //start listener to timer
         startTimerListener()
@@ -114,32 +112,17 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
 
     //start listener to timer
     private fun startTimerListener() {
-        activity?.let {
-            ViewModelProvider(
-                this,
-                ViewModelProvider.NewInstanceFactory()
-            ).get(ViewModelListener::class.java).startCurrentCalendarListener()
-                ?.observe(this, androidx.lifecycle.Observer { calendar ->
-
-                    //Log.d("testTimer","tick in MapSensorsFragment")
-                    //if there is no alarm in process then shut down the timer
-                    if (UserSession.instance.alarmSensors == null || UserSession.instance.alarmSensors?.isEmpty()!!) {
-                        activity?.let { act ->
-                            ViewModelProvider(
-                                this,
-                                ViewModelProvider.NewInstanceFactory()
-                            ).get(ViewModelListener::class.java).shutDownTimer()
-                        }
-                        stopPlayingAlarm()
-                        //refresh markers
-                        showMarkers()
-                    } else {
-                        //remove all the time out sensors alarm and show them with regular sensor marker
-                        replaceSensorAlarmTimeOutToSensorMarker()
-                    }
-
-                })
-
+        timerViewModel.startCurrentCalendarListener()?.observe(this) {
+            //if there is no alarm in process then shut down the timer
+            if (UserSession.instance.alarmSensors.isNullOrEmpty()) {
+                timerViewModel.shutDownTimer()
+                stopPlayingAlarm()
+                //refresh markers
+                showMarkers()
+            } else {
+                //remove all the timed-out sensor alarms and show them with the regular sensor marker
+                replaceSensorAlarmTimeOutToSensorMarker()
+            }
         }
     }
 
@@ -148,35 +131,23 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view= inflater.inflate(R.layout.fragment_map_detects, container, false)
+        val view = inflater.inflate(R.layout.fragment_map_detects, container, false)
 
-        fbRefresh=view.findViewById(R.id.fbRefresh)
+        fbRefresh = view.findViewById(R.id.fbRefresh)
         fbRefresh?.setOnClickListener {
             gotoMyLocation()
         }
 
-//        fbTest=view.findViewById(R.id.fbTest)
-//        fbTest?.setOnClickListener {
-//            showTestEventDialog()
-//        }
-
-        //toggle the type of the ic_map_main
-        fbChangeMapType=view.findViewById(R.id.fbChangeMapType)
+        //toggle the type of the map
+        fbChangeMapType = view.findViewById(R.id.fbChangeMapType)
         fbChangeMapType?.setOnClickListener {
-            if(mMap?.mapType == GoogleMap.MAP_TYPE_NORMAL) {
-                mapType = GoogleMap.MAP_TYPE_SATELLITE
-            }else{
-                mapType = GoogleMap.MAP_TYPE_NORMAL
+            mapType = if (mMap?.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+                GoogleMap.MAP_TYPE_SATELLITE
+            } else {
+                GoogleMap.MAP_TYPE_NORMAL
             }
             mMap?.mapType = mapType
         }
-
-        mMapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mMapFragment?.getMapAsync(this)
-
-//        // load the animation
-//        flickering = AnimationUtils.loadAnimation(activity,
-//            R.anim.flickering)
 
         return view
     }
@@ -186,73 +157,50 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         super.onResume()
         initMapType()
 
-        //load ic_map_main
-        //if (mMap == null) {
-            val listener: OnMapReadyCallback = this
-            if (isAdded) {
-                //create ic_map_main fragment
-                Log.d(TAG, "run")
-                mMapFragment = SupportMapFragment()
-                mMapFragment?.let {
-                    val fm: FragmentManager = childFragmentManager
-                    fm.beginTransaction()
-                        .replace(R.id.map, it).commit()
-                    it.getMapAsync(listener)
-                }
+        //load the map
+        if (isAdded) {
+            val mapFragment = SupportMapFragment()
+            mMapFragment = mapFragment
+            childFragmentManager.beginTransaction().replace(R.id.map, mapFragment).commit()
+            mapFragment.getMapAsync(this)
+        }
 
-            }
-//        }
-//        else{
-//            showMarkers()
-//        }
-
-        //check it there is any sensor alarm which is not time out, if yes then execute the timer
-        if(isAnySensorAlarmNotTimeOut()){
+        //check if there is any sensor alarm that has not timed out, if yes then execute the timer
+        if (isAnySensorAlarmNotTimeOut()) {
             startTimer()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        activity?.let {
-
-            ViewModelProvider(
-                this,
-                ViewModelProvider.NewInstanceFactory()
-            ).get(ViewModelListener::class.java).shutDownTimer()
-        }
+        timerViewModel.shutDownTimer()
         stopPlayingAlarm()
     }
 
     private fun stopPlayingAlarm() {
-       if(rington!=null && rington?.isPlaying!!){
-           rington?.stop()
-       }
+        if (ringtone?.isPlaying == true) {
+            ringtone?.stop()
+        }
     }
 
-    //configureActivation ic_map_main type
+    //set the type of the map according to the configuration
     private fun initMapType() {
-        val _mapType = getIntInPreference(activity,MAP_SHOW_VIEW_TYPE_KEY,-1)
-        Log.d("testMapView", "_mapType:$_mapType")
-        if(_mapType==MAP_SHOW_NORMAL_VALUE){
-            mapType= GoogleMap.MAP_TYPE_NORMAL
-        }else if(_mapType== MAP_SHOW_SATELLITE_VALUE){
-            mapType= GoogleMap.MAP_TYPE_SATELLITE
+        when (getIntInPreference(activity, MAP_SHOW_VIEW_TYPE_KEY, -1)) {
+            MAP_SHOW_NORMAL_VALUE -> mapType = GoogleMap.MAP_TYPE_NORMAL
+            MAP_SHOW_SATELLITE_VALUE -> mapType = GoogleMap.MAP_TYPE_SATELLITE
         }
 
-        //when the ic_map_main is already loaded
-        try {
-            mMap?.mapType = mapType
-        }catch (ex:Exception){}
+        //when the map is already loaded
+        mMap?.mapType = mapType
     }
 
-    //when the app start rotate ,then invoke this method and save the ic_map_main type
+    //when the app start rotate ,then invoke this method and save the map type
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(MAP_TYPE_KEY, mapType)
     }
 
-    //when the app complete rotate ,then invoke this method and restore the ic_map_main type
+    //when the app complete rotate ,then invoke this method and restore the map type
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState != null && savedInstanceState.containsKey(MAP_TYPE_KEY)) {
             mapType = savedInstanceState.getInt(MAP_TYPE_KEY)
@@ -261,150 +209,112 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         super.onViewStateRestored(savedInstanceState)
     }
 
+    //callback of location permission
+    private val locationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            if (result[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+                startServiceFindLocation()
+            }
+        }
+
+    private fun isLocationPermissionGranted(): Boolean {
+        val context = context ?: return false
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) ==
+                PackageManager.PERMISSION_GRANTED
+    }
+
     private fun gotoMyLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity?.startForegroundService(Intent(context, ServiceFindLocation::class.java))
-        }else{
-            activity?.startService(Intent(context, ServiceFindLocation::class.java))
+        if (isLocationPermissionGranted()) {
+            startServiceFindLocation()
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun startServiceFindLocation() {
+        activity?.let {
+            ContextCompat.startForegroundService(it, Intent(it, ServiceFindLocation::class.java))
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mMap?.clear()
+        googleMap.clear()
 
         //set satellite as default
-        mMap?.mapType = mapType
+        googleMap.mapType = mapType
 
-        //set the location of the current touching ic_map_main
-        mMap?.setOnMapLongClickListener { arg0 ->
-            //bug fixed: crash when accept alarm
-            if (arg0 != null) {
-                currentLongitude = arg0.longitude
-                currentLatitude = arg0.latitude
-                showDialogSensorsList()
-            } else {
-                Toast.makeText(activity, "error in location1", Toast.LENGTH_LONG).show()
-            }
-        }
-
-        mMap?.setOnCameraMoveListener {
-            val cp = mMap?.cameraPosition
-            mCenterLatLong = cp?.target
-
-            //remove the action of set current location as current central location
-            //mCenterLatLong?.let { setMyLocate(it) }
+        //set the location of the current touching map
+        googleMap.setOnMapLongClickListener { latLng ->
+            currentLongitude = latLng.longitude
+            currentLatitude = latLng.latitude
+            showDialogSensorsList()
         }
 
         //go to last location
-        val location = initFindLocation()
-
-        if (location == null) {
-            val latitude = getStringInPreference(activity, CURRENT_LATITUDE_PREF, "-1")
-            val longtude = getStringInPreference(activity, CURRENT_LONGTUDE_PREF, "-1")
-
-            if (!latitude.equals("-1") && !longtude.equals("-1")) {
-                try {
-                    val lat = latitude?.toDouble()
-                    val lon = longtude?.toDouble()
-
-                } catch (ex: NumberFormatException) {
-                }
-            }
-        }
+        val location = getLastKnownLocation()
 
         //set last location if exist
         location?.let { myLocate = LatLng(it.latitude, it.longitude) }
 
         showLocation(location)
 
-
         gotoMyLocation()
     }
 
-    // move the camera to ic_mark location
+    // move the camera to the location
     private fun showLocation(location: Location?) {
 
         if (location != null) {
-            setMyLocate(LatLng(location.latitude, location.longitude))
+            myLocate = LatLng(location.latitude, location.longitude)
         } else {
-
-            myLocate = getLastLocationLocally()
-
-            if (myLocate == null) {
-                //set default location (london)
-                myLocate = LatLng(51.509865, -0.118092)
-                //set default location (london) if there is no last location
-                setMyLocate(LatLng(51.509865, -0.118092))
-            }
+            //the last saved location, or default location (london) if there is no last location
+            myLocate = getLastLocationLocally() ?: LatLng(51.509865, -0.118092)
         }
-        //add marker at the focus of the ic_map_main
-        myLocate?.let{
-            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocate!!, 15.0f))
+        //add marker at the focus of the map
+        myLocate?.let {
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15.0f))
             showMarkers()
-            //fillSensorsMarkers()
         }
 
     }
 
     //get last location from shared preference
     private fun getLastLocationLocally(): LatLng? {
-        val latitude = getStringInPreference(activity, CURRENT_LATITUDE_PREF, "-1")
-        val longtude = getStringInPreference(activity, CURRENT_LONGTUDE_PREF, "-1")
-        var lat: Double? = null
-        var lon: Double? = null
-
-        if (!latitude.equals("-1") && !longtude.equals("-1")) {
-            try {
-                lat = latitude?.toDouble()
-                lon = longtude?.toDouble()
-
-            } catch (ex: NumberFormatException) {
-            }
+        val lat = getStringInPreference(activity, CURRENT_LATITUDE_PREF, "-1")?.toDoubleOrNull()
+        val lon = getStringInPreference(activity, CURRENT_LONGITUDE_PREF, "-1")?.toDoubleOrNull()
+        if (lat == null || lon == null || lat == -1.0 || lon == -1.0) {
+            return null
         }
-        if (lat != null && lon != null) {
-            return LatLng(lat, lon)
-        }
-        return null
+        return LatLng(lat, lon)
     }
 
     //execute vibrate
     private fun playVibrate() {
-
-        val isVibrateWhenAlarm=getBooleanInPreference(activity,IS_VIBRATE_WHEN_ALARM_KEY,true)
-        if(isVibrateWhenAlarm){
-            // Get instance of Vibrator from current Context
-           val vibrator =   activity?.getSystemService(Context.VIBRATOR_SERVICE)  as Vibrator
-
-            // Vibrate for 200 milliseconds
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(1000)
-            }
-
-         }
-
+        if (getBooleanInPreference(activity, IS_VIBRATE_WHEN_ALARM_KEY, true)) {
+            // Vibrate for 1 second
+            activity?.getSystemService(Vibrator::class.java)
+                ?.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
     }
 
-    //create timeout for reset sensor to regular icon and cancel the alarm icon
+    //start the timer that returns the sensors to the regular icon after the alarm time-out
     private fun startTimer() {
-
-        Log.d("testTimer","start timer")
-
-        activity?.let {
-            ViewModelProvider(
-                this,
-                ViewModelProvider.NewInstanceFactory()
-            ).get(ViewModelListener::class.java).startTimer()
-        }
-
+        timerViewModel.startTimer()
     }
 
 
     //show all markers
-    fun showMarkers(){
+    private fun showMarkers() {
 
         mMap?.clear()
 
@@ -412,457 +322,299 @@ class MapSensorsFragment : Fragment() ,OnMapReadyCallback,OnAdapterListener{
         showCurrentLocationMarker()
 
         //get sensors from locally
-        val sensorsArr = activity?.let { getCamerasFromLocally(it) }
+        val sensorsArr = activity?.let { getCamerasFromLocally(it) } ?: return
 
-        //for
-        val iteratorList=sensorsArr?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val sensorItem = iteratorList.next()
-            if(sensorItem.getLatitude()!=null
-                && sensorItem.getLongtitude()!=null){
+        for (sensorItem in sensorsArr) {
+            if (sensorItem.getLatitude() == null || sensorItem.getLongitude() == null) {
+                continue
+            }
 
-                val sensorAlarm=getSensorAlarmBySensor(sensorItem)
-
-                if(sensorAlarm!=null){
-
-                    //if time out then remove the sensor from alarm list
-                    if(isSensorAlarmTimeout(sensorAlarm)){
-                        UserSession.instance.alarmSensors?.remove(sensorAlarm)
-                        showSensorMarker(sensorItem)
-                    }else{
-                        //save the marker for update after timeout
-                        sensorAlarm.marker=showSensorAlarmMarker(sensorItem,sensorAlarm.type)
-                    }
-
-                }else{
-                    //show sensor marker
-                    showSensorMarker(sensorItem)
-                }
-
+            val sensorAlarm = getSensorAlarmBySensor(sensorItem)
+            if (sensorAlarm == null) {
+                //show sensor marker
+                showSensorMarker(sensorItem)
+            } else if (isSensorAlarmTimeout(sensorAlarm)) {
+                //if timed out then remove the sensor from the alarm list
+                UserSession.instance.alarmSensors?.remove(sensorAlarm)
+                showSensorMarker(sensorItem)
+            } else {
+                //save the marker for update after timeout
+                sensorAlarm.marker = showSensorAlarmMarker(sensorItem, sensorAlarm.type)
             }
         }
     }
 
     //check if the alarm sensor is in duration
-    private fun isSensorAlarmTimeout(alarmProcess: AlarmSensor?):Boolean{
-
-        val timeout= getLongInPreference(activity,ALARM_FLICKERING_DURATION_KEY,ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS)
-        val futureTimeout = timeout.let { alarmProcess?.alarmTime?.timeInMillis?.plus(it * 1000) }
-
-        if (futureTimeout != null) {
-            val calendar=Calendar.getInstance()
-            return when {
-                futureTimeout < calendar.timeInMillis -> true
-                //alarmProcess.marker.setIcon(context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_sensor_item) })
-                //alarmSensors?.remove(alarmProcess)
-                else -> false
-            }
-        }
-        return true
+    private fun isSensorAlarmTimeout(alarmProcess: AlarmSensor): Boolean {
+        val timeout = getLongInPreference(
+            activity,
+            ALARM_FLICKERING_DURATION_KEY,
+            ALARM_FLICKERING_DURATION_DEFAULT_VALUE_SECONDS
+        )
+        val futureTimeout = alarmProcess.alarmTime.timeInMillis + timeout * 1000
+        return futureTimeout < Calendar.getInstance().timeInMillis
     }
 
     //check if the sensor is in alarm process
     private fun getSensorAlarmBySensor(sensor: Camera): AlarmSensor? {
-
-        val iteratorList=UserSession.instance.alarmSensors?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val sensorItem = iteratorList.next()
-            if(sensorItem.alarmSensorId == sensor.getId()){
-                return sensorItem
-            }
-        }
-        return null
+        return UserSession.instance.alarmSensors?.firstOrNull { it.alarmSensorId == sensor.getId() }
     }
 
+    //the icon of a camera marker
+    private fun markerIcon(resId: Int) = context?.let { convertBitmapToBitmapDescriptor(it, resId) }
 
-   //show marker of sensor alarm
-   private fun showSensorAlarmMarker(sensorItem: Camera, type: String): Marker? {
+    //show marker of sensor alarm
+    private fun showSensorAlarmMarker(sensorItem: Camera, type: String): Marker? {
+        val map = mMap ?: return null
+        val latitude = sensorItem.getLatitude() ?: return null
+        val longitude = sensorItem.getLongitude() ?: return null
 
-       if(mMap==null){
-           return null
-       }
+        //set icon according to type alarm
+        val alarmTypeIcon = when (type) {
+            ALARM_CAR -> R.drawable.ic_alarm_car
+            ALARM_INTRUDER -> R.drawable.ic_alarm_intruder
+            ALARM_SENSOR_OFF -> R.drawable.ic_alarm_sensor_off
+            ALARM_LOW_BATTERY -> R.drawable.ic_alarm_low_battery
+            else -> R.drawable.ic_sensor_alarm
+        }
 
-       //set icon according to type alarm
-       val alarmTypeIcon=
-           when(type){
-               ALARM_CAR->context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_alarm_car)}
-               ALARM_INTRUDER->context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_alarm_intruder)}
-               ALARM_SENSOR_OFF->context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_alarm_sensor_off)}
-               ALARM_LOW_BATTERY->context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_alarm_low_battery)}
-               else -> context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_sensor_alarm)}
-           }
-
-
-       val loc: LatLng = LatLng(sensorItem.getLatitude()!!, sensorItem.getLongtitude()!!)
-       if(loc!=null) {
-           val marker = mMap?.addMarker(
-               MarkerOptions()
-                   .position(loc)
-                   .draggable(true)
-                   .icon(context?.let { alarmTypeIcon })
-
-               //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-           )
-           return marker
-       }
-       return null
-   }
+        return map.addMarker(
+            MarkerOptions()
+                .position(LatLng(latitude, longitude))
+                .draggable(true)
+                .icon(markerIcon(alarmTypeIcon))
+        )
+    }
 
     //show marker of current location
     private fun showCurrentLocationMarker() {
-
-        if (mMap == null) {
-            return
-        }
-
-        if (myLocate == null) {
-            return
-        }
-
-        myLocate?.let {
+        val map = mMap ?: return
+        val location = myLocate ?: return
+        map.addMarker(
             MarkerOptions()
-                .position(it)
+                .position(location)
                 .draggable(true)
-                .icon(context?.let { con ->
-                    convertBitmapToBitmapDiscriptor(
-                        con,
-                        R.drawable.ic_my_locate
-                    )
-                })
-        }?.let {
-            mMap?.addMarker(
-                it
-            )
-        }
-    }
-
-    //show marker of sensor
-    private fun showSensorMarker(sensorItem: Camera) {
-
-        if(mMap==null){
-            return
-        }
-
-        val loc=LatLng(sensorItem.getLatitude()!!, sensorItem.getLongtitude()!!)
-        mMap?.addMarker(
-            MarkerOptions()
-                .position(loc)
-                .draggable(true)
-                .icon(context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_sensor_item) })
+                .icon(markerIcon(R.drawable.ic_my_locate))
         )
     }
 
     //show marker of sensor
-    private fun showSensorMarker(marker: Marker) {
-        if(marker==null){
-            return
-        }
-        marker.setIcon(context?.let { con -> convertBitmapToBitmapDiscriptor(con,R.drawable.ic_sensor_item) })
+    private fun showSensorMarker(sensorItem: Camera) {
+        val map = mMap ?: return
+        val latitude = sensorItem.getLatitude() ?: return
+        val longitude = sensorItem.getLongitude() ?: return
+        map.addMarker(
+            MarkerOptions()
+                .position(LatLng(latitude, longitude))
+                .draggable(true)
+                .icon(markerIcon(R.drawable.ic_sensor_item))
+        )
     }
 
-    //check it there is any sensor alarm which is not time out
-    private fun isAnySensorAlarmNotTimeOut():Boolean{
-        val iteratorList=UserSession.instance.alarmSensors?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val sensorItem = iteratorList.next()
-            if(!isSensorAlarmTimeout(sensorItem)){
-                return true
-            }
-        }
-        return false
+    //check if there is any sensor alarm that has not timed out
+    private fun isAnySensorAlarmNotTimeOut(): Boolean {
+        return UserSession.instance.alarmSensors?.any { !isSensorAlarmTimeout(it) } == true
     }
 
 
-    //remove all the time out sensors alarm and show them with regular sensor marker
-    private fun replaceSensorAlarmTimeOutToSensorMarker(){
-        val iteratorList=UserSession.instance.alarmSensors?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
+    //remove all the timed-out sensor alarms and show them with the regular sensor marker
+    private fun replaceSensorAlarmTimeOutToSensorMarker() {
+        val iteratorList = UserSession.instance.alarmSensors?.listIterator() ?: return
+        while (iteratorList.hasNext()) {
             val sensorItem = iteratorList.next()
-            if(isSensorAlarmTimeout(sensorItem)){
+            if (isSensorAlarmTimeout(sensorItem)) {
                 //show regular sensor marker
-                sensorItem.marker?.let { showSensorMarker(it) }
+                sensorItem.marker?.setIcon(markerIcon(R.drawable.ic_sensor_item))
                 //remove the sensor alarm because it timeout
                 iteratorList.remove()
             }
         }
     }
 
-    private var rington:Ringtone?=null
-
     private fun playAlarmSound() {
 
-        val isNotificationSound=getBooleanInPreference(activity,IS_NOTIFICATION_SOUND_KEY,true)
-        if(!isNotificationSound){
+        if (!getBooleanInPreference(activity, IS_NOTIFICATION_SOUND_KEY, true)) {
             return
         }
 
-        val selectedSound =getStringInPreference(activity,SELECTED_NOTIFICATION_SOUND_KEY,"-1")
+        val selectedSound = getStringInPreference(activity, SELECTED_NOTIFICATION_SOUND_KEY, "-1")
 
-        if(!selectedSound.equals("-1")) {
-
+        if (selectedSound != null && selectedSound != "-1") {
             try {
-                val uri = Uri.parse(selectedSound)
-                rington = RingtoneManager.getRingtone(activity ,uri)
-                rington?.play()
-            } catch ( e:Exception) {
-                e.printStackTrace()
+                ringtone = RingtoneManager.getRingtone(activity, selectedSound.toUri())
+                ringtone?.play()
+            } catch (e: Exception) {
+                Log.w(TAG, "play alarm sound failed", e)
             }
         }
 
-    }
-
-
-    private fun setMyLocate(myLocate: LatLng) {
-        this.myLocate = myLocate
-    }
-
-    private fun setFilter() {
-        val filter = IntentFilter(CREATE_ALARM_KEY)
-        filter.addAction(RESET_MARKERS_KEY)
-        filter.addAction(GET_CURRENT_LOCATION_KEY)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(usbReceiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
-        } else {
-            activity?.registerReceiver(usbReceiver, filter)
-        }
     }
 
     override fun onStart() {
         super.onStart()
-        setFilter()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnAdapterListener")
+        val filter = IntentFilter(CREATE_ALARM_KEY)
+        filter.addAction(RESET_MARKERS_KEY)
+        filter.addAction(GET_CURRENT_LOCATION_KEY)
+        activity?.let {
+            ContextCompat.registerReceiver(
+                it,
+                alarmsReceiver,
+                filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-        //remove all callbacks event timeout(relevant to the type of icon)
-        Handler().removeCallbacksAndMessages(null)
+    override fun onStop() {
+        super.onStop()
+        activity?.unregisterReceiver(alarmsReceiver)
     }
 
 
-   companion object {
-                /**
-                 * Use this factory method to create a new instance of
-                 * this fragment using the provided parameters.
-                 *
-                 * @param param1 Parameter 1.
-                 * @param param2 Parameter 2.
-                 * @return A new instance of fragment MapSensorsFragment.
-                 */
-                // TODO: Rename and change types and number of parameters
-                @JvmStatic
-                fun newInstance(param1: String, param2: String) =
-                    MapSensorsFragment().apply {
-                        arguments = Bundle().apply {
-                            putString(ARG_PARAM1, param1)
-                            putString(ARG_PARAM2, param2)
-                        }
-                    }
+    private fun showDialogSensorsList() {
+        val context = context ?: return
+        val sensors = getCamerasFromLocally(context) ?: return
+
+        if (dialog?.isShowing == true) {
+            sensorsDialogAdapter?.setDetects(sensors)
+            return
+        }
+
+        val adapter = CameraDialogAdapter(sensors, context, this)
+        sensorsDialogAdapter = adapter
+
+        //create dialog
+        val dialog = Dialog(context)
+        this.dialog = dialog
+        //set layout custom
+        dialog.setContentView(R.layout.dialog_list_cameras)
+
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        val height = (resources.displayMetrics.heightPixels * 0.75).toInt()
+        dialog.window?.setLayout(width, height)
+
+        val rvDetector = dialog.findViewById<RecyclerView>(R.id.rvSystemCameras)
+        val btnSaveLocateSensor = dialog.findViewById<Button>(R.id.btnSaveLocateSensor)
+        btnSaveLocateSensor?.setOnClickListener {
+            CameraDialogAdapter.selectedSensor?.let { sensor ->
+                currentLatitude?.let { sensor.setLatitude(it) }
+                currentLongitude?.let { sensor.setLongitude(it) }
+                saveLatLongDetector(sensor)
             }
-
-
-   private fun showDialogSensorsList() {
-
-                //TODO to separate the adapters
-
-
-       val sensors = activity?.let { getCamerasFromLocally(it) }
-
-                if(dialog!=null && dialog?.isShowing!!){
-                    sensorsDialogAdapter?.setDetects(sensors)
-                    sensorsDialogAdapter?.notifyDataSetChanged()
-                    return
-                }
-
-                sensorsDialogAdapter=activity?.let { adapter ->
-                    sensors?.let { arr ->
-                        CameraDialogAdapter(arr, adapter, this) { _ ->
-
-                        }
-                    }
-                }
-
-                //create dialog
-                dialog = this.context?.let{Dialog(it)}
-                //set layout custom
-       dialog?.setContentView(R.layout.dialog_list_cameras)
-
-                val width = (resources.displayMetrics.widthPixels*0.90).toInt()
-                val height = (resources.displayMetrics.heightPixels*0.75).toInt()
-                dialog?.window?.setLayout(width, height)
-
-       val rvDetector = dialog?.findViewById<RecyclerView>(R.id.rvSystemCameras)
-                val btnSaveLocateSensor= dialog?.findViewById<Button>(R.id.btnSaveLocateSensor)
-                btnSaveLocateSensor?.setOnClickListener{
-                    CameraDialogAdapter.selectedSensor
-
-                    currentLatitude?.let { CameraDialogAdapter.selectedSensor?.setLatitude(it) }
-                    currentLongitude?.let { CameraDialogAdapter.selectedSensor?.setLongtitude(it) }
-
-                    CameraDialogAdapter.selectedSensor?.let { sensor -> saveLatLongDetector(sensor) }
-                    dialog?.dismiss()
-                    showMarkers()
-                    //fillSensorsMarkers()
-                }
-
-       val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-       itemDecorator.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!)
-       rvDetector?.addItemDecoration(itemDecorator)
-
-       sensorsDialogAdapter?.itemClick = { detector ->
-
-       }
-
-       // Add some item here to show the list.
-       rvDetector?.adapter = sensorsDialogAdapter
-       val mLayoutManager = LinearLayoutManager(context)
-       rvDetector?.layoutManager = mLayoutManager
-       dialog?.show()
-   }
-
-
-    private fun validIsEmpty(editText: EditText): Boolean {
-        var isValid = true
-
-        if (editText.text.isNullOrBlank()) {
-            editText.error =
-                resources.getString(R.string.empty_field_error)
-            isValid = false
+            dialog.dismiss()
+            showMarkers()
         }
 
-        return isValid
+        val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        ContextCompat.getDrawable(context, R.drawable.divider)
+            ?.let { itemDecorator.setDrawable(it) }
+        rvDetector?.addItemDecoration(itemDecorator)
+
+        // Add some item here to show the list.
+        rvDetector?.adapter = adapter
+        rvDetector?.layoutManager = LinearLayoutManager(context)
+        dialog.show()
     }
 
     private fun saveLatLongDetector(sensor: Camera) {
-        val sensorsArr = activity?.let { getCamerasFromLocally(it) }
-                if (sensorsArr != null) {
+        val context = context ?: return
+        val sensorsArr = getCamerasFromLocally(context) ?: return
+        for (sensorItem in sensorsArr) {
+            if (sensorItem.getId() == sensor.getId()) {
+                sensor.getLatitude()?.let { sensorItem.setLatitude(it) }
+                sensor.getLongitude()?.let { sensorItem.setLongitude(it) }
+            }
+        }
+        storeSensorsToLocally(sensorsArr, context)
+    }
 
-                    val iteratorList=sensorsArr.listIterator()
-                    while (iteratorList != null && iteratorList.hasNext()) {
-                        val sensorItem = iteratorList.next()
-                        if(sensorItem.getId() == sensor.getId()){
-                            sensor.getLatitude()?.let { sensorItem.setLatitude(it) }
-                            sensor.getLongtitude()?.let { sensorItem.setLongtitude(it) }
-                        }
+    private val alarmsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(arg0: Context, inn: Intent) {
+            when (inn.action) {
+                //accept currentAlarm
+                CREATE_ALARM_KEY -> {
+                    val alarmSensorId = inn.getStringExtra(CREATE_ALARM_ID_KEY)
+                    val type = inn.getStringExtra(CREATE_ALARM_TYPE_KEY)
+
+                    //add alarm process to queue
+                    if (alarmSensorId != null && type != null) {
+                        UserSession.instance.alarmSensors?.add(
+                            AlarmSensor(
+                                alarmSensorId,
+                                Calendar.getInstance(),
+                                type
+                            )
+                        )
                     }
 
+                    playAlarmSound()
+
+                    playVibrate()
+
+                    startTimer()
+
+                    showMarkers()
                 }
-                sensorsArr?.let { activity?.let { context -> storeSensorsToLocally(it, context) } }
-            }
 
-    private val usbReceiver = object : BroadcastReceiver() {
-                override fun onReceive(arg0: Context, inn: Intent) {
-                    //accept currentAlarm
-                    if (inn.action == CREATE_ALARM_KEY) {
-
-                        val alarmSensorId = inn.getStringExtra(CREATE_ALARM_ID_KEY)
-                        val type = inn.getStringExtra(CREATE_ALARM_TYPE_KEY)
-
-                        //add alarm process to queue
-                        alarmSensorId.let {
-                            it?.let { it1 ->
-                                type?.let { it2 ->
-                                    AlarmSensor(
-                                        it1, Calendar.getInstance(), it2
-                                    )
-                                }
-                            }
-                        }?.let { UserSession.instance.alarmSensors?.add(it) }
-
-                        playAlarmSound()
-
-                        playVibrate()
-
-                        startTimer()
-
-                        showMarkers()
-
-
-                    }else if(inn.action == GET_CURRENT_LOCATION_KEY){
-                        val location: Location? = inn.getParcelableExtra(CURRENT_LOCATION)
-                        if (location != null) {
-                            //save locally the current location
-                            setStringInPreference(
-                                activity,
-                                CURRENT_LATITUDE_PREF,
-                                location.latitude.toString()
-                            )
-                            setStringInPreference(
-                                activity,
-                                CURRENT_LONGTUDE_PREF,
-                                location.longitude.toString()
-                            )
-                            showLocation(location)
-                        } else {
-                            Toast.makeText(activity, "error in location2", Toast.LENGTH_LONG).show()
-                        }
-                    }else if(inn.action == RESET_MARKERS_KEY){
-                        //fillSensorsMarkers()
-                        showMarkers()
+                GET_CURRENT_LOCATION_KEY -> {
+                    val location =
+                        IntentCompat.getParcelableExtra(inn, CURRENT_LOCATION, Location::class.java)
+                    if (location != null) {
+                        //save locally the current location
+                        setStringInPreference(
+                            activity,
+                            CURRENT_LATITUDE_PREF,
+                            location.latitude.toString()
+                        )
+                        setStringInPreference(
+                            activity,
+                            CURRENT_LONGITUDE_PREF,
+                            location.longitude.toString()
+                        )
+                        showLocation(location)
+                    } else {
+                        Toast.makeText(activity, "error in location2", Toast.LENGTH_LONG).show()
                     }
                 }
-            }
 
+                RESET_MARKERS_KEY -> showMarkers()
+            }
+        }
+    }
 
 
     override fun onDestroy() {
-                super.onDestroy()
-                activity?.unregisterReceiver(usbReceiver)
-            }
+        super.onDestroy()
+        //stop the GPS updates when the screen is closed
+        activity?.stopService(Intent(activity, ServiceFindLocation::class.java))
+    }
 
-    private var locationManager: LocationManager? = null
-    //    private var criteria: Criteria? = null
-//    private var currentApiVersion: Int = 0
-    private fun initFindLocation(): Location? {
-                locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//                criteria = Criteria()
-//                criteria?.accuracy = Criteria.ACCURACY_FINE
-//                currentApiVersion = Build.VERSION.SDK_INT
-
-            if (context?.let {
-                    ContextCompat.checkSelfPermission(
-                        it,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                } == PackageManager.PERMISSION_GRANTED
-            ) {
-
-                return locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                //return locationManager?.getLastKnownLocation(locationManager?.getBestProvider(criteria, false))
-            }
-
-
+    //the last known location of the GPS (if the permission is granted)
+    private fun getLastKnownLocation(): Location? {
+        if (!isLocationPermissionGranted()) {
             return null
-            }
+        }
+        val locationManager = activity?.getSystemService(LocationManager::class.java) ?: return null
+        return try {
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        } catch (ex: SecurityException) {
+            Log.w(TAG, "no location permission", ex)
+            null
+        }
+    }
 
     //rename the sensor name ,from the adapter
-    override fun saveNameSensor(detector: Camera) {
-        val detectorsArr = activity?.let { getCamerasFromLocally(it) }
-                if (detectorsArr != null) {
-
-                    val iteratorList=detectorsArr.listIterator()
-                    while (iteratorList != null && iteratorList.hasNext()) {
-                        val detectorItem = iteratorList.next()
-                        if(detectorItem.getId() == detector.getId()){
-                            detector.getName()?.let { detectorItem.setName(it) }
-                        }
-                    }
-
-                }
-                detectorsArr?.let { activity?.let { context -> storeSensorsToLocally(it, context) } }
-                showDialogSensorsList()
+    override fun saveNameSensor(camera: Camera) {
+        val context = context ?: return
+        val detectorsArr = getCamerasFromLocally(context) ?: return
+        for (detectorItem in detectorsArr) {
+            if (detectorItem.getId() == camera.getId()) {
+                camera.getName()?.let { detectorItem.setName(it) }
             }
+        }
+        storeSensorsToLocally(detectorsArr, context)
+        showDialogSensorsList()
+    }
 
 
 }
-
-

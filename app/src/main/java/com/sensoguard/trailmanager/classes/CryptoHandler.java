@@ -18,8 +18,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoHandler {
 
-    String SecretKey = "Comand12Key123456789012345678901";//"Camera12Key123456789012345678901";//"DetectorKey123456789012345678901";
-    String IV = "DetectorIv123456";
+    private final String SecretKey = "Comand12Key123456789012345678901";//"Camera12Key123456789012345678901";//"DetectorKey123456789012345678901";
+    private final String IV = "DetectorIv123456";
 
     private static CryptoHandler instance = null;
 
@@ -45,8 +45,7 @@ public class CryptoHandler {
         Cipher ecipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
         ecipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
         byte[] dstBuff = ecipher.doFinal(srcBuff);
-        String base64 = Base64.encodeToString(dstBuff, Base64.DEFAULT);
-        return base64;
+        return Base64.encodeToString(dstBuff, Base64.DEFAULT);
     }
 
     public String decrypt(String encrypted) throws NoSuchAlgorithmException,
@@ -62,7 +61,6 @@ public class CryptoHandler {
         ecipher.init(Cipher.DECRYPT_MODE, skeySpec, ivSpec);
         byte[] raw = Base64.decode(encrypted, Base64.DEFAULT);
         byte[] originalBytes = ecipher.doFinal(raw);
-        String original = new String(originalBytes, StandardCharsets.UTF_8);
-        return original;
+        return new String(originalBytes, StandardCharsets.UTF_8);
     }
 }

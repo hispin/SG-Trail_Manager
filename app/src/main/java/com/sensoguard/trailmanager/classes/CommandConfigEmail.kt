@@ -53,9 +53,9 @@ class CommandConfigEmail {
                     if ((view as EditText).text.toString().contains("@gmail.com")) {
                         //fill automatically
                         etMailServer?.setError("", null)
-                        etMailServer?.setText("smtp.gmail.com")
+                        etMailServer?.setText(R.string.gmail_smtp_server)
                         etMailServerPort?.setError("", null)
-                        etMailServerPort?.setText("465")
+                        etMailServerPort?.setText(R.string.gmail_smtp_port)
                     }
                 }
             }

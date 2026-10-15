@@ -2,225 +2,66 @@ package com.sensoguard.trailmanager.global
 
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonIOException
-import com.google.gson.JsonParser
-import com.google.gson.JsonSyntaxException
+import com.google.gson.JsonParseException
 import com.google.gson.reflect.TypeToken
 import com.sensoguard.trailmanager.classes.Alarm
 import com.sensoguard.trailmanager.classes.Camera
 import com.sensoguard.trailmanager.classes.MyEmailAccount
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 
+private const val GSON_LOG_TAG = "SysMethodsGson"
 
-//convert camera to json
-fun convertToGson(myEmailAccount: MyEmailAccount): String? {
-    try {
-        val gSon = Gson()
-        val data = gSon.toJson(myEmailAccount)
-        val jsonElement = JsonParser().parse(data)
-        return gSon.toJson(jsonElement)
-        //TODO : how to get response about set shared preference
+private val gson = Gson()
 
-    } catch (ex: JSONException) {
-        ex.message?.let { Log.i("exception", it) }
-    } catch (ex: java.lang.Exception) {
-        ex.message?.let { Log.i("exception", it) }
+//convert an object to JSON, returns ERROR_RESP if failed
+private fun toJsonOrError(value: Any): String? {
+    return try {
+        gson.toJson(value)
+    } catch (ex: Exception) {
+        Log.e(GSON_LOG_TAG, "toJson failed", ex)
+        ERROR_RESP
     }
-    return ERROR_RESP
 }
 
-
-//convert camera to json
-fun convertToGson(camera: Camera): String? {
-    try {
-        val gSon = Gson()
-        val data = gSon.toJson(camera)
-        val jsonElement = JsonParser().parse(data)
-        return gSon.toJson(jsonElement)
-        //TODO : how to get response about set shared preference
-
-    } catch (ex: JSONException) {
-        ex.message?.let { Log.i("exception", it) }
-    } catch (ex: java.lang.Exception) {
-        ex.message?.let { Log.i("exception", it) }
-    }
-    return ERROR_RESP
-}
-
-//convert json to Camera
-fun convertJsonToSensor(inputJsonString: String): Camera? {
-
-    //if the json string is empty, then return empty array list
-    if (inputJsonString.isNullOrEmpty()) {
+//convert JSON to an object, returns null if the JSON is empty or invalid
+private inline fun <reified T> fromJsonOrNull(json: String?): T? {
+    if (json.isNullOrEmpty()) {
         return null
     }
-
-    var mySensor: Camera? = null
-    //mySensors?.add(Camera("ID","NAME"))
-
-    var json: JSONObject? = null
-    try {
-        json = JSONObject(inputJsonString)
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
+    return try {
+        gson.fromJson<T>(json, object : TypeToken<T>() {}.type)
+    } catch (ex: JsonParseException) {
+        Log.e(GSON_LOG_TAG, "fromJson failed", ex)
+        null
     }
-
-    try {
-        val listType = object : TypeToken<Camera>() {
-
-        }.type
-        mySensor = Gson().fromJson(json.toString(), listType) as Camera
-    } catch (e: JsonIOException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    } catch (e: JsonSyntaxException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    return mySensor
-    //when jsonArr is null will return value of new ArrayList<>()
-}//convertJsonToUriList
-
-//convert json to Camera
-fun convertJsonToMyEmailAccount(inputJsonString: String): MyEmailAccount? {
-
-    //if the json string is empty, then return empty array list
-    if (inputJsonString.isNullOrEmpty()) {
-        return null
-    }
-
-    var myEmailAccount: MyEmailAccount? = null
-    //mySensors?.add(Camera("ID","NAME"))
-
-    var json: JSONObject? = null
-    try {
-        json = JSONObject(inputJsonString)
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    try {
-        val listType = object : TypeToken<MyEmailAccount>() {
-
-        }.type
-        myEmailAccount = Gson().fromJson(json.toString(), listType) as MyEmailAccount
-    } catch (e: JsonIOException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    } catch (e: JsonSyntaxException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    return myEmailAccount
-    //when jsonArr is null will return value of new ArrayList<>()
-}//convertJsonToUriList
-
-
-fun convertToGson(detectorsArr: ArrayList<Camera>): String? {
-    try {
-        val gSon= Gson()
-        val data=gSon.toJson(detectorsArr)
-        val jsonArray= JsonParser().parse(data).asJsonArray
-        return gSon.toJson(jsonArray)
-        //TODO : how to get response about set shared preference
-
-    } catch (ex: JSONException) {
-        ex.message?.let { Log.i("exception", it) }
-    } catch (ex: java.lang.Exception) {
-        ex.message?.let { Log.i("exception", it) }
-    }
-    return ERROR_RESP
 }
 
-fun convertToAlarmsGson(alarmsArr:ArrayList<Alarm>): String? {
-    try {
-        val gSon= Gson()
-        val data=gSon.toJson(alarmsArr)
-        val jsonArray= JsonParser().parse(data).asJsonArray
-        return gSon.toJson(jsonArray)
-        //TODO : how to get response about set shared preference
+//convert email account to JSON
+fun convertToGson(myEmailAccount: MyEmailAccount): String? = toJsonOrError(myEmailAccount)
 
-    } catch (ex: JSONException) {
-        ex.message?.let { Log.i("exception", it) }
-    } catch (ex: java.lang.Exception) {
-        ex.message?.let { Log.i("exception", it) }
-    }
-    return ERROR_RESP
-}
+//convert camera to JSON
+fun convertToGson(camera: Camera): String? = toJsonOrError(camera)
 
-//convert json to list of uri and list of Sensors
+//convert list of cameras to JSON
+fun convertToGson(detectorsArr: ArrayList<Camera>): String? = toJsonOrError(detectorsArr)
+
+//convert list of alarms to JSON
+fun convertToAlarmsGson(alarmsArr: ArrayList<Alarm>): String? = toJsonOrError(alarmsArr)
+
+//convert JSON to Camera
+fun convertJsonToSensor(inputJsonString: String): Camera? = fromJsonOrNull<Camera>(inputJsonString)
+
+//convert JSON to email account
+fun convertJsonToMyEmailAccount(inputJsonString: String): MyEmailAccount? =
+    fromJsonOrNull<MyEmailAccount>(inputJsonString)
+
+//convert JSON to list of cameras (an empty JSON is an empty list)
 fun convertJsonToSensorList(inputJsonArrayString: String): ArrayList<Camera>? {
-
-    //if the json string is empty, then return empty array list
-    if (inputJsonArrayString.isNullOrEmpty()) {
+    if (inputJsonArrayString.isEmpty()) {
         return ArrayList()
     }
-    var mySensors: ArrayList<Camera>? = null
-    var jsonArr: JSONArray? = null
-    try {
-        jsonArr = JSONArray(inputJsonArrayString)
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    try {
-        val listType = object : TypeToken<List<Camera>>() {
-
-        }.type
-        mySensors = ArrayList(Gson().fromJson(jsonArr.toString(), listType) as ArrayList<Camera>)
-    }catch(e:JsonIOException){
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }catch(e:JsonSyntaxException){
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    return mySensors
-    //when jsonArr is null will return value of new ArrayList<>()
-}//convertJsonToUriList
-
-//convert json to list of uri and list of Alarms
-fun convertJsonToAlarmList(inputJsonArrayString: String): ArrayList<Alarm>? {
-
-    var myAlarms:ArrayList<Alarm>?=null
-    var jsonArr: JSONArray?=null
-    try {
-        jsonArr= JSONArray(inputJsonArrayString)
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToUriList", it) }
-    }
-
-    try {
-        val listType = object : TypeToken<List<Alarm>>() {
-
-        }.type
-        myAlarms = Gson().fromJson(jsonArr.toString(), listType) as ArrayList<Alarm>
-    }catch(e:JsonIOException){
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToAlarmList", it) }
-    }catch(e:JsonSyntaxException){
-        e.printStackTrace()
-        e.message?.let { Log.e("convertJsonToAlarmList", it) }
-    }
-
-    return myAlarms
-    //when jsonArr is null will return value of new ArrayList<>()
+    return fromJsonOrNull<ArrayList<Camera>>(inputJsonArrayString)
 }
+
+//convert JSON to list of alarms
+fun convertJsonToAlarmList(inputJsonArrayString: String): ArrayList<Alarm>? =
+    fromJsonOrNull<ArrayList<Alarm>>(inputJsonArrayString)

@@ -4,7 +4,7 @@
 <com.daimajia.swipe.SwipeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
-        xmlns:tool="http://schemas.android.com/tools"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -12,8 +12,7 @@
         swipe:drag_edge="right"
         swipe:leftEdgeSwipeOffset="0dp"
         swipe:rightEdgeSwipeOffset="0dp"
-
-        >
+        tools:ignore="Overdraw">
 
 
     <RelativeLayout
@@ -49,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16.3dp"
-                android:text="name"
+                tools:text="name"
                 android:textColor="@color/dark3"
                 android:textSize="16sp"
 
@@ -69,7 +68,7 @@
                 swipe:layout_constraintBottom_toBottomOf="parent"
                 swipe:layout_constraintStart_toStartOf="@+id/tvName"
                 swipe:layout_constraintTop_toBottomOf="@+id/tvName"
-                tool:text="phone" />
+                tools:text="phone" />
 
         <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ibEditCamera"

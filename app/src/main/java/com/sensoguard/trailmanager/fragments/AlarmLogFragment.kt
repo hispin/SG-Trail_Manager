@@ -1,68 +1,67 @@
 package com.sensoguard.trailmanager.fragments
 
-//import android.support.v4.app.Fragment
-
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.*
-import android.net.Uri
-import android.os.Build
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.util.Linkify
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.adapters.AlarmAdapter
 import com.sensoguard.trailmanager.classes.Alarm
 import com.sensoguard.trailmanager.classes.Camera
-import com.sensoguard.trailmanager.global.*
-import com.sensoguard.trailmanager.interfaces.OnAdapterListener
+import com.sensoguard.trailmanager.global.ALARM_DISPLAY_KEY
+import com.sensoguard.trailmanager.global.ALARM_LIST_KEY_PREF
+import com.sensoguard.trailmanager.global.CAMERA_KEY
+import com.sensoguard.trailmanager.global.CAMERA_SORTED
+import com.sensoguard.trailmanager.global.DATE_SORTED
+import com.sensoguard.trailmanager.global.DETECT_ALARM_KEY
+import com.sensoguard.trailmanager.global.NO_SORTED
+import com.sensoguard.trailmanager.global.RESULT_IS_OK_KEY
+import com.sensoguard.trailmanager.global.SHARED_PREF_FILE_NAME
+import com.sensoguard.trailmanager.global.SORT_BY_DATETIME_KEY
+import com.sensoguard.trailmanager.global.SORT_BY_SYSTEM_KEY
+import com.sensoguard.trailmanager.global.SORT_BY_SYSTEM_RESULT_KEY
+import com.sensoguard.trailmanager.global.SORT_FROM_TIME_KEY
+import com.sensoguard.trailmanager.global.SORT_PICK_DATE_TIME_RESULT_KEY
+import com.sensoguard.trailmanager.global.SORT_TO_TIME_KEY
+import com.sensoguard.trailmanager.global.SORT_TYPE_KEY
+import com.sensoguard.trailmanager.global.convertJsonToSensorList
+import com.sensoguard.trailmanager.global.getAlarmsFromLocally
+import com.sensoguard.trailmanager.global.getStringInPreference
+import com.sensoguard.trailmanager.global.storeAlarmsToLocally
 import java.io.File
-import java.util.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [AlarmLogFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [AlarmLogFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
+ * The log of the alarms (that came from emails), can be filtered by cameras or by dates
  */
-class AlarmLogFragment : Fragment(), OnAdapterListener {
-    override fun saveCamera(detector: Camera) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun saveNameSensor(detector: Camera) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class AlarmLogFragment : Fragment() {
 
     private var typeOfSorted: Int = NO_SORTED
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var myAlarms: ArrayList<Alarm>? = null
+    private var myAlarms: ArrayList<Alarm> = ArrayList()
     private var mySortedAlarms: ArrayList<Alarm>? = null
-    private var rvAlarm:RecyclerView?=null
-    private var alarmAdapter: AlarmAdapter?=null
-    private var btnCsv: Button?=null
+    private var rvAlarm: RecyclerView? = null
+    private var alarmAdapter: AlarmAdapter? = null
     private var viewBetweenContainer: View? = null
     private var btnFilterSystem: Button? = null
     private var btnFilterDateTime: Button? = null
@@ -70,111 +69,87 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     private var ibDeleteSelectedItems: ImageButton? = null
     private var tvReset: TextView? = null
 
-    var mySortedCameras: ArrayList<Camera>? = null
-    var fromCalendar: Calendar? = null
-    var toCalendar: Calendar? = null
+    private var mySortedCameras: ArrayList<Camera>? = null
+    private var fromTimeInMillis: Long? = null
+    private var toTimeInMillis: Long? = null
 
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    //the alarms that are shown now (sorted or all)
+    private val shownAlarms: ArrayList<Alarm>?
+        get() = if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) mySortedAlarms else myAlarms
 
     //create shared preference handler change
     private val appStateChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        when (key) {
-            ALARM_LIST_KEY_PREF -> {
-                refreshAlarmsFromPref()
+        if (key == ALARM_LIST_KEY_PREF) {
+            refreshAlarmsFromPref()
+        }
+    }
+
+    //the action of a click on an alarm
+    private fun onAlarmClick(alarm: Alarm, type: Int) {
+        if (type == 1) {
+            openLargePictureDialog(alarm)
+        } else if (type == 2) {
+            try {
+                alarm.imgsPath?.let { shareImage(it) }
+            } catch (ex: IllegalArgumentException) {
+                Log.w("AlarmLogFragment", "share image failed", ex)
+                Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
-
     private fun initAlarmsGridAdapter() {
+        val context = context ?: return
 
         viewBetweenContainer?.visibility = View.INVISIBLE
 
-        if (rvAlarm != null && rvAlarm?.itemDecorationCount!! > 0) {
+        if ((rvAlarm?.itemDecorationCount ?: 0) > 0) {
             rvAlarm?.removeItemDecorationAt(0)
         }
 
-        myAlarms = ArrayList()
-
-
-        alarmAdapter = activity?.let { adapter ->
-            myAlarms?.let { arr ->
-                AlarmAdapter(
-                    arr, adapter,
-                    R.layout.item_alarm_grid, true
-                ) { alarm, type ->
-                    if (type == 1) {
-                        openLargePictureDialog(alarm)
-                    } else if (type == 2) {
-                        alarm.imgsPath?.let { shareImage(it) }
-                    }
-                }
-            }
+        alarmAdapter =
+            AlarmAdapter(ArrayList(), context, R.layout.item_alarm_grid, true) { alarm, type ->
+                onAlarmClick(alarm, type)
         }
         rvAlarm?.adapter = alarmAdapter
-        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, 2)
-        rvAlarm?.layoutManager = layoutManager
-
-        alarmAdapter?.notifyDataSetChanged()
-
+        rvAlarm?.layoutManager = GridLayoutManager(context, 2)
     }
 
     private fun initAlarmsAdapter() {
+        val context = context ?: return
 
         viewBetweenContainer?.visibility = View.VISIBLE
 
-        myAlarms = ArrayList()
-        //alarms?.add(Alarm("ID", "NAME", "TYPE", "TIME", false, -1))
-        val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        itemDecorator.setDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.divider_alarm_log
-            )!!
-        )
-        rvAlarm?.addItemDecoration(itemDecorator)
-
-        alarmAdapter=activity?.let { adapter ->
-            myAlarms?.let { arr ->
-                AlarmAdapter(
-                    arr,
-                    adapter,
-                    R.layout.item_alarm,
-                    false
-                ) { alarm, type ->
-                    if (type == 1) {
-                        openLargePictureDialog(alarm)
-                    } else if (type == 2) {
-                        try {
-                            alarm.imgsPath?.let { shareImage(it) }
-                        } catch (ex: java.lang.Exception) {
-                            ex.printStackTrace()
-                            Toast.makeText(
-                                activity,
-                                resources.getString(R.string.no_photo),
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                        }
-                    }
-                }
-            }
+        if ((rvAlarm?.itemDecorationCount ?: 0) == 0) {
+            val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            ContextCompat.getDrawable(context, R.drawable.divider_alarm_log)
+                ?.let { itemDecorator.setDrawable(it) }
+            rvAlarm?.addItemDecoration(itemDecorator)
         }
-        rvAlarm?.adapter=alarmAdapter
-        val layoutManager= LinearLayoutManager(activity)
-        rvAlarm?.layoutManager=layoutManager
 
-        alarmAdapter?.notifyDataSetChanged()
+        alarmAdapter =
+            AlarmAdapter(ArrayList(), context, R.layout.item_alarm, false) { alarm, type ->
+                onAlarmClick(alarm, type)
+        }
+        rvAlarm?.adapter = alarmAdapter
+        rvAlarm?.layoutManager = LinearLayoutManager(context)
+    }
 
+    //mark the filter button as selected and open the filter dialog
+    private fun onFilterClick(button: View, sortType: Int) {
+        //clear if selected
+        clearSelection()
+
+        context?.let {
+            button.setBackgroundColor(ContextCompat.getColor(it, R.color.green2))
+            (button as Button).setTextColor(ContextCompat.getColor(it, R.color.white))
+        }
+
+        btnFilterSystem?.isEnabled = false
+        btnFilterDateTime?.isEnabled = false
+
+        openSortByType(sortType)
     }
 
     override fun onCreateView(
@@ -185,72 +160,20 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         val view = inflater.inflate(R.layout.fragment_alarm_log, container, false)
 
         viewBetweenContainer = view.findViewById(R.id.viewBetweenContainer)
-        rvAlarm=view.findViewById(R.id.rvAlarm)
+        rvAlarm = view.findViewById(R.id.rvAlarm)
         btnFilterSystem = view.findViewById(R.id.btnFilterSystem)
-        btnFilterSystem?.setOnClickListener {
-
-            //clear if selected
-            clearSelection()
-
-            this@AlarmLogFragment.context?.let { it1 ->
-                ContextCompat.getColor(
-                    it1, R.color.green2
-                )
-            }?.let { it2 -> it.setBackgroundColor(it2) }
-
-            this@AlarmLogFragment.context?.let { it1 ->
-                ContextCompat.getColor(
-                    it1, R.color.white
-                )
-            }?.let { it2 -> (it as Button).setTextColor(it2) }
-
-            btnFilterSystem?.isEnabled = false
-            btnFilterDateTime?.isEnabled = false
-
-            openSortByType(SORT_BY_SYSTEM_KEY, SORT_BY_SYSTEM_REQUEST_CODE)
-        }
+        btnFilterSystem?.setOnClickListener { onFilterClick(it, SORT_BY_SYSTEM_KEY) }
         btnFilterDateTime = view.findViewById(R.id.btnFilterDateTime)
-        btnFilterDateTime?.setOnClickListener {
-
-            //clear if selected
-            clearSelection()
-
-            this@AlarmLogFragment.context?.let { it1 ->
-                ContextCompat.getColor(
-                    it1, R.color.green2
-                )
-            }?.let { it2 -> it.setBackgroundColor(it2) }
-
-            this@AlarmLogFragment.context?.let { it1 ->
-                ContextCompat.getColor(
-                    it1, R.color.white
-                )
-            }?.let { it2 -> (it as Button).setTextColor(it2) }
-
-            btnFilterSystem?.isEnabled = false
-            btnFilterDateTime?.isEnabled = false
-
-            openSortByType(SORT_BY_DATETIME_KEY, SORT_PICK_DATE_TIME_REQUEST_CODE)
-        }
+        btnFilterDateTime?.setOnClickListener { onFilterClick(it, SORT_BY_DATETIME_KEY) }
 
         cbIsSelected = view.findViewById(R.id.cbSelectAll)
         cbIsSelected?.setOnCheckedChangeListener { _, isChecked ->
-            if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) {
-                mySortedAlarms?.let { toggleItemSelected(it, isChecked) }
-            } else {
-                myAlarms?.let { toggleItemSelected(it, isChecked) }
-            }
+            shownAlarms?.let { toggleItemSelected(it, isChecked) }
         }
 
         ibDeleteSelectedItems = view.findViewById(R.id.ibDeleteSelectedItems)
         ibDeleteSelectedItems?.setOnClickListener {
-
-            var alarmCounter = 0
-            if (typeOfSorted == DATE_SORTED || typeOfSorted == CAMERA_SORTED) {
-                mySortedAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
-            } else {
-                myAlarms?.let { it1 -> alarmCounter = getCountItemSelected(it1) }
-            }
+            val alarmCounter = shownAlarms?.count { it.isReadyToDelete } ?: 0
             if (alarmCounter > 0) {
                 showDeleteDialog(alarmCounter)
             } else {
@@ -258,16 +181,12 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
                     activity,
                     resources.getString(R.string.no_selected_alarms),
                     Toast.LENGTH_LONG
-                )
-                    .show()
+                ).show()
             }
         }
 
         tvReset = view.findViewById(R.id.tvReset)
-        if (tvReset != null) {
-            Linkify.addLinks(tvReset!!, Linkify.WEB_URLS)
-        }
-        //tvReset?.movementMethod = LinkMovementMethod.getInstance()
+        tvReset?.let { Linkify.addLinks(it, Linkify.WEB_URLS) }
         tvReset?.setOnClickListener {
             typeOfSorted = NO_SORTED
             refreshAlarmsFromPref()
@@ -278,36 +197,49 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //results of the filter dialog (it is added to the fragment manager of the activity)
+        val fm = requireActivity().supportFragmentManager
+        fm.setFragmentResultListener(SORT_BY_SYSTEM_RESULT_KEY, viewLifecycleOwner) { _, result ->
+            resetFilterButtons()
+            if (result.getBoolean(RESULT_IS_OK_KEY)) {
+                result.getString(CAMERA_KEY)?.let { mySortedCameras = convertJsonToSensorList(it) }
+                if (mySortedCameras != null) {
+                    typeOfSorted = CAMERA_SORTED
+                    refreshAlarmsFromPref()
+                }
+            }
+        }
+        fm.setFragmentResultListener(
+            SORT_PICK_DATE_TIME_RESULT_KEY,
+            viewLifecycleOwner
+        ) { _, result ->
+            resetFilterButtons()
+            if (result.getBoolean(RESULT_IS_OK_KEY)) {
+                //get the start date and end date for sorting
+                fromTimeInMillis = result.getLong(SORT_FROM_TIME_KEY)
+                toTimeInMillis = result.getLong(SORT_TO_TIME_KEY)
+                typeOfSorted = DATE_SORTED
+                refreshAlarmsFromPref()
+            }
+        }
+    }
+
     //clear the selection of the sorted and normal array
     private fun clearSelection() {
         cbIsSelected?.isChecked = false
         mySortedAlarms?.let { toggleItemSelected(it, false) }
-        myAlarms?.let { toggleItemSelected(it, false) }
+        toggleItemSelected(myAlarms, false)
     }
-
-    private fun setFilter() {
-        val filter = IntentFilter(DETECT_ALARM_KEY)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(receiver, filter, AppCompatActivity.RECEIVER_NOT_EXPORTED)
-        } else {
-            activity?.registerReceiver(receiver, filter)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.unregisterReceiver(receiver)
-    }
-
 
     override fun onResume() {
         super.onResume()
         //display the alarm log according to view type
-        val alarmDisplay = getStringInPreference(this.context, ALARM_DISPLAY_KEY, "list")
-        if (alarmDisplay != null && (alarmDisplay == "list")) {
-            initAlarmsAdapter()
-        } else if (alarmDisplay != null && (alarmDisplay == "grid")) {
-            initAlarmsGridAdapter()
+        when (getStringInPreference(this.context, ALARM_DISPLAY_KEY, "list")) {
+            "list" -> initAlarmsAdapter()
+            "grid" -> initAlarmsGridAdapter()
         }
 
         refreshAlarmsFromPref()
@@ -316,365 +248,160 @@ class AlarmLogFragment : Fragment(), OnAdapterListener {
     override fun onStart() {
         super.onStart()
 
-        setFilter()
+        activity?.let {
+            ContextCompat.registerReceiver(
+                it,
+                receiver,
+                IntentFilter(DETECT_ALARM_KEY),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        }
 
-        activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)?.registerOnSharedPreferenceChangeListener(appStateChangeListener)
+        activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)
+            ?.registerOnSharedPreferenceChangeListener(appStateChangeListener)
 
     }
 
     override fun onStop() {
         super.onStop()
-        activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)?.unregisterOnSharedPreferenceChangeListener(appStateChangeListener)
+        activity?.unregisterReceiver(receiver)
+        activity?.getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE)
+            ?.unregisterOnSharedPreferenceChangeListener(appStateChangeListener)
     }
 
-    private fun refreshAlarmsFromPref(){
-        myAlarms = ArrayList()
-
-        val _alarms=populateAlarmsFromLocally()
+    private fun refreshAlarmsFromPref() {
+        val context = context ?: return
 
         //show only alarm log from email
-        val iteratorList = _alarms?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (item.isCameFromEmail) {
-                myAlarms?.add(item)
-            }
+        val alarmsFromEmail =
+            getAlarmsFromLocally(context)?.filter { it.isCameFromEmail } ?: emptyList()
+        myAlarms = ArrayList(alarmsFromEmail.sortedWith(compareByDescending { it.timeInMillis }))
+
+        when (typeOfSorted) {
+            DATE_SORTED -> sortByDateAlarm()
+            CAMERA_SORTED -> sortByCamerasAlarm()
         }
-
-        myAlarms?.let { myAlarms ->
-            this.myAlarms = ArrayList(myAlarms.sortedWith(compareByDescending { it.timeInMillis }))
-            //myAlarms?.let { alarms?.addAll(it) }
-
-            when (typeOfSorted) {
-                DATE_SORTED -> {
-                    sortByDateAlarm()
-                    alarmAdapter?.setDetects(mySortedAlarms)
-                    alarmAdapter?.notifyDataSetChanged()
-                }
-                CAMERA_SORTED -> {
-                    sortByCamerasAlarm()
-                    alarmAdapter?.setDetects(mySortedAlarms)
-                    alarmAdapter?.notifyDataSetChanged()
-                }
-                else -> {
-                    alarmAdapter?.setDetects(this.myAlarms)
-                    alarmAdapter?.notifyDataSetChanged()
-                }
-            }
-        }
-
-    }
-
-    //get the alarms from locally
-    private fun populateAlarmsFromLocally(): ArrayList<Alarm>?  {
-        val alarms: ArrayList<Alarm>?
-        val alarmListStr= getStringInPreference(context, ALARM_LIST_KEY_PREF, ERROR_RESP)
-
-        alarms = if(alarmListStr.equals(ERROR_RESP)){
-            ArrayList()
-        }else {
-            alarmListStr?.let { convertJsonToAlarmList(it) }
-        }
-        return alarms
-    }
-
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HistoryWarningFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AlarmLogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        alarmAdapter?.setDetects(shownAlarms)
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(arg0: Context, inn: Intent) {
             //accept currentAlarm
             if (inn.action == DETECT_ALARM_KEY) {
-
-                Log.d("testLogAlarm", "accept alarm")
-
                 refreshAlarmsFromPref()
-
-
             }
         }
     }
 
-    //open large picture
+    //open large picture (only pictures, the videos are not supported)
     private fun openLargePictureDialog(alarm: Alarm) {
-        if (alarm.imgsPath != null && alarm.imgsPath!!.endsWith("mp4")) {
-            //from external storage(ACTION_VIDEO_KEY, alarm.imgsPath, 0)
-        } else {
-            openLargePictureVideoByType(ACTION_PICTURE_KEY, alarm.imgsPath, 0)
+        val imgPath = alarm.imgsPath
+        if (imgPath?.endsWith("mp4") == true) {
+            return
+        }
+        if (imgPath == null || !File(imgPath).exists()) {
+            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
+                .show()
         }
     }
 
 
     //share image from selected alarm
     private fun shareImage(path: String) {
-        val uriFile = Uri.parse(path)
+        val context = context ?: return
+        val filePath = path.toUri().path ?: return
 
-        if (uriFile.path == null) {
-            return
-        }
-
-        val file = File(uriFile.path!!)
-
-        val uri = this.context?.let {
-            FileProvider.getUriForFile(
-                it,
-                "${activity?.packageName}.contentprovider", //(use your app signature + ".provider" )
-                file
-            )
-        }
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.contentprovider",
+            File(filePath)
+        )
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "image/jpeg"
         intent.putExtra(Intent.EXTRA_STREAM, uri)
-        startActivity(Intent.createChooser(intent, "Share Image"))
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(Intent.createChooser(intent, resources.getString(R.string.share_image)))
     }
 
     //open fragment dialog to sort the list of alarm log
-    private fun openSortByType(type: Int, requestCode: Int) {
-
+    private fun openSortByType(type: Int) {
         val fr = SystemSortDialogFragment()
-
-        //deliver selected camera to continue add data
-        //val cameraStr = convertToGson(camera)
-        val bdl = Bundle()
-        bdl.putInt(SORT_TYPE_KEY, type)
-        fr.arguments = bdl
-        fr.setTargetFragment(this, requestCode)
-        val fm = activity?.supportFragmentManager
-        val fragmentTransaction = fm?.beginTransaction()
-        fragmentTransaction?.add(R.id.flSortBySystemCamera, fr)
-        fragmentTransaction?.commit()
+        fr.arguments = Bundle().apply { putInt(SORT_TYPE_KEY, type) }
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.add(R.id.flSortBySystemCamera, fr)
+            ?.commit()
     }
 
-    //open fragment dialog to see a large picture or video
-    private fun openLargePictureVideoByType(type: Int, imgPath: String?, requestCode: Int) {
-
-
-        if (imgPath == null) {
-            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
-                .show()
-            return
-        }
-
-        val imgFile = File(imgPath)
-
-        //from internal storage
-        //val imgFile = File(context?.filesDir, path)
-
-        if (!imgFile.exists()) {
-            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
-                .show()
-            return
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        //response from camera extra settings
-
-
+    //return the filter buttons to the normal state
+    private fun resetFilterButtons() {
         btnFilterSystem?.isEnabled = true
         btnFilterDateTime?.isEnabled = true
 
-        //change the color of the button
-        this@AlarmLogFragment.context?.let { it1 ->
-            ContextCompat.getColor(
-                it1, R.color.gray11
-            )
-        }?.let { it2 -> btnFilterSystem?.setBackgroundColor(it2) }
-
-
-        this@AlarmLogFragment.context?.let { it1 ->
-            ContextCompat.getColor(
-                it1, R.color.black
-            )
-        }?.let { it2 -> (btnFilterSystem as Button).setTextColor(it2) }
-
-        //change the color of the button
-        this@AlarmLogFragment.context?.let { it1 ->
-            ContextCompat.getColor(
-                it1, R.color.gray11
-            )
-        }?.let { it2 -> btnFilterDateTime?.setBackgroundColor(it2) }
-
-        this@AlarmLogFragment.context?.let { it1 ->
-            ContextCompat.getColor(
-                it1, R.color.black
-            )
-        }?.let { it2 -> (btnFilterDateTime as Button).setTextColor(it2) }
-
-        if (requestCode == SORT_BY_SYSTEM_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val cameraStr = intent?.extras?.getString(CAMERA_KEY, null)
-                cameraStr?.let { mySortedCameras = convertJsonToSensorList(cameraStr) }
-                if (mySortedCameras != null) {
-                    typeOfSorted = CAMERA_SORTED
-                    refreshAlarmsFromPref()
-                }
-            }
-        } else if (requestCode == SORT_PICK_DATE_TIME_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                //get the start date and end date for sorting
-                try {
-                    fromCalendar =
-                        intent?.getSerializableExtra("fromCalendar") as Calendar
-                    toCalendar = intent.getSerializableExtra("toCalendar") as Calendar
-                    if (fromCalendar != null && toCalendar != null) {
-                        typeOfSorted = DATE_SORTED
-                        refreshAlarmsFromPref()
-                    }
-                    //val fromDateStr = activity?.let { it1 ->
-//                            getStringFromCalendar(
-//                                fromCalendar!!,
-//                                "dd/MM/yy kk:mm:ss",
-//                                it1
-//                            )
-//                        }
-//                    val toDateStr=activity?.let { it1 -> getStringFromCalendar(toCalendar, "dd/MM/yy kk:mm:ss", it1) }
-//                    Log.d("testCalendar",fromDateStr)
-//                    Log.d("testCalendar",toDateStr)
-                } catch (ex: Exception) {
-                    Toast.makeText(activity, resources.getString(R.string.error), Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
+        val context = context ?: return
+        val gray = ContextCompat.getColor(context, R.color.gray11)
+        val black = ContextCompat.getColor(context, R.color.black)
+        btnFilterSystem?.setBackgroundColor(gray)
+        btnFilterSystem?.setTextColor(black)
+        btnFilterDateTime?.setBackgroundColor(gray)
+        btnFilterDateTime?.setTextColor(black)
     }
 
     //sort the alarm by date time
     private fun sortByDateAlarm() {
-        if (toCalendar == null || fromCalendar == null) {
-            return
-        }
-        mySortedAlarms = ArrayList()
-        val iteratorList = myAlarms?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (item.timeInMillis != null
-                && item.timeInMillis!! <= toCalendar!!.timeInMillis
-                && item.timeInMillis!! >= fromCalendar!!.timeInMillis
-            )
-                mySortedAlarms?.add(item)
-        }
+        val from = fromTimeInMillis ?: return
+        val to = toTimeInMillis ?: return
+        mySortedAlarms = ArrayList(myAlarms.filter { alarm ->
+            alarm.timeInMillis?.let { it in from..to } == true
+        })
     }
 
-    //sort the alarm by sorter camera
+    //sort the alarm by sorted cameras
     private fun sortByCamerasAlarm() {
-        if (mySortedCameras == null) {
-            return
-        }
-
-        mySortedAlarms = ArrayList()
-        val iteratorList = myAlarms?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (isAlarmSorted(item, mySortedCameras))
-                mySortedAlarms?.add(item)
-        }
-    }
-
-    //check if the camera of alarm is sorted
-    private fun isAlarmSorted(itemP: Alarm, myCameras: ArrayList<Camera>?): Boolean {
-
-        val iteratorList = myCameras?.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (itemP.id.equals(item.getId()) && item.isSorted) {
-                return true
-            }
-        }
-        return false
+        val sortedCameras = mySortedCameras ?: return
+        mySortedAlarms = ArrayList(myAlarms.filter { alarm ->
+            sortedCameras.any { camera -> alarm.id == camera.getId() && camera.isSorted }
+        })
     }
 
     //toggle selected/unselected alarms
     private fun toggleItemSelected(alarms: ArrayList<Alarm>, isSelected: Boolean) {
-        val iteratorList = alarms.listIterator()
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            item.isReadyToDelete = isSelected
-            alarmAdapter?.setDetects(alarms)
-            alarmAdapter?.notifyDataSetChanged()
-        }
-    }
-
-    //get the counter of selected alarms
-    private fun getCountItemSelected(alarms: ArrayList<Alarm>): Int {
-        val iteratorList = alarms.listIterator()
-        var counter = 0
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (item.isReadyToDelete) {
-                counter++
-            }
-
-        }
-        return counter
-    }
-
-    //delete the selected alarms
-    private fun deleteItemSelected(alarms: ArrayList<Alarm>): Int {
-        val iteratorList = alarms.listIterator()
-        var counter = 0
-        while (iteratorList != null && iteratorList.hasNext()) {
-            val item = iteratorList.next()
-            if (item.isReadyToDelete) {
-                iteratorList.remove()
-                counter++
-            }
-
-        }
-        return counter
+        alarms.forEach { it.isReadyToDelete = isSelected }
+        alarmAdapter?.setDetects(alarms)
     }
 
     //show dialog before delete alarms
     private fun showDeleteDialog(alarmCounter: Int) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(alarmCounter.toString() + " " + requireContext().resources.getString(R.string.selected_alarms))
-        val yes = requireContext().resources.getString(R.string.yes)
-        val no = requireContext().resources.getString(R.string.no)
-        builder.setMessage(requireContext().resources.getString(R.string.do_you_realy_want_delete_selected_alarm))
+        val context = context ?: return
+        AlertDialog.Builder(context)
+            .setTitle(
+                resources.getQuantityString(
+                    R.plurals.selected_alarms_title,
+                    alarmCounter,
+                    alarmCounter
+                )
+            )
+            .setMessage(getString(R.string.do_you_really_want_delete_selected_alarm))
             .setCancelable(false)
-        builder.setPositiveButton(yes) { dialog, _ ->
+            .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
 
-            //delete from main array and also from sort array
-            myAlarms?.let { deleteItemSelected(it) }
-            mySortedAlarms?.let { deleteItemSelected(it) }
-            //save the changing in shared preference
-            if (context != null && myAlarms != null) {
-                myAlarms?.let { storeAlarmsToLocally(it, requireContext()) }
+                //delete from main array and also from sort array
+                myAlarms.removeAll { it.isReadyToDelete }
+                mySortedAlarms?.removeAll { it.isReadyToDelete }
+                //save the changing in shared preference
+                storeAlarmsToLocally(myAlarms, context)
+
+                clearSelection()
+
+                refreshAlarmsFromPref()
+
+                dialog.dismiss()
             }
-
-            clearSelection()
-
-            refreshAlarmsFromPref()
-
-            dialog.dismiss()
-        }
-
-
-        // Display a negative button on alert dialog
-        builder.setNegativeButton(no) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val alert = builder.create()
-        alert.show()
+            // Display a negative button on alert dialog
+            .setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 }

@@ -8,7 +8,8 @@
         android:layout_height="match_parent"
         android:background="@color/white2"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        tools:ignore="Overdraw">
 
         <ProgressBar
                 android:id="@+id/pbValidationEmail"

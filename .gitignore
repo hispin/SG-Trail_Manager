@@ -11,3 +11,9 @@
 /build
 /captures
 .externalNativeBuild
+
+# secrets and signing
+/secrets.properties
+*.jks
+*.keystore
+/app/release/

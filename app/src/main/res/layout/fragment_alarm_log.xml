@@ -129,7 +129,6 @@
         <!-- TODO: Update blank fragment layout -->
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAlarm"
-                android:name="com.app.simplehostdev.viewLayer.fragments.NewReservationFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="false"
