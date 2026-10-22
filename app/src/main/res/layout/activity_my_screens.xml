@@ -29,16 +29,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- the tabs of the main screens: cameras, map, configuration, alarm log -->
-    <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            style="@style/TrailManager.TabLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vPager"
             android:layout_width="0dp"
@@ -46,6 +36,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

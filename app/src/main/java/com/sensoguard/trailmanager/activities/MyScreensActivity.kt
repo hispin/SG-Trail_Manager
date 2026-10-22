@@ -17,8 +17,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.sensoguard.trailmanager.R
 import com.sensoguard.trailmanager.fragments.AlarmLogFragment
 import com.sensoguard.trailmanager.fragments.CameraCommandsDialogFragment
@@ -44,20 +42,6 @@ import com.sensoguard.trailmanager.global.setLongInPreference
 import com.sensoguard.trailmanager.global.setStringInPreference
 import com.sensoguard.trailmanager.interfaces.OnFragmentListener
 
-
-//the titles and the icons of the tabs (by the order of the pages)
-private val TAB_TITLES = intArrayOf(
-    R.string.cameras_title,
-    R.string.map_title,
-    R.string.config_title,
-    R.string.alarm_log_title
-)
-private val TAB_ICONS = intArrayOf(
-    R.drawable.selected_sensor_tab,
-    R.drawable.selected_map_tab,
-    R.drawable.selected_config_tab,
-    R.drawable.selected_alarm_log_tab
-)
 
 class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
@@ -138,7 +122,7 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
 
         configureActionBar()
 
-        configTabs()
+        configPages()
 
     }
 
@@ -195,21 +179,13 @@ class MyScreensActivity : AppCompatActivity(), OnFragmentListener {
         setBooleanInPreference(this, IS_MY_SCREENS_ACTIVITY_FOREGROUND, true)
     }
 
-    private fun configTabs() {
+    private fun configPages() {
         val viewPager = findViewById<ViewPager2>(R.id.vPager)
         viewPager.adapter = CollectionPagerAdapter(this)
-        //the pages are changed by the tabs only (no swipe)
+        //the pages are changed from code only (no tabs, no swipe)
         viewPager.isUserInputEnabled = false
         //keep the next page ready (as the previous ViewPager did)
         viewPager.offscreenPageLimit = 1
-
-        //the tabs of the pages (title and icon)
-        val tabs = findViewById<TabLayout>(R.id.tab_layout)
-        TabLayoutMediator(tabs, viewPager) { tab, position ->
-            tab.text = getString(TAB_TITLES[position])
-            tab.icon = ContextCompat.getDrawable(this, TAB_ICONS[position])
-        }.attach()
-
         viewPager.setCurrentItem(currentItemTopMenu, false)
     }
 

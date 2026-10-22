@@ -80,23 +80,4 @@
         <item name="android:windowBackground">@color/gray1</item>
     </style>
 
-    <!-- the tabs of the main screen -->
-    <style name="TrailManager.TabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabBackground">@color/medium_green</item>
-        <item name="tabTextAppearance">@style/TrailManager.TabTextAppearance</item>
-        <item name="tabTextColor">@color/white1</item>
-        <item name="tabSelectedTextColor">@color/black</item>
-        <item name="tabIndicatorColor">@color/black</item>
-        <item name="tabIndicatorHeight">4dp</item>
-        <item name="tabIndicatorFullWidth">true</item>
-        <item name="tabPaddingStart">0dp</item>
-        <item name="tabPaddingEnd">0dp</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabGravity">fill</item>
-    </style>
-
-    <style name="TrailManager.TabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">11.7sp</item>
-        <item name="textAllCaps">false</item>
-    </style>
 </resources>

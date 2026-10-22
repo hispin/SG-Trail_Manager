@@ -304,9 +304,4 @@
         <item quantity="two">%1$d התראות נבחרו</item>
         <item quantity="other">%1$d התראות נבחרו</item>
     </plurals>
-    <!-- titles of the tabs of the main screen -->
-    <string name="cameras_title">מערכות ומצלמות</string>
-    <string name="map_title">מפה</string>
-    <string name="config_title">הגדרות כללי</string>
-    <string name="alarm_log_title">אירועים</string>
 </resources>

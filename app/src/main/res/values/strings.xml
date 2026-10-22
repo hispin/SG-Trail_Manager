@@ -325,9 +325,4 @@
         <item quantity="one">%1$d selected alarm</item>
         <item quantity="other">%1$d selected alarms</item>
     </plurals>
-    <!-- titles of the tabs of the main screen -->
-    <string name="cameras_title">Cameras</string>
-    <string name="map_title">Map</string>
-    <string name="config_title">Configuration</string>
-    <string name="alarm_log_title">Alarm</string>
 </resources>
